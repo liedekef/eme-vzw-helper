@@ -1,0 +1,432 @@
+/* eme-vzw-helper/assets/js/admin.js */
+/* global emeVzw */
+(function() {
+    'use strict';
+
+    const { nonce, ajaxUrl, i18n } = emeVzw;
+    /**
+     * Recursieve helper: zet complexe JS-objecten om naar FormData met bracket-keys.
+     * Bijv: { board_changes: [{ id: 1 }] } wordt board_changes[0][id]=1
+     */
+    function buildFormData(data, formData = new FormData(), parentKey = '') {
+        for (const key in data) {
+            if (!data.hasOwnProperty(key)) continue;
+            const value = data[key];
+            const formKey = parentKey ? `${parentKey}[${key}]` : key;
+
+            // Recursief voor objecten/arrays (behalve File instances)
+            if (typeof value === 'object' && value !== null && !(value instanceof File)) {
+                buildFormData(value, formData, formKey);
+            } else {
+                formData.append(formKey, value);
+            }
+        }
+        return formData;
+    }
+
+    /**
+     * Generieke AJAX functie
+     * Gebruikt automatisch FormData met recursieve keys voor nested data.
+     */
+    function ajax(action, data, onSuccess, onError) {
+        // Voeg action en nonce toe aan de data
+        const payload = { action, nonce, ...data };
+        
+        // Bouw de FormData met geneste keys
+        const formData = buildFormData(payload);
+
+        // Fetch verstuurt FormData als 'multipart/form-data' automatisch
+        fetch(ajaxUrl, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(r => {
+            if (r.success) {
+                onSuccess && onSuccess(r.data);
+            } else {
+                (onError || alert)(r.data || 'Er is een fout opgetreden.');
+            }
+        })
+        .catch(() => (onError || alert)('Verbindingsfout met server.'));
+    }
+
+    /* ── Generic AJAX ────────────────────────────────────────────── */
+    function ajaxold(action, data, onSuccess, onError) {
+        // Als data een string is, maak er een object van
+        if (typeof data === 'string') {
+            var params = new URLSearchParams(data);
+            data = {};
+            for (let [key, value] of params) {
+                data[key] = value;
+            }
+        }
+
+        const formData = new URLSearchParams();
+        formData.append('action', action);
+        formData.append('nonce', nonce);
+
+        for (let [key, value] of Object.entries(data)) {
+            formData.append(key, value);
+        }
+
+        fetch(ajaxUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData.toString()
+        })
+        .then(response => response.json())
+        .then(r => {
+            if (r.success) {
+                onSuccess && onSuccess(r.data);
+            } else {
+                (onError || alert)(r.data || 'Fout');
+            }
+        })
+        .catch(() => (onError || alert)('Verbindingsfout'));
+    }
+
+    // Helper: find all matching elements inside container
+    function findAll(container, selector) {
+        return Array.from(container.querySelectorAll(selector));
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+     * CHECKLIST
+     * ════════════════════════════════════════════════════════════════ */
+
+    // Status button click → save via AJAX, update UI score
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.vzw-status-btn');
+        if (!btn) return;
+
+        const $item = btn.closest('.vzw-check-item');
+        const checkKey = $item.dataset.key;
+        const status = btn.dataset.status;
+        const year = document.getElementById('vzw-fiscal-year')?.value || new Date().getFullYear();
+        const note = $item.querySelector('.vzw-check-note-input')?.value || '';
+        const subs = collectSubAnswers($item);
+
+        // Optimistic UI update
+        $item.classList.remove('status-yes', 'status-no', 'status-na', 'status-pending');
+        $item.classList.add(`status-${status}`);
+        findAll($item, '.vzw-status-btn').forEach(b => {
+            b.classList.remove('active-yes', 'active-no', 'active-na', 'active-pending');
+        });
+        btn.classList.add(`active-${status}`);
+
+        ajax('eme_vzw_save_check', {
+            fiscal_year: year,
+            config_id: 1,
+            check_key: checkKey,
+            status: status,
+            sub_answers: JSON.stringify(subs),
+            notes: note,
+        }, function(data) {
+            if (data && data.score) updateScoreUI(data.score);
+        });
+    });
+
+    // Collect sub-question answers from a check-item
+    function collectSubAnswers($item) {
+        const subs = {};
+        findAll($item, '.vzw-sub-input').forEach(function(el) {
+            const idx = el.dataset.subidx;
+            if (el.type === 'radio') {
+                if (el.checked) subs[idx] = el.value;
+            } else {
+                subs[idx] = el.value;
+            }
+        });
+        return subs;
+    }
+
+    // Note input change → auto-save after 800ms debounce
+    let noteTimer;
+    document.addEventListener('input', function(e) {
+        if (!e.target.matches('.vzw-check-note-input, .vzw-sub-input')) return;
+
+        clearTimeout(noteTimer);
+        const $item = e.target.closest('.vzw-check-item');
+        const checkKey = $item.dataset.key;
+        const activeBtn = $item.querySelector('.vzw-status-btn.active-yes, .vzw-status-btn.active-no, .vzw-status-btn.active-na, .vzw-status-btn.active-pending');
+        const status = activeBtn?.dataset?.status || 'pending';
+        const year = document.getElementById('vzw-fiscal-year')?.value || new Date().getFullYear();
+
+        noteTimer = setTimeout(() => {
+            const note = $item.querySelector('.vzw-check-note-input')?.value;
+            const subs = collectSubAnswers($item);
+            ajax('eme_vzw_save_check', {
+                fiscal_year: year,
+                config_id: 1,
+                check_key: checkKey,
+               status: status,
+                sub_answers: JSON.stringify(subs),
+                notes: note,
+            });
+        }, 800);
+    });
+
+    // Also listen to change event for radio buttons
+    document.addEventListener('change', function(e) {
+        if (!e.target.matches('.vzw-check-note-input, .vzw-sub-input')) return;
+        // Trigger same handler as input
+        const event = new Event('input', { bubbles: true });
+        e.target.dispatchEvent(event);
+    });
+
+    function updateScoreUI(score) {
+        // Ring
+        const pct = score.score_pct;
+        const radius = 48;
+        const circ = 2 * Math.PI * radius;
+        const offset = circ * (1 - pct / 100);
+        const $circle = document.getElementById('score-ring-progress');
+        if ($circle) {
+            $circle.setAttribute('stroke-dashoffset', offset.toFixed(1));
+            $circle.setAttribute('stroke', pct >= 80 ? '#00a32a' : pct >= 50 ? '#dba617' : '#d63638');
+        }
+        const pctText = document.getElementById('score-pct-text');
+        if (pctText) pctText.textContent = pct.toFixed(1) + '%';
+
+        // Group scores
+        const g = score.by_group;
+        if (g.general) {
+            const gPct = g.general.max > 0 ? (g.general.earned / g.general.max * 100).toFixed(1) : 0;
+            const generalScore = document.getElementById('group-general-score');
+            if (generalScore) generalScore.textContent = gPct + '%';
+        }
+        if (g.current_year) {
+            const yPct = g.current_year.max > 0 ? (g.current_year.earned / g.current_year.max * 100).toFixed(1) : 0;
+            const yearScore = document.getElementById('group-year-score');
+            if (yearScore) yearScore.textContent = yPct + '%';
+        }
+    }
+
+    // Year selector
+    document.getElementById('vzw-fiscal-year')?.addEventListener('change', function() {
+        window.location = `${window.location.pathname}?page=eme-vzw-helper-checklist&year=${this.value}`;
+    });
+
+    /* ════════════════════════════════════════════════════════════════
+     * PUBLICATIONS
+     * ════════════════════════════════════════════════════════════════ */
+
+    // Save publication form
+    const pubForm = document.getElementById('vzw-pub-form');
+    if (pubForm) {
+        pubForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const $form = this;
+            const $btn = $form.querySelector('.submit-btn');
+            const originalText = $btn.textContent;
+            $btn.textContent = i18n.saving;
+            $btn.disabled = true;
+
+            const data = buildPublicationData($form);
+            ajax('eme_vzw_save_publication', data, function(r) {
+                $btn.textContent = i18n.saved;
+                $btn.disabled = false;
+                const pubIdField = $form.querySelector('[name="pub_id"]');
+                if (!pubIdField.value) {
+                    // New publication — update hidden field and show document buttons
+                    pubIdField.value = r.id;
+                    const docButtons = document.getElementById('vzw-doc-buttons');
+                    if (docButtons) {
+                        docButtons.dataset.pubId = r.id;
+                        docButtons.style.display = 'block';
+                    }
+                }
+                setTimeout(() => {
+                    $btn.textContent = 'Opslaan';
+                    $btn.disabled = false;
+                }, 1800);
+            }, function(msg) {
+                $btn.textContent = 'Opslaan';
+                $btn.disabled = false;
+                alert(msg);
+            });
+        });
+    }
+
+    function buildPublicationData($form) {
+        return {
+            id: $form.querySelector('[name="pub_id"]')?.value || 0,
+            config_id: 1,
+            av_date: $form.querySelector('[name="av_date"]')?.value,
+            av_location: $form.querySelector('[name="av_location"]')?.value || '',
+            submitted_date: $form.querySelector('[name="submitted_date"]')?.value,
+            published_date: $form.querySelector('[name="published_date"]')?.value,
+            bs_payment_ref: $form.querySelector('[name="bs_payment_ref"]')?.value,
+            bs_payment_date: $form.querySelector('[name="bs_payment_date"]')?.value,
+            bs_payment_amount: $form.querySelector('[name="bs_payment_amount"]')?.value,
+            status: $form.querySelector('[name="pub_status"]')?.value,
+            notes: $form.querySelector('[name="notes"]')?.value,
+            statute_text: $form.querySelector('[name="statute_text"]')?.value || '',
+            board_changes: collectBoardChanges(),
+        };
+    }
+
+    function collectBoardChanges() {
+        const changes = [];
+        document.querySelectorAll('.vzw-board-change-row').forEach(function(row) {
+            const bid = row.querySelector('.bc-board-id')?.value;
+            const type = row.querySelector('.bc-change-type')?.value;
+            const date = row.querySelector('.bc-effective-date')?.value;
+            if (bid) changes.push({ board_id: bid, change_type: type, effective_date: date });
+        });
+        return changes;
+    }
+
+    // Add board change row
+    const addBoardBtn = document.getElementById('btn-add-board-change');
+    if (addBoardBtn) {
+        addBoardBtn.addEventListener('click', function() {
+            const $tmpl = document.getElementById('vzw-board-change-template');
+            if (!$tmpl) return;
+            const clone = $tmpl.cloneNode(true);
+            clone.removeAttribute('id');
+            clone.style.display = 'flex';
+            document.getElementById('vzw-board-changes-list')?.appendChild(clone);
+        });
+    }
+
+    // Remove row (event delegation)
+    document.addEventListener('click', function(e) {
+        const removeBtn = e.target.closest('.vzw-remove-row');
+        if (removeBtn) {
+            const row = removeBtn.closest('.vzw-board-change-row, .vzw-statute-change-row');
+            if (row) row.remove();
+        }
+    });
+
+    // Generate & open document in new window (print to PDF)
+    document.addEventListener('click', function(e) {
+        const docBtn = e.target.closest('.vzw-gen-doc');
+        if (!docBtn) return;
+
+        const docType = docBtn.dataset.docType;
+        const pubIdContainer = docBtn.closest('[data-pub-id]');
+        let pubId = pubIdContainer?.dataset.pubId;
+        if (!pubId) {
+            pubId = document.querySelector('[name="pub_id"]')?.value;
+        }
+        if (!pubId) {
+            alert('Sla de publicatie eerst op.');
+            return;
+        }
+        const url = `${ajaxUrl}?action=eme_vzw_download_pdf&nonce=${nonce}&doc_type=${docType}&pub_id=${pubId}`;
+        window.open(url, '_blank');
+    });
+
+    // Delete publication (event delegation)
+    document.addEventListener('click', function(e) {
+        const deleteBtn = e.target.closest('.vzw-delete-pub');
+        if (!deleteBtn) return;
+
+        if (!confirm(i18n.confirm_delete)) return;
+        const $row = deleteBtn.closest('tr');
+        ajax('eme_vzw_delete_publication', { id: deleteBtn.dataset.id }, function() {
+            if ($row) {
+                $row.style.transition = 'opacity 0.3s';
+                $row.style.opacity = '0';
+                setTimeout(() => $row.remove(), 300);
+            }
+        });
+    });
+
+    /* ════════════════════════════════════════════════════════════════
+     * BOARD / CONFIG FORMS
+     * ════════════════════════════════════════════════════════════════ */
+
+    const boardForm = document.getElementById('vzw-board-form');
+    if (boardForm) {
+        boardForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const $btn = this.querySelector('.submit-btn');
+            const originalText = $btn.textContent;
+            $btn.textContent = i18n.saving;
+            $btn.disabled = true;
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => { data[key] = value; });
+            ajax('eme_vzw_save_board_member', data, () => location.reload(), function(msg) {
+                $btn.textContent = 'Opslaan';
+                $btn.disabled = false;
+                alert(msg);
+            });
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        const deleteBtn = e.target.closest('.vzw-delete-board');
+        if (!deleteBtn) return;
+
+        if (!confirm(i18n.confirm_delete)) return;
+        const $card = deleteBtn.closest('.vzw-board-card');
+        ajax('eme_vzw_delete_board_member', { id: deleteBtn.dataset.id }, function() {
+            if ($card) {
+                $card.style.transition = 'opacity 0.3s';
+                $card.style.opacity = '0';
+                setTimeout(() => location.reload(), 350);
+            }
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.vzw-reactivate-board');
+        if (!btn) return;
+        if (!confirm(i18n.confirm_reactivate)) return;
+        ajax('eme_vzw_save_board_member', { id: btn.dataset.id, is_active: 1 }, function() {
+            location.reload();
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.vzw-purge-board');
+        if (!btn) return;
+        if (!confirm(i18n.confirm_purge)) return;
+        const $card = btn.closest('.vzw-board-card');
+        ajax('eme_vzw_purge_board_member', { id: btn.dataset.id }, function() {
+            if ($card) {
+                $card.style.transition = 'opacity 0.3s';
+                $card.style.opacity = '0';
+                setTimeout(() => $card.remove(), 300);
+            }
+        });
+    });
+
+    const configForm = document.getElementById('vzw-config-form');
+    if (configForm) {
+        configForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const $btn = this.querySelector('.submit-btn');
+            $btn.textContent = i18n.saving;
+            $btn.disabled = true;
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => { data[key] = value; });
+            ajax('eme_vzw_save_config', data, function() {
+                $btn.textContent = i18n.saved;
+                $btn.disabled = false;
+                setTimeout(() => {
+                    $btn.textContent = 'Opslaan';
+                    $btn.disabled = false;
+                }, 1800);
+            });
+        });
+    }
+
+    // Legal entity toggle
+    const legalEntityCheckbox = document.getElementById('is_legal_entity');
+    if (legalEntityCheckbox) {
+        legalEntityCheckbox.addEventListener('change', function() {
+            const legalFields = document.getElementById('legal-entity-fields');
+            const naturalFields = document.getElementById('natural-person-fields');
+            if (legalFields) legalFields.style.display = this.checked ? 'block' : 'none';
+            if (naturalFields) naturalFields.style.display = this.checked ? 'none' : 'block';
+        });
+    }
+})();

@@ -1,0 +1,177 @@
+<?php
+namespace EMEVzw;
+
+defined( 'ABSPATH' ) || exit;
+
+class Config {
+
+    public static function init(): void {
+        add_action( 'wp_ajax_eme_vzw_save_config',         [ __CLASS__, 'ajax_save' ] );
+        add_action( 'wp_ajax_eme_vzw_save_board_member',   [ __CLASS__, 'ajax_save_board' ] );
+        add_action( 'wp_ajax_eme_vzw_delete_board_member', [ __CLASS__, 'ajax_delete_board' ] );
+        add_action( 'wp_ajax_eme_vzw_purge_board_member',  [ __CLASS__, 'ajax_purge_board' ] );
+    }
+
+    public static function get( int $id = 1 ): ?object {
+        global $wpdb;
+        return $wpdb->get_row( $wpdb->prepare(
+            "SELECT * FROM `{$wpdb->prefix}emevzw_config` WHERE id = %d",
+            $id
+        ) );
+    }
+
+    public static function get_active_board_members( int $config_id = 1 ): array {
+        global $wpdb;
+        return $wpdb->get_results( $wpdb->prepare(
+            "SELECT * FROM `{$wpdb->prefix}emevzw_board`
+             WHERE config_id = %d AND is_active = 1
+             ORDER BY last_name",
+            $config_id
+        ) );
+    }
+
+    /**
+     * Alle bestuurders, ongeacht is_active, gesorteerd:
+     * actieve leden eerst, daarna inactieve, beide alfabetisch op achternaam.
+     */
+    public static function get_all_board_members( int $config_id = 1 ): array {
+        global $wpdb;
+        return $wpdb->get_results( $wpdb->prepare(
+            "SELECT * FROM `{$wpdb->prefix}emevzw_board`
+             WHERE config_id = %d
+             ORDER BY is_active DESC, last_name",
+            $config_id
+        ) );
+    }
+
+    public static function get_board_member( int $id ): ?object {
+        global $wpdb;
+        return $wpdb->get_row( $wpdb->prepare(
+            "SELECT * FROM `{$wpdb->prefix}emevzw_board` WHERE id = %d",
+            $id
+        ) );
+    }
+
+    public static function save( array $data ): int|\WP_Error {
+        global $wpdb;
+        $row = [
+            'vzw_name'             => eme_sanitize_request( $data['vzw_name'] ?? '' ),
+            'vzw_shortname'        => eme_sanitize_request( $data['vzw_shortname'] ?? '' ),
+            'vzw_number'           => eme_sanitize_request( $data['vzw_number'] ?? '' ),
+            'vzw_legal_form'       => eme_sanitize_request( $data['vzw_legal_form'] ?? 'VZW' ),
+            'street'               => eme_sanitize_request( $data['street'] ?? '' ),
+            'house_number'         => eme_sanitize_request( $data['house_number'] ?? '' ),
+            'house_bus'            => eme_sanitize_request( $data['house_bus'] ?? '' ),
+            'postal_code'          => eme_sanitize_request( $data['postal_code'] ?? '' ),
+            'city'                 => eme_sanitize_request( $data['city'] ?? '' ),
+            'country'              => eme_sanitize_request( $data['country'] ?? 'België' ),
+            'court'                => eme_sanitize_request( $data['court'] ?? '' ),
+            'fiscal_year_start_mm' => max( 1, min( 12, (int) ( $data['fiscal_year_start_mm'] ?? 1 ) ) ),
+            'fiscal_year_start_dd' => max( 1, min( 31, (int) ( $data['fiscal_year_start_dd'] ?? 1 ) ) ),
+            'fiscal_year_end_mm'   => max( 1, min( 12, (int) ( $data['fiscal_year_end_mm'] ?? 12 ) ) ),
+            'fiscal_year_end_dd'   => max( 1, min( 31, (int) ( $data['fiscal_year_end_dd'] ?? 31 ) ) ),
+            'current_fiscal_year'  => (int) ( $data['current_fiscal_year'] ?? gmdate( 'Y' ) ),
+            'vat_liable'           => (int) (bool) ( $data['vat_liable'] ?? 0 ),
+            'is_micro_vzw'         => (int) (bool) ( $data['is_micro_vzw'] ?? 1 ),
+            'ubo_last_confirmed'   => ! empty( $data['ubo_last_confirmed'] ) ? eme_sanitize_request( $data['ubo_last_confirmed'] ) : null,
+            'statutes_last_published'=> ! empty( $data['statutes_last_published'] ) ? eme_sanitize_request( $data['statutes_last_published'] ) : null,
+            'board_mandate_end'    => ! empty( $data['board_mandate_end'] ) ? eme_sanitize_request( $data['board_mandate_end'] ) : null,
+            'notification_email'   => eme_sanitize_email( $data['notification_email'] ?? '' ),
+        ];
+
+        $id = isset( $data['id'] ) ? (int) $data['id'] : 1;
+        $exists = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM `{$wpdb->prefix}emevzw_config` WHERE id = %d", $id
+        ) );
+
+        if ( $exists ) {
+            $wpdb->update( $wpdb->prefix . 'emevzw_config', $row, [ 'id' => $id ], null, [ '%d' ] );
+        } else {
+            $wpdb->insert( $wpdb->prefix . 'emevzw_config', $row );
+            $id = (int) $wpdb->insert_id;
+        }
+        return $id;
+    }
+
+    public static function save_board_member( array $data ): int|\WP_Error {
+        global $wpdb;
+        $row = [
+            'config_id'            => (int) ( $data['config_id'] ?? 1 ),
+            'first_name'           => eme_sanitize_request( $data['first_name'] ?? '' ),
+            'last_name'            => eme_sanitize_request( $data['last_name'] ?? '' ),
+            'national_id'          => eme_sanitize_request( $data['national_id'] ?? '' ),
+            'birth_place'          => eme_sanitize_request( $data['birth_place'] ?? '' ),
+            'birth_date'           => ! empty( $data['birth_date'] ) ? eme_sanitize_request( $data['birth_date'] ) : null,
+            'street'               => eme_sanitize_request( $data['street'] ?? '' ),
+            'house_number'         => eme_sanitize_request( $data['house_number'] ?? '' ),
+            'house_bus'            => eme_sanitize_request( $data['house_bus'] ?? '' ),
+            'postal_code'          => eme_sanitize_request( $data['postal_code'] ?? '' ),
+            'city'                 => eme_sanitize_request( $data['city'] ?? '' ),
+            'country'              => eme_sanitize_request( $data['country'] ?? 'België' ),
+            'role'                 => eme_sanitize_request( $data['role'] ?? 'bestuurder' ),
+            'email'                => sanitize_email( $data['email'] ?? '' ),
+            'phone'                => eme_sanitize_request( $data['phone'] ?? '' ),
+            'appointed_date'       => ! empty( $data['appointed_date'] ) ? eme_sanitize_request( $data['appointed_date'] ) : null,
+            'appointment_av_date'  => ! empty( $data['appointment_av_date'] ) ? eme_sanitize_request( $data['appointment_av_date'] ) : null,
+            'end_date'             => ! empty( $data['end_date'] ) ? eme_sanitize_request( $data['end_date'] ) : null,
+            'mandate_duration'     => (int) ( $data['mandate_duration'] ?? 0 ),
+            'no_management_ban'    => (int) (bool) ( $data['no_management_ban'] ?? 0 ),
+            'is_active'            => (int) (bool) ( $data['is_active'] ?? 1 ),
+            'is_legal_entity'      => (int) (bool) ( $data['is_legal_entity'] ?? 0 ),
+            'legal_name'           => eme_sanitize_request( $data['legal_name'] ?? '' ),
+            'legal_number'         => eme_sanitize_request( $data['legal_number'] ?? '' ),
+            'legal_representative' => eme_sanitize_request( $data['legal_representative'] ?? '' ),
+            'notes'                => eme_sanitize_request( $data['notes'] ?? '' ),
+        ];
+        $id = isset( $data['id'] ) ? (int) $data['id'] : 0;
+        if ( $id > 0 ) {
+            $wpdb->update( $wpdb->prefix . 'emevzw_board', $row, [ 'id' => $id ], null, [ '%d' ] );
+            return $id;
+        }
+        $wpdb->insert( $wpdb->prefix . 'emevzw_board', $row );
+        return (int) $wpdb->insert_id;
+    }
+
+    public static function ajax_save(): void {
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
+        $r = self::save( $_POST );
+        is_wp_error( $r ) ? wp_send_json_error( $r->get_error_message() ) : wp_send_json_success( [ 'id' => $r ] );
+    }
+
+    public static function ajax_save_board(): void {
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
+        $r = self::save_board_member( $_POST );
+        is_wp_error( $r ) ? wp_send_json_error( $r->get_error_message() ) : wp_send_json_success( [ 'id' => $r ] );
+    }
+
+    public static function ajax_delete_board(): void {
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
+        global $wpdb;
+        // Soft delete: is_active = 0, mandaat leegmaken
+        $wpdb->update(
+            $wpdb->prefix . 'emevzw_board',
+            [ 'is_active' => 0 ],
+            [ 'id' => (int) ( $_POST['id'] ?? 0 ) ]
+        );
+        wp_send_json_success();
+    }
+
+    public static function ajax_purge_board(): void {
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
+        global $wpdb;
+        // Hard delete: enkel toegestaan als de bestuurder reeds inactief is
+        $id = (int) ( $_POST['id'] ?? 0 );
+        $member = $wpdb->get_row( $wpdb->prepare(
+            "SELECT is_active FROM `{$wpdb->prefix}emevzw_board` WHERE id = %d", $id
+        ) );
+        if ( ! $member || (int) $member->is_active === 1 ) {
+            wp_send_json_error( 'Kan enkel inactieve bestuurders definitief verwijderen.' );
+        }
+        $wpdb->delete( $wpdb->prefix . 'emevzw_board', [ 'id' => $id ], [ '%d' ] );
+        wp_send_json_success();
+    }
+}

@@ -1,0 +1,7 @@
+composer require tecnickcom/tcpdf
+pdftoppm -png -r 300 formulier1ond_2019_04_26.pdf assets/templates/formulier1_bg
+pdftoppm -png -r 300 formulier2ond_2019_04_26.pdf assets/templates/formulier2_bg
+
+Calibreren: https://jouwsite.be/wp-admin/admin-ajax.php?action=eme_vzw_download_pdf&nonce=JOUW_NONCE&doc_type=form1&pub_id=1&debug=1
+
+
