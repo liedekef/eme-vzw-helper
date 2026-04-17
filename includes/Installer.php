@@ -6,15 +6,28 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 
     const DB_VERSION_OPTION = 'emevzw_db_version';
-    const DB_VERSION        = '1.0.0';
+    const DB_VERSION        = '1';
 
     public static function activate(): void {
         self::create_tables();
+        self::migrate();
         update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
-        flush_rewrite_rules();
+        //flush_rewrite_rules();
     }
 
-    public static function deactivate(): void { flush_rewrite_rules(); }
+    /**
+     * Run migrations for version upgrades.
+     */
+    private static function migrate(): void {
+        global $wpdb;
+        $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
+     //   if ( $current_version && $current_version < 12 ) {
+      //  }
+    }
+
+    public static function deactivate(): void {
+        //flush_rewrite_rules();
+    }
 
     public static function uninstall(): void {
         if ( get_option( 'eme_vzw_delete_on_uninstall' ) !== 'yes' ) return;
@@ -29,7 +42,7 @@ class Installer {
         $charset = $wpdb->get_charset_collate();
 
         // ── VZW Configuration (one row per VZW) ─────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}emevzw_config (
+        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_config (
             id                      INT UNSIGNED    NOT NULL AUTO_INCREMENT,
             vzw_name                VARCHAR(200)    NOT NULL DEFAULT '',
             vzw_shortname           VARCHAR(100)    NOT NULL DEFAULT '',
@@ -58,7 +71,7 @@ class Installer {
         ) $charset;" );
 
         // ── Board members (bestuurders) ──────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}emevzw_board (
+        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_board (
             id                  INT UNSIGNED    NOT NULL AUTO_INCREMENT,
             config_id           INT UNSIGNED    NOT NULL DEFAULT 1,
             first_name          VARCHAR(80)     NOT NULL DEFAULT '',
@@ -94,10 +107,10 @@ class Installer {
         ) $charset;" );
 
         // ── Checklist answers (per fiscal year) ──────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}emevzw_checks (
+        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_checks (
             id          INT UNSIGNED    NOT NULL AUTO_INCREMENT,
             config_id   INT UNSIGNED    NOT NULL DEFAULT 1,
-            fiscal_year SMALLINT        NOT NULL,
+            fiscal_year SMALLINT        NOT NULL DEFAULT '',
             check_key   VARCHAR(80)     NOT NULL,
             status      ENUM('yes','no','na','pending') NOT NULL DEFAULT 'pending',
             sub_answers TEXT,
@@ -110,7 +123,7 @@ class Installer {
         ) $charset;" );
 
         // ── Publication log (formulier 1, 2, statutenwijziging) ──────────
-        dbDelta( "CREATE TABLE `{$wpdb->prefix}emevzw_publications` (
+        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_publications (
             id              INT UNSIGNED    NOT NULL AUTO_INCREMENT,
             config_id       INT UNSIGNED    NOT NULL DEFAULT 1,
             av_date         DATE            NOT NULL,
@@ -134,7 +147,7 @@ class Installer {
         ) $charset;" );
 
         // ── Staat van het Vermogen (Bijlage C – per boekjaar) ───────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}emevzw_patrimony (
+        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_patrimony (
             id                          INT UNSIGNED    NOT NULL AUTO_INCREMENT,
             config_id                   INT UNSIGNED    NOT NULL DEFAULT 1,
             fiscal_year                 SMALLINT        NOT NULL,
@@ -197,7 +210,7 @@ class Installer {
         ) $charset;" );
 
         // ── Publication board members (who changed in this publication) ──
-        dbDelta( "CREATE TABLE {$wpdb->prefix}emevzw_pub_board (
+        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_pub_board (
             id              INT UNSIGNED    NOT NULL AUTO_INCREMENT,
             publication_id  INT UNSIGNED    NOT NULL,
             board_id        INT UNSIGNED    NOT NULL,
@@ -211,7 +224,7 @@ class Installer {
 
     private static function drop_tables(): void {
         global $wpdb;
-        foreach ( [ 'emevzw_statute_changes','emevzw_pub_board','emevzw_publications','emevzw_checks','emevzw_patrimony','emevzw_board','emevzw_config' ] as $t ) {
+        foreach ( [ 'emevzw_pub_board','emevzw_publications','emevzw_checks','emevzw_patrimony','emevzw_board','emevzw_config' ] as $t ) {
             $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$t}" ); // phpcs:ignore
         }
     }
