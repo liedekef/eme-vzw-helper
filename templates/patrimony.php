@@ -255,7 +255,7 @@ $int = fn( string $field, int $default ) => $p ? (int) $p->$field : $default;
     <?php if ( $p ): ?>
     <button type="button" class="button vzw-delete-patrimony" data-id="<?= (int) $p->id ?>"
             style="margin-left:8px;color:#d63638;border-color:#d63638">
-        <?php esc_html_e( 'Verwijder dit boekjaar', 'eme-vzw-helper' ); ?>
+        <?php esc_html_e( 'Verwijder deze Staat van Vermogen', 'eme-vzw-helper' ); ?>
     </button>
     <?php endif; ?>
 </p>
@@ -297,6 +297,7 @@ $int = fn( string $field, int $default ) => $p ? (int) $p->$field : $default;
                class="button button-small"><?php esc_html_e( 'Bewerk', 'eme-vzw-helper' ); ?></a>
             <a href="<?= esc_url( admin_url( 'admin-ajax.php?action=eme_vzw_download_patrimony&fiscal_year=' . (int) $rec->fiscal_year . '&nonce=' . wp_create_nonce( 'eme_vzw_nonce' ) ) ) ?>"
                class="button button-small" target="_blank">PDF</a>
+            <button type="button" class="button button-small vzw-delete-patrimony" data-id="<?= (int) $rec->fiscal_year ?>">✕</button>
         </td>
     </tr>
     <?php endforeach; ?>
@@ -305,108 +306,3 @@ $int = fn( string $field, int $default ) => $p ? (int) $p->$field : $default;
 <?php endif; ?>
 
 </div><!-- /wrap -->
-
-<style>
-.vzw-patrimony-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 0;
-    border-bottom: 1px solid #f0f0f1;
-}
-.vzw-patrimony-row label { flex: 1; font-size: 13px; }
-.vzw-patrimony-total {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    margin-top: 4px;
-    border-top: 2px solid #000;
-    font-size: 13px;
-}
-</style>
-
-<script>
-(function() {
-    // Live berekening totalen
-    function parseBE(val) {
-        return parseFloat(val.replace(/\./g, '').replace(',', '.')) || 0;
-    }
-    function fmtBE(val) {
-        return val.toLocaleString('nl-BE', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
-    }
-
-    function recalc() {
-        let assets = 0, liab = 0, rights = 0, oblig = 0;
-        document.querySelectorAll('.vzw-amount').forEach(function(el) {
-            const v = parseBE(el.value);
-            const s = el.dataset.section;
-            if (s === 'assets') assets += v;
-            if (s === 'liab')   liab   += v;
-            if (s === 'rights') rights += v;
-            if (s === 'oblig')  oblig  += v;
-        });
-        document.getElementById('total-assets').textContent = fmtBE(assets);
-        document.getElementById('total-liab').textContent   = fmtBE(liab);
-        document.getElementById('total-rights').textContent = fmtBE(rights);
-        document.getElementById('total-oblig').textContent  = fmtBE(oblig);
-        const net = assets - liab;
-        const netEl = document.getElementById('total-net');
-        netEl.textContent = fmtBE(net);
-        netEl.style.color = net < 0 ? '#d63638' : '#00a32a';
-    }
-
-    document.querySelectorAll('.vzw-amount').forEach(function(el) {
-        el.addEventListener('input', recalc);
-    });
-    recalc();
-
-    // Boekjaar laden
-    document.getElementById('vzw-patrimony-year')?.addEventListener('change', function() {
-        window.location = `${window.location.pathname}?page=eme-vzw-helper-patrimony&fiscal_year=${this.value}`;
-    });
-
-    // Opslaan
-    const form = document.getElementById('vzw-patrimony-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('.submit-btn');
-            btn.disabled = true;
-            btn.textContent = emeVzw.i18n.saving;
-            const data = Object.fromEntries(new FormData(this).entries());
-            data.nonce = emeVzw.nonce;
-            data.action = 'eme_vzw_save_patrimony';
-            fetch(ajaxurl, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: new URLSearchParams(data)
-            })
-            .then(r => r.json())
-            .then(function(res) {
-                if (res.success) {
-                    btn.textContent = emeVzw.i18n.saved;
-                    setTimeout(() => { btn.textContent = '<?= esc_js( __( 'Opslaan', 'eme-vzw-helper' ) ) ?>'; btn.disabled = false; }, 1800);
-                } else {
-                    alert(res.data || '<?= esc_js( __( 'Fout bij opslaan.', 'eme-vzw-helper' ) ) ?>');
-                    btn.disabled = false;
-                    btn.textContent = '<?= esc_js( __( 'Opslaan', 'eme-vzw-helper' ) ) ?>';
-                }
-            });
-        });
-    }
-
-    // Verwijder boekjaar
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.vzw-delete-patrimony');
-        if (!btn) return;
-        if (!confirm('<?= esc_js( __( 'Dit boekjaar definitief verwijderen?', 'eme-vzw-helper' ) ) ?>')) return;
-        fetch(ajaxurl, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: new URLSearchParams({ action: 'eme_vzw_delete_patrimony', id: btn.dataset.id, nonce: emeVzw.nonce })
-        })
-        .then(r => r.json())
-        .then(res => { if (res.success) location.href = '<?= esc_js( admin_url( 'admin.php?page=eme-vzw-helper-patrimony' ) ) ?>'; });
-    });
-})();
-</script>

@@ -51,7 +51,7 @@ class Patrimony {
             return new \WP_Error( 'invalid_year', 'Ongeldig boekjaar.' );
         }
 
-        $dec = fn( $k ) => round( (float) str_replace( ',', '.', $data[ $k ] ?? '0' ), 2 );
+        $dec = fn( $k ) => round( (float) str_replace( ',', '.', str_replace('.', '', $data[ $k ] ?? '0' )), 2 );
 
         $row = [
             'fiscal_year'                 => $fiscal_year,
@@ -171,8 +171,7 @@ class Patrimony {
     public static function ajax_save(): void {
         check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
-        $data = json_decode( file_get_contents( 'php://input' ), true ) ?? $_POST;
-        $r    = self::save( $data );
+        $r    = self::save( $_POST );
         is_wp_error( $r )
             ? wp_send_json_error( $r->get_error_message() )
             : wp_send_json_success( [ 'id' => $r ] );

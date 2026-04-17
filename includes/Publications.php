@@ -115,8 +115,7 @@ class Publications {
     public static function ajax_save(): void {
         check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
-        $data = json_decode( file_get_contents( 'php://input' ), true ) ?? $_POST;
-        $r    = self::save( $data );
+        $r    = self::save( $_POST );
         is_wp_error( $r ) ? wp_send_json_error( $r->get_error_message() ) : wp_send_json_success( [ 'id' => $r ] );
     }
 

@@ -239,6 +239,24 @@
 .vzw-deadline-warn   { color: #dba617; }
 .vzw-deadline-ok     { color: #00a32a; }
 
+/* Patrimony */
+.vzw-patrimony-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+.vzw-patrimony-row label { flex: 1; font-size: 13px; }
+.vzw-patrimony-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    margin-top: 4px;
+    border-top: 2px solid #000;
+    font-size: 13px;
+}
+
 @media (max-width: 782px) {
     .vzw-summary  { flex-direction: column; }
     .vzw-board-grid { grid-template-columns: 1fr; }

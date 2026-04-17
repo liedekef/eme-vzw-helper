@@ -24,6 +24,15 @@
         return formData;
     }
 
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('nl-BE', {
+            style: 'currency', currency: 'EUR', minimumFractionDigits: 2,
+        }).format(amount);
+    }
+    function parseBE(val) {
+        return parseFloat(val.replace(/\./g, '').replace(',', '.')) || 0;
+    }
+
     /**
      * Generieke AJAX functie
      * Gebruikt automatisch FormData met recursieve keys voor nested data.
@@ -98,10 +107,7 @@
      * ════════════════════════════════════════════════════════════════ */
 
     // Status button click → save via AJAX, update UI score
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.vzw-status-btn');
-        if (!btn) return;
-
+    function handleStatusBtn(btn) {
         const $item = btn.closest('.vzw-check-item');
         const checkKey = $item.dataset.key;
         const status = btn.dataset.status;
@@ -126,7 +132,7 @@
         }, function(data) {
             if (data && data.score) updateScoreUI(data.score);
         });
-    });
+    }
 
     // Collect sub-question answers from a check-item
     function collectSubAnswers($item) {
@@ -159,8 +165,8 @@
             const subs = collectSubAnswers($item);
             ajax('eme_vzw_save_check', {
                 fiscal_year: year,
-                    check_key: checkKey,
-               status: status,
+                check_key: checkKey,
+                status: status,
                 sub_answers: JSON.stringify(subs),
                 notes: note,
             });
@@ -242,11 +248,11 @@
                     }
                 }
                 setTimeout(() => {
-                    $btn.textContent = 'Opslaan';
+                    $btn.textContent = i18n.save;
                     $btn.disabled = false;
                 }, 1800);
             }, function(msg) {
-                $btn.textContent = 'Opslaan';
+                $btn.textContent = i18n.save;
                 $btn.disabled = false;
                 alert(msg);
             });
@@ -282,53 +288,101 @@
     }
 
     // Add board change row
-    const addBoardBtn = document.getElementById('btn-add-board-change');
-    if (addBoardBtn) {
-        addBoardBtn.addEventListener('click', function() {
-            const $tmpl = document.getElementById('vzw-board-change-template');
-            if (!$tmpl) return;
-            const clone = $tmpl.cloneNode(true);
-            clone.removeAttribute('id');
-            clone.style.display = 'flex';
-            document.getElementById('vzw-board-changes-list')?.appendChild(clone);
+    function handleAddBoardChange() {
+        const $tmpl = document.getElementById('vzw-board-change-template');
+        if (!$tmpl) return;
+        const clone = $tmpl.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.style.display = 'flex';
+        document.getElementById('vzw-board-changes-list')?.appendChild(clone);
+    }
+
+    // Remove row
+    function handleRemoveRow(btn) {
+        const row = btn.closest('.vzw-board-change-row, .vzw-statute-change-row');
+        if (row) row.remove();
+    }
+
+    // Generate & open document in new window (print to PDF)
+    function handleGenDoc(btn) {
+        const pubId = btn.dataset.pubId;
+        if (!pubId) return;
+        const url = `${ajaxUrl}?action=eme_vzw_download_pdf&nonce=${nonce}&pub_id=${pubId}`;
+        window.open(url, '_blank');
+    }
+
+    // Delete patrimony
+    function handleDeletePatrimony(btn) {
+        if (!confirm(i18n.confirm_delete_patrimony)) return;
+        ajax('eme_vzw_delete_patrimony', { id: btn.dataset.id, nonce: nonce }, function() {
+                setTimeout(() => location.reload(), 350);
         });
     }
 
-    // Remove row (event delegation)
-    document.addEventListener('click', function(e) {
-        const removeBtn = e.target.closest('.vzw-remove-row');
-        if (removeBtn) {
-            const row = removeBtn.closest('.vzw-board-change-row, .vzw-statute-change-row');
-            if (row) row.remove();
-        }
-    });
-
-    // Generate & open document in new window (print to PDF)
-    document.addEventListener('click', function(e) {
-        const docBtn = e.target.closest('.vzw-gen-doc');
-        if (!docBtn) return;
-
-        const pubId = docBtn.dataset.pubId;
-        if (!pubId) return;
-
-        const url = `${ajaxUrl}?action=eme_vzw_download_pdf&nonce=${nonce}&pub_id=${pubId}`;
-        window.open(url, '_blank');
-    });
-
-    // Delete publication (event delegation)
-    document.addEventListener('click', function(e) {
-        const deleteBtn = e.target.closest('.vzw-delete-pub');
-        if (!deleteBtn) return;
-
-        if (!confirm(i18n.confirm_delete)) return;
-        const $row = deleteBtn.closest('tr');
-        ajax('eme_vzw_delete_publication', { id: deleteBtn.dataset.id }, function() {
+    // Delete publication
+    function handleDeletePub(btn) {
+        if (!confirm(i18n.confirm_delete_pub)) return;
+        const $row = btn.closest('tr');
+        ajax('eme_vzw_delete_publication', { id: btn.dataset.id }, function() {
             if ($row) {
                 $row.style.transition = 'opacity 0.3s';
                 $row.style.opacity = '0';
                 setTimeout(() => $row.remove(), 300);
             }
         });
+    }
+
+    // Delete board member
+    function handleDeleteBoard(btn) {
+        if (!confirm(i18n.confirm_delete)) return;
+        const $card = btn.closest('.vzw-board-card');
+        ajax('eme_vzw_delete_board_member', { id: btn.dataset.id }, function() {
+            if ($card) {
+                $card.style.transition = 'opacity 0.3s';
+                $card.style.opacity = '0';
+                setTimeout(() => location.reload(), 350);
+            }
+        });
+    }
+
+    // Reactivate board member
+    function handleReactivateBoard(btn) {
+        if (!confirm(i18n.confirm_reactivate)) return;
+        ajax('eme_vzw_save_board_member', { id: btn.dataset.id, is_active: 1 }, function() {
+            location.reload();
+        });
+    }
+
+    // Purge board member
+    function handlePurgeBoard(btn) {
+        if (!confirm(i18n.confirm_purge)) return;
+        const $card = btn.closest('.vzw-board-card');
+        ajax('eme_vzw_purge_board_member', { id: btn.dataset.id }, function() {
+            if ($card) {
+                $card.style.transition = 'opacity 0.3s';
+                $card.style.opacity = '0';
+                setTimeout(() => $card.remove(), 300);
+            }
+        });
+    }
+
+    /* ── Single delegated click handler ──────────────────────────── */
+    const clickHandlers = {
+        'vzw-status-btn':       handleStatusBtn,
+        'btn-add-board-change': handleAddBoardChange,
+        'vzw-remove-row':       handleRemoveRow,
+        'vzw-gen-doc':          handleGenDoc,
+        'vzw-delete-pub':       handleDeletePub,
+        'vzw-delete-patrimony': handleDeletePatrimony,
+        'vzw-delete-board':     handleDeleteBoard,
+        'vzw-reactivate-board': handleReactivateBoard,
+        'vzw-purge-board':      handlePurgeBoard,
+    };
+    document.addEventListener('click', function(e) {
+        for (const [cls, handler] of Object.entries(clickHandlers)) {
+            const btn = e.target.closest(`#${cls}, .${cls}`);
+            if (btn) { handler(btn, e); return; }
+        }
     });
 
     /* ════════════════════════════════════════════════════════════════
@@ -340,7 +394,6 @@
         boardForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const $btn = this.querySelector('.submit-btn');
-            const originalText = $btn.textContent;
             $btn.textContent = i18n.saving;
             $btn.disabled = true;
             const formData = new FormData(this);
@@ -353,45 +406,6 @@
             });
         });
     }
-
-    document.addEventListener('click', function(e) {
-        const deleteBtn = e.target.closest('.vzw-delete-board');
-        if (!deleteBtn) return;
-
-        if (!confirm(i18n.confirm_delete)) return;
-        const $card = deleteBtn.closest('.vzw-board-card');
-        ajax('eme_vzw_delete_board_member', { id: deleteBtn.dataset.id }, function() {
-            if ($card) {
-                $card.style.transition = 'opacity 0.3s';
-                $card.style.opacity = '0';
-                setTimeout(() => location.reload(), 350);
-            }
-        });
-    });
-
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.vzw-reactivate-board');
-        if (!btn) return;
-        if (!confirm(i18n.confirm_reactivate)) return;
-        ajax('eme_vzw_save_board_member', { id: btn.dataset.id, is_active: 1 }, function() {
-            location.reload();
-        });
-    });
-
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.vzw-purge-board');
-        if (!btn) return;
-        if (!confirm(i18n.confirm_purge)) return;
-        const $card = btn.closest('.vzw-board-card');
-        ajax('eme_vzw_purge_board_member', { id: btn.dataset.id }, function() {
-            if ($card) {
-                $card.style.transition = 'opacity 0.3s';
-                $card.style.opacity = '0';
-                setTimeout(() => $card.remove(), 300);
-            }
-        });
-    });
-
     const configForm = document.getElementById('vzw-config-form');
     if (configForm) {
         configForm.addEventListener('submit', function(e) {
@@ -406,7 +420,7 @@
                 $btn.textContent = i18n.saved;
                 $btn.disabled = false;
                 setTimeout(() => {
-                    $btn.textContent = 'Opslaan';
+                    $btn.textContent = i18n.save;
                     $btn.disabled = false;
                 }, 1800);
             });
@@ -423,4 +437,66 @@
             if (naturalFields) naturalFields.style.display = this.checked ? 'none' : 'block';
         });
     }
+
+
+    /* ════════════════════════════════════════════════════════════════
+     * PATRIMONY
+     * ════════════════════════════════════════════════════════════════ */
+    const patrimonyForm = document.getElementById('vzw-patrimony-form');
+    if (patrimonyForm) {
+        patrimonyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const $btn = this.querySelector('.submit-btn');
+            $btn.disabled = true;
+            $btn.textContent = emeVzw.i18n.saving;
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => { data[key] = value; });
+            ajax('eme_vzw_save_patrimony', data, function() {
+                $btn.textContent = i18n.saved;
+                $btn.disabled = false;
+                setTimeout(() => {
+                    $btn.textContent = i18n.save;
+                    $btn.disabled = false;
+                }, 1800);
+            }, function(msg) {
+                $btn.textContent = i18n.save;
+                $btn.disabled = false;
+                alert(msg);
+            });
+        });
+    }
+
+    function recalcPatrimony() {
+        let assets = 0, liab = 0, rights = 0, oblig = 0;
+        document.querySelectorAll('.vzw-amount').forEach(function(el) {
+            const v = parseBE(el.value); // needed to get the real international number
+            const s = el.dataset.section;
+            if (s === 'assets') assets += v;
+            if (s === 'liab')   liab   += v;
+            if (s === 'rights') rights += v;
+            if (s === 'oblig')  oblig  += v;
+        });
+        document.getElementById('total-assets').textContent = formatCurrency(assets);
+        document.getElementById('total-liab').textContent   = formatCurrency(liab);
+        document.getElementById('total-rights').textContent = formatCurrency(rights);
+        document.getElementById('total-oblig').textContent  = formatCurrency(oblig);
+        const net = assets - liab;
+        const netEl = document.getElementById('total-net');
+        netEl.textContent = formatCurrency(net);
+        netEl.style.color = net < 0 ? '#d63638' : '#00a32a';
+    }
+
+    const vzwPatrimonyYearSelect = document.getElementById('vzw-patrimony-year');
+    if (vzwPatrimonyYearSelect) {
+        vzwPatrimonyYearSelect.addEventListener('change', function() {
+            window.location = `${window.location.pathname}?page=eme-vzw-helper-patrimony&fiscal_year=${this.value}`;
+        });
+
+        document.querySelectorAll('.vzw-amount').forEach(function(el) {
+            el.addEventListener('input', recalcPatrimony);
+        });
+        recalcPatrimony();
+    }
+
 })();
