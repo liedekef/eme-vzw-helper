@@ -14,6 +14,8 @@ if (!empty($config->bus)) {
     $street .= esc_html('bus '.$config->bus);
 }
 $postal     = esc_html( trim( ( $config->postal_code ?? '' ) . ' ' . ( $config->city ?? '' ) ) );
+$website    = esc_html( $config->website  ?? '' );
+$email      = esc_html( $config->email ?? '' );
 $year       = (int) $p->fiscal_year;
 
 // Helper: bedrag formatteren
@@ -88,8 +90,11 @@ $depr_method_label = $p->depr_method === 'degressive'
         <?= $street ?>, <?= $postal ?><br>
         Ondernemingsnr. <?= $vzw_number ?>
     </p>
+    <p class="vzw-subtitle">
+        <?= $website ?> <?= $email ?>
+    </p>
 
-    <div class="doc-title">Bijlage C
+    <div class="doc-title">Boekjaar <?= $year ?> Bijlage C
         <br>
         Inventaris van Activa, Rechten, Schulden en Verbintenissen
     </div>

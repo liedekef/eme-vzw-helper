@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 
     const DB_VERSION_OPTION = 'emevzw_db_version';
-    const DB_VERSION        = '3';
+    const DB_VERSION        = '4';
 
     public static function activate(): void {
         self::create_tables();
@@ -22,27 +22,9 @@ class Installer {
         global $wpdb;
         $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
 
-        if ( $current_version && $current_version < 3 ) {
-            $tables = [
-                "{$wpdb->prefix}emevzw_board",
-                "{$wpdb->prefix}emevzw_publications",
-                "{$wpdb->prefix}emevzw_patrimony",
-            ];
-            foreach ( $tables as $table ) {
-                $wpdb->query( "ALTER TABLE {$table} DROP INDEX idx_config" );
-                $wpdb->query( "ALTER TABLE {$table} DROP COLUMN config_id" );
-            }
-
-            // emevzw_checks: make fiscal_year nullable, update unique key
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP COLUMN config_id" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks MODIFY fiscal_year SMALLINT DEFAULT NULL" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP INDEX idx_config" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP INDEX uniq_check" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks ADD UNIQUE KEY uniq_check (fiscal_year, check_key)" );
-
-            // emevzw_patrimony: fix unique key (already had fiscal_year NOT NULL)
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_patrimony DROP INDEX uniq_year" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_patrimony ADD UNIQUE KEY uniq_year (fiscal_year)" );
+        if ( $current_version && $current_version < 4 ) {
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN website VARCHAR(200) NOT NULL DEFAULT ''" );
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN email VARCHAR(200) NOT NULL DEFAULT ''" );
         }
     }
 
@@ -75,6 +57,8 @@ class Installer {
             postal_code             VARCHAR(10)     NOT NULL DEFAULT '',
             city                    VARCHAR(100)    NOT NULL DEFAULT '',
             country                 VARCHAR(50)     NOT NULL DEFAULT 'België',
+            website                 VARCHAR(200)    NOT NULL DEFAULT '',
+            email                   VARCHAR(200)    NOT NULL DEFAULT '',
             court                   VARCHAR(150)    NOT NULL DEFAULT '',
             fiscal_year_start_mm    TINYINT         NOT NULL DEFAULT 1,
             fiscal_year_start_dd    TINYINT         NOT NULL DEFAULT 1,

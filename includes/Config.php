@@ -62,6 +62,8 @@ class Config {
             'postal_code'          => eme_sanitize_request( $data['postal_code'] ?? '' ),
             'city'                 => eme_sanitize_request( $data['city'] ?? '' ),
             'country'              => eme_sanitize_request( $data['country'] ?? 'België' ),
+            'website'              => eme_sanitize_request( $data['website'] ?? '' ),
+            'email'                => eme_sanitize_request( $data['email'] ?? '' ),
             'court'                => eme_sanitize_request( $data['court'] ?? '' ),
             'fiscal_year_start_mm' => max( 1, min( 12, (int) ( $data['fiscal_year_start_mm'] ?? 1 ) ) ),
             'fiscal_year_start_dd' => max( 1, min( 31, (int) ( $data['fiscal_year_start_dd'] ?? 1 ) ) ),

@@ -54,6 +54,17 @@ $config = EMEVzw\Config::get();
 
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
+        <label><?php esc_html_e( 'Website', 'eme-vzw-helper' ); ?></label>
+        <input type="text" name="website" value="<?= esc_attr( $config->website ?? '' ) ?>">
+    </div>
+    <div class="vzw-field">
+        <label><?php esc_html_e( 'E-mail', 'eme-vzw-helper' ); ?></label>
+        <input type="email" name="email" value="<?= esc_attr( $config->email ?? '' ) ?>">
+    </div>
+</div>
+
+<div class="vzw-row">
+    <div class="vzw-field" style="flex:2">
         <label><?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?></label>
         <input type="text" name="court" value="<?= esc_attr( $config->court ?? '' ) ?>" placeholder="Ondernemingsrechtbank Gent">
     </div>
