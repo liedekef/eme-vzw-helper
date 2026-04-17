@@ -1,10 +1,10 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-$year       = isset( $_GET['year'] ) ? (int) $_GET['year'] : (int) gmdate( 'Y' );
-$definition = EMEVzw\Checklist::get_definition();
-$answers    = EMEVzw\Checklist::get_answers( $year );
-$score      = EMEVzw\Checklist::get_score( $year );
+$year        = isset( $_GET['year'] ) ? (int) $_GET['year'] : (int) gmdate( 'Y' );
+$definitions = EMEVzw\Checklist::get_definitions();
+$answers     = EMEVzw\Checklist::get_answers( $year );
+$score       = EMEVzw\Checklist::get_score( $year );
 
 $groups = [
     'general'      => __( 'Algemeen na te kijken', 'eme-vzw-helper' ),
@@ -54,17 +54,15 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
         </div>
     </div>
     <div>
-        <strong><?= (int) $score['earned_points'] ?> / <?= (int) $score['max_points'] ?> <?php esc_html_e( 'punten', 'eme-vzw-helper' ); ?></strong>
+        <strong><span id="earned-points-text"><?= (int) $score['earned_points'] ?></span> / <?= (int) $score['max_points'] ?> <?php esc_html_e( 'punten', 'eme-vzw-helper' ); ?></strong>
         <br>
         <?php
         $todo = 0;
-        foreach ( $definition as $key => $item ) {
+        foreach ( $definitions as $key => $item ) {
             if ( ( $answers[ $key ]['status'] ?? 'pending' ) === 'pending' ) $todo++;
         }
-        printf(
-            esc_html( _n( '%d vraag nog te beantwoorden.', '%d vragen nog te beantwoorden.', $todo, 'eme-vzw-helper' ) ),
-            $todo
-        );
+        esc_html_e( 'Aantal openstaande vragen: ', 'eme-vzw-helper' );
+        printf( '<span id="no_answer">%d</span>', $todo );
         ?>
     </div>
     <div style="flex:1"></div>
@@ -83,14 +81,14 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
 
 <!-- Checklist groups -->
 <?php foreach ( $groups as $group_key => $group_label ):
-    $items_in_group = array_filter( $definition, fn( $i ) => $i['group'] === $group_key );
+    $items_in_group = array_filter( $definitions, fn( $i ) => $i['group'] === $group_key );
     $g_score        = $score['by_group'][ $group_key ];
     $g_pct          = $g_score['max'] > 0 ? round( $g_score['earned'] / $g_score['max'] * 100, 1 ) : 0;
 ?>
 <div class="vzw-checklist-group">
     <div class="vzw-checklist-group-header">
         <span><?= esc_html( $group_label ) ?></span>
-        <span style="font-size:12px;font-weight:400"><?= $g_pct ?>% &nbsp;(<?= (int) $g_score['earned'] ?>/<?= (int) $g_score['max'] ?> pt)</span>
+        <span style="font-size:12px;font-weight:400" id="group-<?= esc_attr($group_key) ?>-score"><?= $g_pct ?>% &nbsp;(<?= (int) $g_score['earned'] ?>/<?= (int) $g_score['max'] ?> pt)</span>
     </div>
 
     <?php foreach ( $items_in_group as $key => $item ):

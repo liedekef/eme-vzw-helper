@@ -190,6 +190,8 @@
         if (earnedPointsText) earnedPointsText.textContent = score.earned_points;
         const pctText = document.getElementById('score-pct-text');
         if (pctText) pctText.textContent = pct.toFixed(1) + '%';
+        const no_answer = document.getElementById('no_answer');
+        if (no_answer) no_answer.textContent = score.no_answer;
 
         // Group scores
         const g = score.by_group;

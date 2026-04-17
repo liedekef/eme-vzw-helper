@@ -27,7 +27,7 @@ class Checklist {
      *
      * @return array<string, array{label: string, weight: int, group: string, sub_questions: array<array{label:string,type:string}>, help: string}>
      */
-    public static function get_definition(): array {
+    public static function get_definitions(): array {
         return [
             // ── ALGEMEEN ───────────────────────────────────────────────
             'micro_vzw' => [
@@ -342,14 +342,16 @@ class Checklist {
      * @return array{score_pct: float, max_points: int, earned_points: int, by_group: array}
      */
     public static function get_score( int $fiscal_year ): array {
-        $definition = self::get_definition();
-        $answers    = self::get_answers( $fiscal_year );
+        $definitions = self::get_definitions();
+        $answers     = self::get_answers( $fiscal_year );
 
         $max_points    = 0;
         $earned_points = 0;
         $by_group      = [ 'general' => [ 'max' => 0, 'earned' => 0 ], 'current_year' => [ 'max' => 0, 'earned' => 0 ] ];
 
-        foreach ( $definition as $key => $item ) {
+        $max_questions = count($definitions);
+        $no_answer     = 0;
+        foreach ( $definitions as $key => $item ) {
             $weight = $item['weight'];
             $status = $answers[ $key ]['status'] ?? 'pending';
             $group  = $item['group'];
@@ -366,11 +368,17 @@ class Checklist {
                 $earned_points             += $weight;
                 $by_group[ $group ]['earned'] += $weight;
             }
+
+            if ( $status === 'pending' ) {
+                $no_answer++;
+            }
         }
 
         return [
             'score_pct'     => $max_points > 0 ? round( $earned_points / $max_points * 100, 1 ) : 0,
             'max_points'    => $max_points,
+            'max_questions' => $max_questions,
+            'no_answer'     => $no_answer,
             'earned_points' => $earned_points,
             'by_group'      => $by_group,
         ];
@@ -420,7 +428,7 @@ class Checklist {
         $allowed = [ 'yes', 'no', 'na', 'pending' ];
         if ( ! in_array( $status, $allowed, true ) ) return false;
 
-        $definition = self::get_definition();
+        $definition = self::get_definitions();
         if ( ! isset( $definition[ $check_key ] ) ) return false;
 
         $item        = $definition[ $check_key ];
