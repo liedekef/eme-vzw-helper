@@ -71,14 +71,6 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
     </div>
 </div>
 
-<!-- Legend -->
-<p style="font-size:12px;color:#646970;margin-bottom:16px">
-    <span style="border-left:4px solid #00a32a;padding-left:6px;margin-right:12px"><?php esc_html_e( 'Ja / OK', 'eme-vzw-helper' ); ?></span>
-    <span style="border-left:4px solid #d63638;padding-left:6px;margin-right:12px"><?php esc_html_e( 'Nee / NOK', 'eme-vzw-helper' ); ?></span>
-    <span style="border-left:4px solid #c3c4c7;padding-left:6px;margin-right:12px"><?php esc_html_e( 'N.v.t.', 'eme-vzw-helper' ); ?></span>
-    <span style="border-left:4px solid #dba617;padding-left:6px"><?php esc_html_e( 'Te controleren', 'eme-vzw-helper' ); ?></span>
-</p>
-
 <!-- Checklist groups -->
 <?php foreach ( $groups as $group_key => $group_label ):
     $items_in_group = array_filter( $definitions, fn( $i ) => $i['group'] === $group_key );
