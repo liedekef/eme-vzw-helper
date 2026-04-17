@@ -70,7 +70,6 @@ class Config {
             'fiscal_year_start_dd' => max( 1, min( 31, (int) ( $data['fiscal_year_start_dd'] ?? 1 ) ) ),
             'fiscal_year_end_mm'   => max( 1, min( 12, (int) ( $data['fiscal_year_end_mm'] ?? 12 ) ) ),
             'fiscal_year_end_dd'   => max( 1, min( 31, (int) ( $data['fiscal_year_end_dd'] ?? 31 ) ) ),
-            'current_fiscal_year'  => (int) ( $data['current_fiscal_year'] ?? gmdate( 'Y' ) ),
             'vat_liable'           => (int) (bool) ( $data['vat_liable'] ?? 0 ),
             'is_micro_vzw'         => (int) (bool) ( $data['is_micro_vzw'] ?? 1 ),
             'ubo_last_confirmed'   => ! empty( $data['ubo_last_confirmed'] ) ? eme_sanitize_request( $data['ubo_last_confirmed'] ) : null,

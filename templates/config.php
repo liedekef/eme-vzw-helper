@@ -65,10 +65,6 @@ $config = EMEVzw\Config::get();
 
 <h3><?php esc_html_e( 'Boekjaar', 'eme-vzw-helper' ); ?></h3>
 <div class="vzw-row">
-    <div class="vzw-field">
-        <label><?php esc_html_e( 'Huidig boekjaar', 'eme-vzw-helper' ); ?></label>
-        <input type="number" name="current_fiscal_year" value="<?= (int) ( $config->current_fiscal_year ?? (int) gmdate( 'Y' ) ) ?>" min="2000" max="2099">
-    </div>
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Start dag', 'eme-vzw-helper' ); ?></label>
         <input type="number" name="fiscal_year_start_dd" value="<?= (int) ( $config->fiscal_year_start_dd ?? 1 ) ?>" min="1" max="31">

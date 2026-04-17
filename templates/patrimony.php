@@ -2,8 +2,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $config      = EMEVzw\Config::get();
-$cur_year    = (int) ( $config->current_fiscal_year ?? gmdate( 'Y' ) );
-$edit_year   = isset( $_GET['fiscal_year'] ) ? (int) $_GET['fiscal_year'] : $cur_year;
+$edit_year   = isset( $_GET['fiscal_year'] ) ? (int) $_GET['fiscal_year'] : gmdate( 'Y' );
 $p           = EMEVzw\Patrimony::get( $edit_year );
 $all_records = EMEVzw\Patrimony::get_all();
 

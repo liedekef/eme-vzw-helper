@@ -46,7 +46,6 @@ class Installer {
             fiscal_year_start_dd    TINYINT         NOT NULL DEFAULT 1,
             fiscal_year_end_mm      TINYINT         NOT NULL DEFAULT 12,
             fiscal_year_end_dd      TINYINT         NOT NULL DEFAULT 31,
-            current_fiscal_year     SMALLINT        NOT NULL DEFAULT 0,
             vat_liable              TINYINT(1)      NOT NULL DEFAULT 0,
             is_micro_vzw            TINYINT(1)      NOT NULL DEFAULT 1,
             ubo_last_confirmed      DATE                     DEFAULT NULL,
