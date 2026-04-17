@@ -26,22 +26,21 @@ class Patrimony {
      * DATA CRUD
      * ------------------------------------------------------------------ */
 
-    public static function get( int $fiscal_year, int $config_id = 1 ): ?object {
+    public static function get( int $fiscal_year ): ?object {
         global $wpdb;
         return $wpdb->get_row( $wpdb->prepare(
             "SELECT * FROM `{$wpdb->prefix}emevzw_patrimony`
-             WHERE config_id = %d AND fiscal_year = %d",
-            $config_id, $fiscal_year
+             WHERE fiscal_year = %d",
+            $fiscal_year
         ) );
     }
 
-    public static function get_all( int $config_id = 1 ): array {
+    public static function get_all(): array {
         global $wpdb;
-        return $wpdb->get_results( $wpdb->prepare(
+        return $wpdb->get_results(
             "SELECT * FROM `{$wpdb->prefix}emevzw_patrimony`
-             WHERE config_id = %d ORDER BY fiscal_year DESC",
-            $config_id
-        ) );
+             ORDER BY fiscal_year DESC"
+        );
     }
 
     public static function save( array $data ): int|\WP_Error {
@@ -55,7 +54,6 @@ class Patrimony {
         $dec = fn( $k ) => round( (float) str_replace( ',', '.', $data[ $k ] ?? '0' ), 2 );
 
         $row = [
-            'config_id'                   => (int) ( $data['config_id'] ?? 1 ),
             'fiscal_year'                 => $fiscal_year,
 
             // ── Sectie 1: Waarderingsregels ──────────────────────────
@@ -115,8 +113,8 @@ class Patrimony {
 
         $exists = $wpdb->get_var( $wpdb->prepare(
             "SELECT id FROM `{$wpdb->prefix}emevzw_patrimony`
-             WHERE config_id = %d AND fiscal_year = %d",
-            $row['config_id'], $fiscal_year
+             WHERE fiscal_year = %d",
+            $fiscal_year
         ) );
 
         if ( $exists ) {
@@ -154,9 +152,9 @@ class Patrimony {
      * PDF GENERATIE (via dompdf – zit al in Events Made Easy)
      * ------------------------------------------------------------------ */
 
-    public static function generate_pdf_html( int $fiscal_year, int $config_id = 1 ): string {
-        $p      = self::get( $fiscal_year, $config_id );
-        $config = Config::get( $config_id );
+    public static function generate_pdf_html( int $fiscal_year ): string {
+        $p      = self::get( $fiscal_year );
+        $config = Config::get();
         if ( ! $p || ! $config ) return '';
 
         $totals = self::totals( $p );

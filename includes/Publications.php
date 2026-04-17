@@ -26,13 +26,12 @@ class Publications {
      * DATA CRUD
      * ------------------------------------------------------------------ */
 
-    public static function get_all( int $config_id = 1 ): array {
+    public static function get_all(): array {
         global $wpdb;
-        return $wpdb->get_results( $wpdb->prepare(
+        return $wpdb->get_results(
             "SELECT * FROM `{$wpdb->prefix}emevzw_publications`
-             WHERE config_id = %d ORDER BY av_date DESC",
-            $config_id
-        ) );
+             ORDER BY av_date DESC"
+        );
     }
 
     public static function get( int $id ): ?object {
@@ -71,7 +70,7 @@ class Publications {
         $allowed_statuses = [ 'draft', 'submitted', 'published' ];
 
         $row = [
-            'config_id'         => (int) ( $data['config_id'] ?? 1 ),
+
             'av_date'           => eme_sanitize_request( $data['av_date'] ?? '' ),
             'av_location'       => eme_sanitize_request( $data['av_location'] ?? '' ),
             'statute_text'      => eme_sanitize_request( $data['statute_text'] ?? '' ),

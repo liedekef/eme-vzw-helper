@@ -92,7 +92,6 @@ $roles = [
 <h2><?= $edit_m ? esc_html__( 'Bestuurder bewerken', 'eme-vzw-helper' ) : esc_html__( 'Bestuurder toevoegen', 'eme-vzw-helper' ) ?></h2>
 <form id="vzw-board-form">
 <input type="hidden" name="id" value="<?= $edit_m ? (int) $edit_m->id : 0 ?>">
-<input type="hidden" name="config_id" value="1">
 <input type="hidden" name="is_active" value="<?= $edit_m ? (int) $edit_m->is_active : 1 ?>">
 
 <div class="vzw-row">

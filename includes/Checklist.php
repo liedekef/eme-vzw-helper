@@ -55,34 +55,6 @@ class Checklist {
                     [ 'label' => __( 'Is de zetel correct vermeld?', 'eme-vzw-helper' ),                                          'type' => 'yesno' ],
                 ],
             ],
-            'statutes_approved_av' => [
-                'label'         => __( 'De nieuwe statuten werden goedgekeurd door de Algemene Vergadering.', 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'general',
-                'help'          => '',
-                'sub_questions' => [
-                    [ 'label' => __( 'Waren er voldoende leden aanwezig (quorum voor statutenwijziging: 2/3 van de leden)?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
-                    [ 'label' => __( 'Was er een 4/5 meerderheid van stemmen?', 'eme-vzw-helper' ),                                             'type' => 'yesno' ],
-                    [ 'label' => __( 'Zijn de notulen getekend?', 'eme-vzw-helper' ),                                                           'type' => 'yesno' ],
-                ],
-            ],
-            'statutes_published_bs' => [
-                'label'         => __( 'De laatste algemene statuten zijn correct verschenen in het Belgisch Staatsblad.', 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'general',
-                'help'          => __( 'Publicatie verplicht binnen 30 dagen na goedkeuring door AV.', 'eme-vzw-helper' ),
-                'sub_questions' => [
-                    [ 'label' => __( 'Datum van de meest recente publicatie?', 'eme-vzw-helper' ),                      'type' => 'date' ],
-                    [ 'label' => __( 'Is de publicatie binnen de termijn van 30 dagen gebeurd?', 'eme-vzw-helper' ),    'type' => 'yesno' ],
-                ],
-            ],
-            'statutes_never_changed' => [
-                'label'         => __( 'De statuten zijn nooit gewijzigd geweest.', 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'general',
-                'help'          => __( 'N.v.t. als statuten al gewijzigd zijn – zet op "N.v.t."', 'eme-vzw-helper' ),
-                'sub_questions' => [],
-            ],
             'vzw_name_correct' => [
                 'label'         => __( 'De statutaire benaming van de vereniging is correct ingevuld.', 'eme-vzw-helper' ),
                 'weight'        => 3,
@@ -133,27 +105,6 @@ class Checklist {
                 'help'          => '',
                 'sub_questions' => [],
             ],
-            'av_composition_correct' => [
-                'label'         => __( 'De Algemene Vergadering is correct samengesteld.', 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'general',
-                'help'          => __( 'AV moet minstens 3 leden bevatten.', 'eme-vzw-helper' ),
-                'sub_questions' => [
-                    [ 'label' => __( 'Hoeveel werkende leden zijn er?', 'eme-vzw-helper' ),                                   'type' => 'number' ],
-                    [ 'label' => __( 'Is het ledenregister up-to-date?', 'eme-vzw-helper' ),                                  'type' => 'yesno' ],
-                    [ 'label' => __( 'Is er een onderscheid tussen werkende en toegetreden leden?', 'eme-vzw-helper' ),       'type' => 'yesno' ],
-                ],
-            ],
-            'kbo_board_known' => [
-                'label'         => __( 'Het is geweten wie er volgens de Kruispuntbank van Ondernemingen momenteel in het Bestuur zit.', 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'general',
-                'help'          => __( 'Via https://kbo.economie.fgov.be/nl/search', 'eme-vzw-helper' ),
-                'sub_questions' => [
-                    [ 'label' => __( 'Stemt de KBO-samenstelling overeen met de werkelijkheid?', 'eme-vzw-helper' ),          'type' => 'yesno' ],
-                    [ 'label' => __( 'Zijn ontslagen bestuurders verwijderd uit de KBO?', 'eme-vzw-helper' ),                 'type' => 'yesno' ],
-                ],
-            ],
             'board_composition_correct' => [
                 'label'         => __( 'Het Bestuur is correct samengesteld.', 'eme-vzw-helper' ),
                 'weight'        => 3,
@@ -164,35 +115,69 @@ class Checklist {
                     [ 'label' => __( 'Is het aantal bestuurders altijd kleiner dan het aantal AV-leden?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
                 ],
             ],
+            // ── DIT BOEKJAAR ───────────────────────────────────────────
             'board_mandate_valid' => [
                 'label'         => __( 'Het huidige Bestuur heeft een geldig mandaat.', 'eme-vzw-helper' ),
                 'weight'        => 3,
-                'group'         => 'general',
+                'group'         => 'current_year',
                 'help'          => __( 'De einddatum van het mandaat is in de statuten bepaald.', 'eme-vzw-helper' ),
                 'sub_questions' => [
                     [ 'label' => __( 'Tot wanneer loopt het mandaat van het huidige bestuur?', 'eme-vzw-helper' ),            'type' => 'date' ],
                     [ 'label' => __( 'Is het mandaat nog niet verlopen?', 'eme-vzw-helper' ),                                 'type' => 'yesno' ],
                 ],
             ],
+            'av_composition_correct' => [
+                'label'         => __( 'De Algemene Vergadering is correct samengesteld.', 'eme-vzw-helper' ),
+                'weight'        => 3,
+                'group'         => 'current_year',
+                'help'          => __( 'AV moet minstens 3 leden bevatten.', 'eme-vzw-helper' ),
+                'sub_questions' => [
+                    [ 'label' => __( 'Hoeveel werkende leden zijn er?', 'eme-vzw-helper' ),                                   'type' => 'number' ],
+                    [ 'label' => __( 'Is het ledenregister up-to-date?', 'eme-vzw-helper' ),                                  'type' => 'yesno' ],
+                    [ 'label' => __( 'Is er een onderscheid tussen werkende en toegetreden leden?', 'eme-vzw-helper' ),       'type' => 'yesno' ],
+                ],
+            ],
+            'kbo_board_known' => [
+                'label'         => __( 'Het is geweten wie er volgens de Kruispuntbank van Ondernemingen momenteel in het Bestuur zit.', 'eme-vzw-helper' ),
+                'weight'        => 3,
+                'group'         => 'current_year',
+                'help'          => __( 'Via https://kbo.economie.fgov.be/nl/search', 'eme-vzw-helper' ),
+                'sub_questions' => [
+                    [ 'label' => __( 'Stemt de KBO-samenstelling overeen met de werkelijkheid?', 'eme-vzw-helper' ),          'type' => 'yesno' ],
+                    [ 'label' => __( 'Zijn ontslagen bestuurders verwijderd uit de KBO?', 'eme-vzw-helper' ),                 'type' => 'yesno' ],
+                ],
+            ],
             'ubo_registered' => [
                 'label'         => __( "De 'uiteindelijk begunstigden' van de VZW werden geregistreerd in het UBO-register.", 'eme-vzw-helper' ),
                 'weight'        => 3,
-                'group'         => 'general',
+                'group'         => 'current_year',
                 'help'          => __( 'Verplicht via MyMinFin of Isabel. Jaarlijkse bevestiging vereist.', 'eme-vzw-helper' ),
                 'sub_questions' => [
                     [ 'label' => __( 'Wanneer werd het UBO-register voor het laatste bijgewerkt?', 'eme-vzw-helper' ),        'type' => 'date' ],
                     [ 'label' => __( 'Is de jaarlijkse bevestiging al gedaan dit jaar?', 'eme-vzw-helper' ),                  'type' => 'yesno' ],
                 ],
             ],
-            'fiscal_year_correct' => [
-                'label'         => __( 'Het statutaire boekjaar van de VZW loopt van 1 januari tot 31 december.', 'eme-vzw-helper' ),
+            'statutes_approved_av' => [
+                'label'         => __( 'De nieuwe statuten werden goedgekeurd door de Algemene Vergadering.', 'eme-vzw-helper' ),
                 'weight'        => 3,
-                'group'         => 'general',
-                'help'          => '',
-                'sub_questions' => [],
+                'group'         => 'current_year',
+                'help'          => 'Zet N.v.t indien niet aangepast',
+                'sub_questions' => [
+                    [ 'label' => __( 'Waren er voldoende leden aanwezig (quorum voor statutenwijziging: 2/3 van de leden)?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
+                    [ 'label' => __( 'Was er een 4/5 meerderheid van stemmen?', 'eme-vzw-helper' ),                                             'type' => 'yesno' ],
+                    [ 'label' => __( 'Zijn de notulen getekend?', 'eme-vzw-helper' ),                                                           'type' => 'yesno' ],
+                ],
             ],
-
-            // ── DIT BOEKJAAR ───────────────────────────────────────────
+            'statutes_published_bs' => [
+                'label'         => __( 'De laatste algemene statuten zijn correct verschenen in het Belgisch Staatsblad.', 'eme-vzw-helper' ),
+                'weight'        => 3,
+                'group'         => 'current_year',
+                'help'          => __( 'Publicatie verplicht binnen 30 dagen na goedkeuring door AV.', 'eme-vzw-helper' ),
+                'sub_questions' => [
+                    [ 'label' => __( 'Datum van de meest recente publicatie?', 'eme-vzw-helper' ),                      'type' => 'date' ],
+                    [ 'label' => __( 'Is de publicatie binnen de termijn van 30 dagen gebeurd?', 'eme-vzw-helper' ),    'type' => 'yesno' ],
+                ],
+            ],
             'current_year_dates_correct' => [
                 'label'         => __( 'Het huidige boekjaar start en eindigt op de correcte data.', 'eme-vzw-helper' ),
                 'weight'        => 1,
@@ -224,6 +209,17 @@ class Checklist {
                     [ 'label' => __( 'Is de begroting daarna ook goedgekeurd door de AV?', 'eme-vzw-helper' ),                'type' => 'yesno' ],
                 ],
             ],
+            'invitation_sent' => [
+                'label'         => __( 'De uitnodiging voor de AV met de agenda is verstuurd naar de leden.', 'eme-vzw-helper' ),
+                'weight'        => 3,
+                'group'         => 'current_year',
+                'help'          => __( 'Minstens 15 dagen voor de AV (of zoals in statuten bepaald).', 'eme-vzw-helper' ),
+                'sub_questions' => [
+                    [ 'label' => __( 'Wanneer werden de uitnodigingen verstuurd?', 'eme-vzw-helper' ),                        'type' => 'date' ],
+                    [ 'label' => __( 'Is de vereiste termijn gerespecteerd?', 'eme-vzw-helper' ),                             'type' => 'yesno' ],
+                    [ 'label' => __( 'Bevatte de uitnodiging de volledige agenda?', 'eme-vzw-helper' ),                       'type' => 'yesno' ],
+                ],
+            ],
             'av_held' => [
                 'label'         => __( 'De Algemene Vergadering heeft plaatsgevonden.', 'eme-vzw-helper' ),
                 'weight'        => 3,
@@ -233,24 +229,6 @@ class Checklist {
                     [ 'label' => __( 'Datum van de Algemene Vergadering?', 'eme-vzw-helper' ),                                'type' => 'date' ],
                     [ 'label' => __( 'Was er een quorum (statutair bepaald minimum aanwezig)?', 'eme-vzw-helper' ),           'type' => 'yesno' ],
                     [ 'label' => __( 'Hoeveel leden waren aanwezig of vertegenwoordigd?', 'eme-vzw-helper' ),                 'type' => 'number' ],
-                ],
-            ],
-            'save_the_date_sent' => [
-                'label'         => __( "Er is gekozen om al dan niet een 'save-the-date' uit te sturen voor de komende Algemene Vergadering.", 'eme-vzw-helper' ),
-                'weight'        => 1,
-                'group'         => 'current_year',
-                'help'          => '',
-                'sub_questions' => [],
-            ],
-            'invitation_sent' => [
-                'label'         => __( 'De uitnodiging voor de AV met de agenda is per post verstuurd naar de leden.', 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'current_year',
-                'help'          => __( 'Minstens 15 dagen voor de AV (of zoals in statuten bepaald).', 'eme-vzw-helper' ),
-                'sub_questions' => [
-                    [ 'label' => __( 'Wanneer werden de uitnodigingen verstuurd?', 'eme-vzw-helper' ),                        'type' => 'date' ],
-                    [ 'label' => __( 'Is de vereiste termijn gerespecteerd?', 'eme-vzw-helper' ),                             'type' => 'yesno' ],
-                    [ 'label' => __( 'Bevatte de uitnodiging de volledige agenda?', 'eme-vzw-helper' ),                       'type' => 'yesno' ],
                 ],
             ],
             'av_quorum_met' => [
@@ -363,9 +341,9 @@ class Checklist {
      *
      * @return array{score_pct: float, max_points: int, earned_points: int, by_group: array}
      */
-    public static function get_score( int $fiscal_year, int $config_id = 1 ): array {
+    public static function get_score( int $fiscal_year ): array {
         $definition = self::get_definition();
-        $answers    = self::get_answers( $fiscal_year, $config_id );
+        $answers    = self::get_answers( $fiscal_year );
 
         $max_points    = 0;
         $earned_points = 0;
@@ -407,21 +385,24 @@ class Checklist {
      *
      * @return array<string, string>  check_key => status
      */
-    public static function get_answers( int $fiscal_year, int $config_id = 1 ): array {
+    public static function get_answers( int $fiscal_year ): array {
         global $wpdb;
         $rows = $wpdb->get_results( $wpdb->prepare(
-            "SELECT check_key, status, sub_answers, notes, checked_at
+            "SELECT check_key, status, sub_answers, notes, checked_at, fiscal_year
              FROM `{$wpdb->prefix}emevzw_checks`
-             WHERE fiscal_year = %d AND config_id = %d",
-            $fiscal_year, $config_id
+             WHERE fiscal_year IS NULL OR fiscal_year = %d",
+            $fiscal_year
         ) );
         $out = [];
         foreach ( $rows as $row ) {
-            $out[ $row->check_key ] = [
-                'status'      => $row->status,
-                'sub_answers' => $row->sub_answers ?? '',
-                'notes'       => $row->notes ?? '',
-            ];
+            $existing =& $out[ $row->check_key ];
+            if ( ! $existing || $row->fiscal_year !== null ) {
+                $existing = [
+                    'status'      => $row->status,
+                    'sub_answers' => $row->sub_answers ?? '',
+                    'notes'       => $row->notes ?? '',
+                ];
+            }
         }
         return $out;
     }
@@ -434,7 +415,7 @@ class Checklist {
      * @param  string $sub_answers  Optional free-text answer
      * @param  string $notes
      */
-    public static function save_check( int $fiscal_year, int $config_id, string $check_key, string $status, string $sub_answers = '', string $notes = '' ): bool {
+    public static function save_check( int $fiscal_year, string $check_key, string $status, string $sub_answers = '', string $notes = '' ): bool {
         global $wpdb;
         $allowed = [ 'yes', 'no', 'na', 'pending' ];
         if ( ! in_array( $status, $allowed, true ) ) return false;
@@ -442,10 +423,14 @@ class Checklist {
         $definition = self::get_definition();
         if ( ! isset( $definition[ $check_key ] ) ) return false;
 
+        $item        = $definition[ $check_key ];
+        $is_general  = ( $item['group'] === 'general' );
+        $store_year  = $is_general ? null : $fiscal_year;
+
         $existing = $wpdb->get_var( $wpdb->prepare(
             "SELECT id FROM `{$wpdb->prefix}emevzw_checks`
-             WHERE config_id = %d AND fiscal_year = %d AND check_key = %s",
-            $config_id, $fiscal_year, $check_key
+             WHERE fiscal_year " . ( $is_general ? 'IS NULL' : '= %d' ) . " AND check_key = %s",
+            ...( $is_general ? [ $check_key ] : [ $fiscal_year, $check_key ] )
         ) );
 
         $data = [
@@ -457,17 +442,19 @@ class Checklist {
         ];
 
         if ( $existing ) {
-            $wpdb->update( $wpdb->prefix . 'emevzw_checks', $data, [
-                'config_id'   => $config_id,
-                'fiscal_year' => $fiscal_year,
+            $where = [ 'check_key' => $check_key ];
+            if ( $is_general ) {
+                $where['fiscal_year'] = null;
+            } else {
+                $where['fiscal_year'] = $fiscal_year;
+            }
+            $wpdb->update( $wpdb->prefix . 'emevzw_checks', $data, $where );
+        } else {
+            $insert = array_merge( $data, [
+                'fiscal_year' => $store_year,
                 'check_key'   => $check_key,
             ] );
-        } else {
-            $wpdb->insert( $wpdb->prefix . 'emevzw_checks', array_merge( $data, [
-                'config_id'   => $config_id,
-                'fiscal_year' => $fiscal_year,
-                'check_key'   => $check_key,
-            ] ) );
+            $wpdb->insert( $wpdb->prefix . 'emevzw_checks', $insert );
         }
 
         do_action( 'eme_vzw_check_saved', $check_key, $status, $fiscal_year );
@@ -484,7 +471,6 @@ class Checklist {
 
         $result = self::save_check(
             (int)   ( $_POST['fiscal_year']  ?? gmdate( 'Y' ) ),
-            (int)   ( $_POST['config_id']    ?? 1 ),
             sanitize_key( $_POST['check_key']  ?? '' ),
             sanitize_key( $_POST['status']     ?? 'pending' ),
             eme_sanitize_request( $_POST['sub_answers'] ?? '' ),

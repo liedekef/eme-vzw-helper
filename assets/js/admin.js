@@ -119,7 +119,6 @@
 
         ajax('eme_vzw_save_check', {
             fiscal_year: year,
-            config_id: 1,
             check_key: checkKey,
             status: status,
             sub_answers: JSON.stringify(subs),
@@ -160,8 +159,7 @@
             const subs = collectSubAnswers($item);
             ajax('eme_vzw_save_check', {
                 fiscal_year: year,
-                config_id: 1,
-                check_key: checkKey,
+                    check_key: checkKey,
                status: status,
                 sub_answers: JSON.stringify(subs),
                 notes: note,
@@ -180,7 +178,7 @@
     function updateScoreUI(score) {
         // Ring
         const pct = score.score_pct;
-        const radius = 48;
+        const radius = 32;
         const circ = 2 * Math.PI * radius;
         const offset = circ * (1 - pct / 100);
         const $circle = document.getElementById('score-ring-progress');
@@ -188,6 +186,8 @@
             $circle.setAttribute('stroke-dashoffset', offset.toFixed(1));
             $circle.setAttribute('stroke', pct >= 80 ? '#00a32a' : pct >= 50 ? '#dba617' : '#d63638');
         }
+        const earnedPointsText = document.getElementById('earned-points-text');
+        if (earnedPointsText) earnedPointsText.textContent = score.earned_points;
         const pctText = document.getElementById('score-pct-text');
         if (pctText) pctText.textContent = pct.toFixed(1) + '%';
 
@@ -196,12 +196,12 @@
         if (g.general) {
             const gPct = g.general.max > 0 ? (g.general.earned / g.general.max * 100).toFixed(1) : 0;
             const generalScore = document.getElementById('group-general-score');
-            if (generalScore) generalScore.textContent = gPct + '%';
+            if (generalScore) generalScore.textContent = gPct + '% (' + g.general.earned + '/' + g.general.max + ' pt)';
         }
         if (g.current_year) {
             const yPct = g.current_year.max > 0 ? (g.current_year.earned / g.current_year.max * 100).toFixed(1) : 0;
-            const yearScore = document.getElementById('group-year-score');
-            if (yearScore) yearScore.textContent = yPct + '%';
+            const yearScore = document.getElementById('group-current_year-score');
+            if (yearScore) yearScore.textContent = yPct + '% (' + g.current_year.earned + '/' + g.current_year.max + ' pt)';
         }
     }
 
@@ -254,7 +254,6 @@
     function buildPublicationData($form) {
         return {
             id: $form.querySelector('[name="pub_id"]')?.value || 0,
-            config_id: 1,
             av_date: $form.querySelector('[name="av_date"]')?.value,
             av_location: $form.querySelector('[name="av_location"]')?.value || '',
             submitted_date: $form.querySelector('[name="submitted_date"]')?.value,

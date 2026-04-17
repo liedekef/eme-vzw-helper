@@ -39,7 +39,6 @@ $int = fn( string $field, int $default ) => $p ? (int) $p->$field : $default;
 
 <form id="vzw-patrimony-form">
 <input type="hidden" name="fiscal_year" value="<?= $edit_year ?>">
-<input type="hidden" name="config_id" value="1">
 
 <!-- ══════════════════════════════════════════════════════════════════
      SECTIE 1 – WAARDERINGSREGELS (art. 6)

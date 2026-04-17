@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 
     const DB_VERSION_OPTION = 'emevzw_db_version';
-    const DB_VERSION        = '1';
+    const DB_VERSION        = '3';
 
     public static function activate(): void {
         self::create_tables();
@@ -21,8 +21,29 @@ class Installer {
     private static function migrate(): void {
         global $wpdb;
         $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
-     //   if ( $current_version && $current_version < 12 ) {
-      //  }
+
+        if ( $current_version && $current_version < 3 ) {
+            $tables = [
+                "{$wpdb->prefix}emevzw_board",
+                "{$wpdb->prefix}emevzw_publications",
+                "{$wpdb->prefix}emevzw_patrimony",
+            ];
+            foreach ( $tables as $table ) {
+                $wpdb->query( "ALTER TABLE {$table} DROP INDEX idx_config" );
+                $wpdb->query( "ALTER TABLE {$table} DROP COLUMN config_id" );
+            }
+
+            // emevzw_checks: make fiscal_year nullable, update unique key
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP COLUMN config_id" );
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks MODIFY fiscal_year SMALLINT DEFAULT NULL" );
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP INDEX idx_config" );
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP INDEX uniq_check" );
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks ADD UNIQUE KEY uniq_check (fiscal_year, check_key)" );
+
+            // emevzw_patrimony: fix unique key (already had fiscal_year NOT NULL)
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_patrimony DROP INDEX uniq_year" );
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_patrimony ADD UNIQUE KEY uniq_year (fiscal_year)" );
+        }
     }
 
     public static function deactivate(): void {
@@ -73,7 +94,6 @@ class Installer {
         // ── Board members (bestuurders) ──────────────────────────────────
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_board (
             id                  INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-            config_id           INT UNSIGNED    NOT NULL DEFAULT 1,
             first_name          VARCHAR(80)     NOT NULL DEFAULT '',
             last_name           VARCHAR(80)     NOT NULL DEFAULT '',
             birth_place         VARCHAR(100)    NOT NULL DEFAULT '',
@@ -102,15 +122,13 @@ class Installer {
             created_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            KEY idx_config (config_id),
             KEY idx_active (is_active)
         ) $charset;" );
 
         // ── Checklist answers (per fiscal year) ──────────────────────────
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_checks (
             id          INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-            config_id   INT UNSIGNED    NOT NULL DEFAULT 1,
-            fiscal_year SMALLINT        NOT NULL DEFAULT '',
+            fiscal_year SMALLINT                 DEFAULT NULL,
             check_key   VARCHAR(80)     NOT NULL,
             status      ENUM('yes','no','na','pending') NOT NULL DEFAULT 'pending',
             sub_answers TEXT,
@@ -118,14 +136,13 @@ class Installer {
             checked_at  DATETIME                     DEFAULT NULL,
             notes       TEXT,
             PRIMARY KEY (id),
-            UNIQUE KEY uniq_check (config_id, fiscal_year, check_key),
+            UNIQUE KEY uniq_check (fiscal_year, check_key),
             KEY idx_year (fiscal_year)
         ) $charset;" );
 
         // ── Publication log (formulier 1, 2, statutenwijziging) ──────────
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_publications (
             id              INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-            config_id       INT UNSIGNED    NOT NULL DEFAULT 1,
             av_date         DATE            NOT NULL,
             av_location     VARCHAR(255)    NOT NULL DEFAULT '',
             statute_text    TEXT,
@@ -149,7 +166,6 @@ class Installer {
         // ── Staat van het Vermogen (Bijlage C – per boekjaar) ───────────
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_patrimony (
             id                          INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-            config_id                   INT UNSIGNED    NOT NULL DEFAULT 1,
             fiscal_year                 SMALLINT        NOT NULL,
 
             -- Sectie 1: Waarderingsregels (art. 6)
@@ -205,8 +221,7 @@ class Installer {
             created_at                  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at                  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            UNIQUE KEY uniq_year (config_id, fiscal_year),
-            KEY idx_config (config_id)
+            UNIQUE KEY uniq_year (fiscal_year)
         ) $charset;" );
 
         // ── Publication board members (who changed in this publication) ──

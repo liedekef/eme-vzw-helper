@@ -20,28 +20,25 @@ class Config {
         ) );
     }
 
-    public static function get_active_board_members( int $config_id = 1 ): array {
+    public static function get_active_board_members(): array {
         global $wpdb;
-        return $wpdb->get_results( $wpdb->prepare(
+        return $wpdb->get_results(
             "SELECT * FROM `{$wpdb->prefix}emevzw_board`
-             WHERE config_id = %d AND is_active = 1
-             ORDER BY last_name",
-            $config_id
-        ) );
+             WHERE is_active = 1
+             ORDER BY last_name"
+        );
     }
 
     /**
      * Alle bestuurders, ongeacht is_active, gesorteerd:
      * actieve leden eerst, daarna inactieve, beide alfabetisch op achternaam.
      */
-    public static function get_all_board_members( int $config_id = 1 ): array {
+    public static function get_all_board_members(): array {
         global $wpdb;
-        return $wpdb->get_results( $wpdb->prepare(
+        return $wpdb->get_results(
             "SELECT * FROM `{$wpdb->prefix}emevzw_board`
-             WHERE config_id = %d
-             ORDER BY is_active DESC, last_name",
-            $config_id
-        ) );
+             ORDER BY is_active DESC, last_name"
+        );
     }
 
     public static function get_board_member( int $id ): ?object {
@@ -95,7 +92,7 @@ class Config {
     public static function save_board_member( array $data ): int|\WP_Error {
         global $wpdb;
         $row = [
-            'config_id'            => (int) ( $data['config_id'] ?? 1 ),
+
             'first_name'           => eme_sanitize_request( $data['first_name'] ?? '' ),
             'last_name'            => eme_sanitize_request( $data['last_name'] ?? '' ),
             'national_id'          => eme_sanitize_request( $data['national_id'] ?? '' ),
