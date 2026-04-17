@@ -142,7 +142,6 @@ class Publications {
             wp_die( esc_html__( 'Onvoldoende rechten.', 'eme-vzw-helper' ), 403 );
         }
 
-        $type   = sanitize_key( $_GET['doc_type'] ?? 'form1' );
         $pub_id = (int) ( $_GET['pub_id'] ?? 0 );
         $debug  = isset( $_GET['debug'] );
 
@@ -150,18 +149,14 @@ class Publications {
             wp_die( esc_html__( 'Ongeldige publicatie-ID.', 'eme-vzw-helper' ), 400 );
         }
 
-        // Gebruik TCPDF voor officiële formulieren
-        if ( in_array( $type, [ 'form1', 'form2' ], true ) ) {
-            try {
-                $method = $type === 'form1' ? 'generate_form1' : 'generate_form2';
-                PdfGenerator::$method( $pub_id, 'I', $debug );
-                exit;
-            } catch ( \Throwable $e ) {
-                if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                    error_log( 'EME VZW PDF Error: ' . $e->getMessage() );
-                }
-                wp_die( esc_html__( 'Fout bij genereren formulier: ' . $e->getMessage(), 'eme-vzw-helper' ) );
+        try {
+            PdfGenerator::generate_form( $pub_id, 'I', $debug );
+            exit;
+        } catch ( \Throwable $e ) {
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                error_log( 'EME VZW PDF Error: ' . $e->getMessage() );
             }
+            wp_die( esc_html__( 'Fout bij genereren formulier: ' . $e->getMessage(), 'eme-vzw-helper' ) );
         }
     }
 }

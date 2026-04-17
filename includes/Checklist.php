@@ -192,11 +192,7 @@ class Checklist {
                 'label'         => __( 'De boekhouding van het vorige boekjaar is afgerond en goedgekeurd door het Bestuur.', 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => '',
-                'sub_questions' => [
-                    [ 'label' => __( 'Is de boekhouding definitief afgesloten?', 'eme-vzw-helper' ),                          'type' => 'yesno' ],
-                    [ 'label' => __( 'Is er een bestuursbeslissing die de boekhouding goedkeurt?', 'eme-vzw-helper' ),        'type' => 'yesno' ],
-                ],
+                'help'          => ''
             ],
             'budget_approved' => [
                 'label'         => __( 'De begroting van het huidige boekjaar is opgemaakt en goedgekeurd door het Bestuur.', 'eme-vzw-helper' ),

@@ -308,17 +308,10 @@
         const docBtn = e.target.closest('.vzw-gen-doc');
         if (!docBtn) return;
 
-        const docType = docBtn.dataset.docType;
-        const pubIdContainer = docBtn.closest('[data-pub-id]');
-        let pubId = pubIdContainer?.dataset.pubId;
-        if (!pubId) {
-            pubId = document.querySelector('[name="pub_id"]')?.value;
-        }
-        if (!pubId) {
-            alert('Sla de publicatie eerst op.');
-            return;
-        }
-        const url = `${ajaxUrl}?action=eme_vzw_download_pdf&nonce=${nonce}&doc_type=${docType}&pub_id=${pubId}`;
+        const pubId = docBtn.dataset.pubId;
+        if (!pubId) return;
+
+        const url = `${ajaxUrl}?action=eme_vzw_download_pdf&nonce=${nonce}&pub_id=${pubId}`;
         window.open(url, '_blank');
     });
 

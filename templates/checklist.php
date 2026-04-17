@@ -107,7 +107,7 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
             <div class="help-text"><?= esc_html( $item['help'] ) ?></div>
             <?php endif; ?>
 
-            <?php if ( $item['sub_questions'] ): ?>
+            <?php if ( !empty($item['sub_questions']) ): ?>
             <details>
                 <summary><?php printf( esc_html( _n( '%d subvraag', '%d subvragen', count( $item['sub_questions'] ), 'eme-vzw-helper' ) ), count( $item['sub_questions'] ) ); ?>
                 </summary>

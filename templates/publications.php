@@ -17,11 +17,13 @@ $status_labels = [
 <div class="wrap vzw-wrap">
     <h1><?php esc_html_e( 'Wettelijke Publicaties', 'eme-vzw-helper' ); ?></h1>
     <p style="color:#646970">
-        <?php esc_html_e( 'Maak Formulier I & II en uittreksel aan voor neerlegging bij de griffie.', 'eme-vzw-helper' ); ?>
+        <?php esc_html_e( 'Maak Formulier I & II aan voor neerlegging bij de griffie.', 'eme-vzw-helper' ); ?>
     </p>
+    <?php if (!$pub) : ?>
     <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications' ) ) ?>" class="button" style="margin-bottom:16px">
         + <?php esc_html_e( 'Nieuwe publicatie', 'eme-vzw-helper' ); ?>
     </a>
+    <?php endif; ?>
 
     <div class="vzw-form-box">
         <h2><?= $pub ? esc_html__( 'Publicatie bewerken', 'eme-vzw-helper' ) : esc_html__( 'Nieuwe publicatie aanmaken', 'eme-vzw-helper' ) ?></h2>
@@ -163,18 +165,16 @@ $status_labels = [
             <p style="margin-top:16px">
                 <button type="submit" class="button button-primary submit-btn"><?php esc_html_e( 'Opslaan', 'eme-vzw-helper' ); ?></button>
                 <?php if ( $pub ): ?>
-                <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications' ) ) ?>" class="button"><?php esc_html_e( 'Nieuwe publicatie', 'eme-vzw-helper' ); ?></a>
+                <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications' ) ) ?>" class="button"><?php esc_html_e( 'Annuleer', 'eme-vzw-helper' ); ?></a>
                 <?php endif; ?>
             </p>
         </form>
 
         <!-- DOC BUTTONS (onveranderd) -->
-        <div id="vzw-doc-buttons" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>" style="<?= $pub ? '' : 'display:none' ?>;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f1">
+        <div id="vzw-doc-buttons" style="<?= $pub ? '' : 'display:none' ?>;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f1">
             <h3 style="margin:0 0 10px"><?php esc_html_e( 'Documenten genereren', 'eme-vzw-helper' ); ?></h3>
             <div class="doc-btns" style="display:flex;gap:8px;flex-wrap:wrap">
-                <button type="button" class="button button-primary vzw-gen-doc" data-doc-type="form1">📄 Formulier I</button>
-                <button type="button" class="button button-primary vzw-gen-doc" data-doc-type="form2">📄 Formulier II</button>
-                <button type="button" class="button vzw-gen-doc" data-doc-type="extract">📄 Uittreksel</button>
+                <button type="button" class="button button-primary vzw-gen-doc" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📄 Maak PDF Formulieren aan</button>
             </div>
         </div>
     </div>
@@ -194,8 +194,7 @@ $status_labels = [
                 <td><span class="status-badge status-<?= esc_attr( $p->status ) ?>"><?= esc_html( $status_labels[ $p->status ] ?? $p->status ) ?></span></td>
                 <td>
                     <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications&edit=' . $p->id ) ) ?>" class="button button-small">Bewerk</a>
-                    <button type="button" class="button button-small vzw-gen-doc" data-doc-type="form1" data-pub-id="<?= (int) $p->id ?>">F1</button>
-                    <button type="button" class="button button-small vzw-gen-doc" data-doc-type="form2" data-pub-id="<?= (int) $p->id ?>">F2</button>
+                    <button type="button" class="button button-small vzw-gen-doc" data-pub-id="<?= (int) $p->id ?>">Maak PDF Formulieren aan</button>
                     <button type="button" class="button button-small vzw-delete-pub" data-id="<?= (int) $p->id ?>">✕</button>
                 </td>
             </tr>

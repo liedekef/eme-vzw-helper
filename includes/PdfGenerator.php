@@ -199,10 +199,10 @@ class PdfGenerator {
 
     public function output( string $filename, string $dest = 'I' ): string|bool {
         // Voeg disclaimer footer toe op de laatste pagina
-        $this->pdf->SetFont( 'helvetica', 'I', 6 );
-        $this->pdf->SetTextColor( 100, 100, 100 );
-        $this->pdf->SetXY( 10, 290 );
-        $this->pdf->Write( 0, 'Gegenereerd door EME VZW Helper | Controleer altijd vóór indiening bij de griffie.' );
+        //$this->pdf->SetFont( 'helvetica', 'I', 6 );
+        //$this->pdf->SetTextColor( 100, 100, 100 );
+        //$this->pdf->SetXY( 10, 290 );
+        //$this->pdf->Write( 0, 'Gegenereerd door EME VZW Helper | Controleer altijd vóór indiening bij de griffie.' );
         return $this->pdf->Output( sanitize_file_name( $filename ), $dest );
     }
 
@@ -210,44 +210,42 @@ class PdfGenerator {
      *  STATIC GENERATORS
      * ====================================================================== */
 
-    public static function generate_form1( int $pub_id, string $dest = 'I', bool $debug = false ): string|bool {
-        $pub     = Publications::get( $pub_id );
-        $config  = Config::get();
-        $changes = Publications::get_board_changes( $pub_id );
-        if ( ! $pub || ! $config ) throw new \RuntimeException( 'Publicatie of config niet gevonden.' );
-
-        $gen = new self( $debug );
+    /**
+     * Bouw de pagina's van Formulier I in de huidige PDF-instantie (geen output).
+     * Kan meerdere keren worden aangeroepen om meerdere exemplaren te genereren.
+     */
+    private function build_form1_pages( object $pub, object $config, array $changes ): void {
 
         // ── PAGINA 1: LUIK A ──
-        $gen->add_luik_a();
-        $gen->fill_field( 100, 78, $config->vzw_number ?? '', 40 );
-        $gen->fill_field( 80, 84, $config->vzw_name ?? '', 80 );
-        $gen->fill_field( 90, 99, $config->vzw_legal_form ?? 'VZW', 30 );
-        $gen->fill_field( 80, 109, $config->street ?? '', 60 );
-        $gen->fill_field( 150, 109, $config->house_number ?? '', 60 );
-        $gen->fill_field( 175, 109, $config->house_bus ?? '', 60 );
-        $gen->fill_field( 85, 114, $config->postal_code ?? '', 30 );
-        $gen->fill_field( 135, 114, $config->city ?? '', 60 );
-        $gen->fill_field( 80, 120, $config->country ?? '', 60 );
+        $this->add_luik_a();
+        $this->fill_field( 100, 78, $config->vzw_number ?? '', 40 );
+        $this->fill_field( 80, 84, $config->vzw_name ?? '', 80 );
+        $this->fill_field( 90, 99, $config->vzw_legal_form ?? 'VZW', 30 );
+        $this->fill_field( 80, 109, $config->street ?? '', 60 );
+        $this->fill_field( 150, 109, $config->house_number ?? '', 60 );
+        $this->fill_field( 175, 109, $config->house_bus ?? '', 60 );
+        $this->fill_field( 85, 114, $config->postal_code ?? '', 30 );
+        $this->fill_field( 135, 114, $config->city ?? '', 60 );
+        $this->fill_field( 80, 120, $config->country ?? '', 60 );
 
         // ── PAGINA 2: LUIK B (START) ──
-        $gen->add_luik_b();
+        $this->add_luik_b();
         
         // Identificatie header Luik B
-        $gen->fill_field( 80, 64, $config->vzw_number ?? '', 40 );
-        $gen->fill_field( 80, 72, $config->vzw_name ?? '', 80 );
-        $gen->fill_field( 80, 76, $config->vzw_shortname ?? '', 80 );
-        $gen->fill_field( 80, 82, $config->vzw_legal_form ?? 'VZW', 30 );
+        $this->fill_field( 80, 64, $config->vzw_number ?? '', 40 );
+        $this->fill_field( 80, 72, $config->vzw_name ?? '', 80 );
+        $this->fill_field( 80, 76, $config->vzw_shortname ?? '', 80 );
+        $this->fill_field( 80, 82, $config->vzw_legal_form ?? 'VZW', 30 );
         $address = ($config->street ?? '') . ' ' . ($config->house_number ?? '') . ' bus ' . ($config->house_bus ?? '')
                  . ', '. ($config->postal_code ?? '') . ' ' . ($config->city ?? '');
-        $gen->fill_field( 80, 87, $address , 80 );
+        $this->fill_field( 80, 87, $address , 80 );
 
         // Onderwerp akte
         $subjects = [];
         if ( array_filter( $changes, fn($c) => $c->change_type === 'B' ) ) $subjects[] = 'BENOEMING(EN)';
         if ( array_filter( $changes, fn($c) => $c->change_type === 'E' ) ) $subjects[] = 'ONTSLAG(NEMINGEN)';
         if ( ! empty( $pub->statute_text ) ) $subjects[] = 'WIJZIGING(EN) STATUTEN';
-        $gen->fill_field( 70, 97, implode( ' *** ', $subjects ), 125 );
+        $this->fill_field( 70, 97, implode( ' *** ', $subjects ), 125 );
 
         // ── TEKSTGEBIED LUIK B (MET AUTO-PAGINERING) ──
         // Verzamel alle tekstregels: eerst bestuurswijzigingen, dan statuten
@@ -393,56 +391,107 @@ class PdfGenerator {
         }
 
         $full_text = implode( "\n", $all_text_lines );
-        
-        // Print met paginering: Start Y=115, Max Y=270, Vervolg start Y=25
-        $gen->fill_text_auto_paginate( $full_text, 40, 115, 250, 25, 150, 10 );
 
+        // Print met paginering: Start Y=115, Max Y=270, Vervolg start Y=25
+        $this->fill_text_auto_paginate( $full_text, 40, 115, 250, 25, 150, 10 );
+    }
+
+    /**
+     * Statische wrapper: genereert één exemplaar van Formulier I als PDF.
+     */
+    public static function generate_form1( int $pub_id, string $dest = 'I', bool $debug = false ): string|bool {
+        $pub     = Publications::get( $pub_id );
+        $config  = Config::get();
+        $changes = Publications::get_board_changes( $pub_id );
+        if ( ! $pub || ! $config ) throw new \RuntimeException( 'Publicatie of config niet gevonden.' );
+
+        $gen = new self( $debug );
+        $gen->build_form1_pages( $pub, $config, $changes );
         return $gen->output( 'Formulier_I.pdf', $dest );
     }
 
+    /**
+     * Bouw de pagina's van Formulier II in de huidige PDF-instantie (geen output).
+     * Kan meerdere keren worden aangeroepen om meerdere exemplaren te genereren.
+     */
+    private function build_form2_pages( object $pub, object $config, array $changes ): void {
+        $board_changes = array_filter( $changes, fn($c) => in_array( $c->change_type, ['B', 'E'], true ) );
+
+        // ── PAGINA 1: LUIK A ──
+        $this->add_luik_a_f2();
+        $this->fill_field( 100, 72, $config->vzw_number ?? '', 40 );
+        $this->fill_field( 90, 85, $config->vzw_name ?? '', 80 );
+
+        // ── PAGINA 2 & HERVERVAL: LUIK C (Max 5 per blad) ──
+        $chunks = array_chunk( $board_changes, 5 );
+        foreach ( $chunks as $idx => $chunk ) {
+            $idx === 0 ? $this->add_luik_c_f2() : $this->add_luik_c_f2_cont();
+
+            $y_start = 135.5;
+            $y_step  = 6.5;
+
+            foreach ( $chunk as $i => $c ) {
+                $y = $y_start + ( $i * $y_step );
+                if ($c->change_type === 'B') {
+                    $this->fill_checkbox( 13, $y);
+                } else {
+                    $this->fill_checkbox( 20.5, $y);
+                }
+                //$type_char = $c->change_type === 'B' ? 'B' : 'E';
+                //$this->fill_field( 10, $y, $type_char, 8, 10, 'C' );
+
+                $this->fill_field( 30, $y, $c->national_id ?? '', 25 );
+                $this->fill_field( 65, $y, trim( $c->last_name . ' ' . $c->first_name ), 60 );
+                //$this->fill_field( 140, $y, $c->role ?? 'Bestuurder', 40 );
+                $this->fill_field( 140, $y, 'Bestuurder', 40 );
+                $this->fill_field( 177, $y, ! empty( $pub->av_date ) ? date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) : '', 25, 10, 'C' );
+            }
+        }
+
+        $this->fill_field( 130, 259, date_i18n( 'd/m/Y' ), 20 );
+        $this->fill_field( 78, 259, $config->city ?? '', 20 );
+    }
+
+    /**
+     * Statische wrapper: genereert één exemplaar van Formulier II als PDF.
+     */
     public static function generate_form2( int $pub_id, string $dest = 'I', bool $debug = false ): string|bool {
         $pub     = Publications::get( $pub_id );
         $config  = Config::get();
         $changes = Publications::get_board_changes( $pub_id );
         if ( ! $pub || ! $config ) throw new \RuntimeException( 'Publicatie of config niet gevonden.' );
 
-        $board_changes = array_filter( $changes, fn($c) => in_array( $c->change_type, ['B', 'E'], true ) );
+        $gen = new self( $debug );
+        $gen->build_form2_pages( $pub, $config, $changes );
+        return $gen->output( 'Formulier_II.pdf', $dest );
+    }
+
+    /**
+     * Genereert een gecombineerde PDF met 3 exemplaren van Formulier I
+     * gevolgd door 2 exemplaren van Formulier II, in één enkele PDF-output.
+     *
+     * @param int    $pub_id  Publicatie-ID
+     * @param string $dest    TCPDF output-bestemming ('I', 'D', 'F', 'S', …)
+     * @param bool   $debug   Kalibratierooster tonen
+     */
+    public static function generate_form( int $pub_id, string $dest = 'I', bool $debug = false ): string|bool {
+        $pub     = Publications::get( $pub_id );
+        $config  = Config::get();
+        $changes = Publications::get_board_changes( $pub_id );
+        if ( ! $pub || ! $config ) throw new \RuntimeException( 'Publicatie of config niet gevonden.' );
+
         $gen = new self( $debug );
 
-        // ── PAGINA 1: LUIK A ──
-        $gen->add_luik_a_f2();
-        $gen->fill_field( 100, 72, $config->vzw_number ?? '', 40 );
-        $gen->fill_field( 90, 85, $config->vzw_name ?? '', 80 );
-
-        // ── PAGINA 2 & HERVERVAL: LUIK C (Max 5 per blad) ──
-        $chunks = array_chunk( $board_changes, 5 );
-        foreach ( $chunks as $idx => $chunk ) {
-            $idx === 0 ? $gen->add_luik_c_f2() : $gen->add_luik_c_f2_cont();
-            
-            $y_start = 135.5; 
-            $y_step  = 6.5;   
-            
-            foreach ( $chunk as $i => $c ) {
-                $y = $y_start + ( $i * $y_step );
-                if ($c->change_type === 'B') {
-                    $gen->fill_checkbox( 13, $y);
-                } else {
-                    $gen->fill_checkbox( 20.5, $y);
-                }
-                //$type_char = $c->change_type === 'B' ? 'B' : 'E';
-                //$gen->fill_field( 10, $y, $type_char, 8, 10, 'C' );
-
-                $gen->fill_field( 30, $y, $c->national_id ?? '', 25 );
-                $gen->fill_field( 65, $y, trim( $c->last_name . ' ' . $c->first_name ), 60 );
-                //$gen->fill_field( 140, $y, $c->role ?? 'Bestuurder', 40 );
-                $gen->fill_field( 140, $y, 'Bestuurder', 40 );
-                $gen->fill_field( 177, $y, ! empty( $pub->av_date ) ? date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) : '', 25, 10, 'C' );
-            }
+        // 3 exemplaren van Formulier I
+        for ( $i = 0; $i < 3; $i++ ) {
+            $gen->build_form1_pages( $pub, $config, $changes );
         }
 
-        $gen->fill_field( 130, 259, date_i18n( 'd/m/Y' ), 20 );
-        $gen->fill_field( 78, 259, $config->city ?? '', 20 );
+        // 2 exemplaren van Formulier II
+        for ( $i = 0; $i < 2; $i++ ) {
+            $gen->build_form2_pages( $pub, $config, $changes );
+        }
 
-        return $gen->output( 'Formulier_II.pdf', $dest );
+        return $gen->output( 'Formulieren.pdf', $dest );
     }
 }
