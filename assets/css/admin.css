@@ -129,7 +129,7 @@
 .vzw-status-btn:hover         { background: #e0e0e0; }
 .vzw-status-btn.active-yes    { background: #edfaef; border-color: #00a32a; color: #00a32a; font-weight: 600; }
 .vzw-status-btn.active-no     { background: #fcf0f1; border-color: #d63638; color: #d63638; font-weight: 600; }
-.vzw-status-btn.active-na     { background: #f6f7f7; border-color: #646970; color: #646970; font-weight: 600; }
+.vzw-status-btn.active-na     { background: #dddddd; border-color: #646970; color: #646970; font-weight: 600; }
 .vzw-status-btn.active-pending{ background: #fff8e5; border-color: #dba617; color: #996800; font-weight: 600; }
 
 .vzw-check-note-input {
