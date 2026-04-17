@@ -195,23 +195,19 @@ class Patrimony {
     }
 
     public static function ajax_download_pdf(): void {
-        if ( ! wp_verify_nonce( $_GET['nonce'] ?? '', 'eme_vzw_nonce' ) ) {
-            wp_die( esc_html__( 'Ongeldige beveiligingstoken.', 'eme-vzw-helper' ), 403 );
-        }
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'Onvoldoende rechten.', 'eme-vzw-helper' ), 403 );
-        }
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
 
         $year = (int) ( $_GET['fiscal_year'] ?? 0 );
         $html = self::generate_pdf_html( $year );
 
         if ( empty( $html ) ) {
-            wp_die( esc_html__( 'Geen gegevens gevonden voor dit boekjaar.', 'eme-vzw-helper' ), 404 );
+            wp_send_json_error();
         }
 
         $dompdf_autoload = WP_PLUGIN_DIR . '/events-made-easy/includes/dompdf/vendor/autoload.php';
         if ( ! file_exists( $dompdf_autoload ) ) {
-            wp_die( esc_html__( 'dompdf niet gevonden. Controleer of Events Made Easy correct geïnstalleerd is.', 'eme-vzw-helper' ) );
+            wp_send_json_error();
         }
         require_once $dompdf_autoload;
 
