@@ -23,26 +23,7 @@ class Installer {
         $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
 
         if ( $current_version && $current_version < 3 ) {
-            $tables = [
-                "{$wpdb->prefix}emevzw_board",
-                "{$wpdb->prefix}emevzw_publications",
-                "{$wpdb->prefix}emevzw_patrimony",
-            ];
-            foreach ( $tables as $table ) {
-                $wpdb->query( "ALTER TABLE {$table} DROP INDEX idx_config" );
-                $wpdb->query( "ALTER TABLE {$table} DROP COLUMN config_id" );
-            }
-
-            // emevzw_checks: make fiscal_year nullable, update unique key
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP COLUMN config_id" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks MODIFY fiscal_year SMALLINT DEFAULT NULL" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP INDEX idx_config" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks DROP INDEX uniq_check" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_checks ADD UNIQUE KEY uniq_check (fiscal_year, check_key)" );
-
-            // emevzw_patrimony: fix unique key (already had fiscal_year NOT NULL)
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_patrimony DROP INDEX uniq_year" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_patrimony ADD UNIQUE KEY uniq_year (fiscal_year)" );
+            // no changes for now
         }
     }
 
