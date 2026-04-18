@@ -9,11 +9,11 @@ class Assets {
     }
 
     public static function enqueue( string $hook ): void {
-        if ( strpos( $hook, 'eme-vzw' ) === false ) return;
+        if ( strpos( $hook, 'emevzwhelper' ) === false ) return;
         $config = Config::get();
-        wp_enqueue_style( 'eme-vzw', EME_VZW_URL . 'assets/css/admin.css', [], EME_VZW_VERSION );
-        wp_enqueue_script( 'eme-vzw', EME_VZW_URL . 'assets/js/admin.js', [ ], EME_VZW_VERSION, true );
-        wp_localize_script( 'eme-vzw', 'emeVzw', [
+        wp_enqueue_style( 'eme-vzw-helper', EME_VZW_URL . 'assets/css/admin.css', [], EME_VZW_VERSION );
+        wp_enqueue_script( 'eme-vzw-helper', EME_VZW_URL . 'assets/js/admin.js', [ ], EME_VZW_VERSION, true );
+        wp_localize_script( 'eme-vzw-helper', 'emeVzw', [
             'nonce'   => wp_create_nonce( 'eme_vzw_nonce' ),
             'ajaxUrl' => admin_url( 'admin-ajax.php' ),
             'i18n'    => [

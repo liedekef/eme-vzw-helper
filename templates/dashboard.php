@@ -64,7 +64,7 @@ $g_yr   = $score['by_group']['current_year'];
 <div class="notice notice-warning">
     <p><?php printf(
         esc_html__( 'Stel eerst de VZW-gegevens in via %s.', 'eme-vzw-helper' ),
-        '<a href="' . esc_url( admin_url( 'admin.php?page=eme-vzw-helper-config' ) ) . '">'
+        '<a href="' . esc_url( admin_url( 'admin.php?page=emevzwhelper-config' ) ) . '">'
             . esc_html__( 'Instellingen VZW', 'eme-vzw-helper' ) . '</a>'
     ); ?></p>
 </div>
@@ -122,13 +122,13 @@ $g_yr   = $score['by_group']['current_year'];
 
 <!-- Quick-action buttons -->
 <p>
-    <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-checklist&year=' . $year ) ) ?>" class="button button-primary">
+    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-checklist&year=' . $year ) ) ?>" class="button button-primary">
         <?php esc_html_e( 'Naar checklist', 'eme-vzw-helper' ); ?>
     </a>
-    <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications' ) ) ?>" class="button">
+    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ) ?>" class="button">
         <?php esc_html_e( 'Publicaties / Formulieren', 'eme-vzw-helper' ); ?>
     </a>
-    <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-board' ) ) ?>" class="button">
+    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-board' ) ) ?>" class="button">
         <?php esc_html_e( 'Bestuur beheren', 'eme-vzw-helper' ); ?>
     </a>
 </p>
@@ -174,7 +174,7 @@ foreach ( array_slice( $pubs, 0, 5 ) as $pub ):
 <tr>
     <td><?= esc_html( date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) ) ?></td>
     <td><span class="status-badge status-<?= esc_attr( $pub->status ) ?>"><?= esc_html( $status_labels[ $pub->status ] ?? $pub->status ) ?></span></td>
-    <td><a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications&edit=' . $pub->id ) ) ?>" class="button button-small"><?php esc_html_e( 'Bekijk', 'eme-vzw-helper' ); ?></a></td>
+    <td><a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $pub->id ) ) ?>" class="button button-small"><?php esc_html_e( 'Bekijk', 'eme-vzw-helper' ); ?></a></td>
 </tr>
 <?php endforeach; ?>
 </tbody>

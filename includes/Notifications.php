@@ -55,7 +55,7 @@ class Notifications {
         wp_mail(
             $config->notification_email,
             sprintf( __( '[%s] VZW Compliance – Actie vereist', 'eme-vzw-helper' ), $config->vzw_name ),
-            implode( "\n\n", $warnings ) . "\n\n" . admin_url( 'admin.php?page=eme-vzw-helper' )
+            implode( "\n\n", $warnings ) . "\n\n" . admin_url( 'admin.php?page=emevzwhelper' )
         );
     }
 }

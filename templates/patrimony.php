@@ -293,7 +293,7 @@ $int = fn( string $field, int $default ) => $p ? (int) $p->$field : $default;
             <?= $rec->status === 'final' ? esc_html__( 'Definitief', 'eme-vzw-helper' ) : esc_html__( 'Concept', 'eme-vzw-helper' ) ?>
         </span></td>
         <td>
-            <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-patrimony&fiscal_year=' . (int) $rec->fiscal_year ) ) ?>"
+            <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-patrimony&fiscal_year=' . (int) $rec->fiscal_year ) ) ?>"
                class="button button-small"><?php esc_html_e( 'Bewerk', 'eme-vzw-helper' ); ?></a>
             <a href="<?= esc_url( admin_url( 'admin-ajax.php?action=eme_vzw_download_patrimony&fiscal_year=' . (int) $rec->fiscal_year . '&nonce=' . wp_create_nonce( 'eme_vzw_nonce' ) ) ) ?>"
                class="button button-small" target="_blank">PDF</a>

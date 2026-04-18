@@ -20,7 +20,7 @@ $status_labels = [
         <?php esc_html_e( 'Maak Formulier I & II aan voor neerlegging bij de griffie.', 'eme-vzw-helper' ); ?>
     </p>
     <?php if (!$pub) : ?>
-    <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications' ) ) ?>" class="button" style="margin-bottom:16px">
+    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ) ?>" class="button" style="margin-bottom:16px">
         + <?php esc_html_e( 'Nieuwe publicatie', 'eme-vzw-helper' ); ?>
     </a>
     <?php endif; ?>
@@ -165,7 +165,7 @@ $status_labels = [
             <p style="margin-top:16px">
                 <button type="submit" class="button button-primary submit-btn"><?php esc_html_e( 'Opslaan', 'eme-vzw-helper' ); ?></button>
                 <?php if ( $pub ): ?>
-                <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications' ) ) ?>" class="button"><?php esc_html_e( 'Annuleer', 'eme-vzw-helper' ); ?></a>
+                <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ) ?>" class="button"><?php esc_html_e( 'Annuleer', 'eme-vzw-helper' ); ?></a>
                 <?php endif; ?>
             </p>
         </form>
@@ -193,7 +193,7 @@ $status_labels = [
                 <td><?= esc_html( date_i18n( 'd/m/Y', strtotime( $p->av_date ) ) ) ?></td>
                 <td><span class="status-badge status-<?= esc_attr( $p->status ) ?>"><?= esc_html( $status_labels[ $p->status ] ?? $p->status ) ?></span></td>
                 <td>
-                    <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-publications&edit=' . $p->id ) ) ?>" class="button button-small">Bewerk</a>
+                    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $p->id ) ) ?>" class="button button-small">Bewerk</a>
                     <button type="button" class="button button-small vzw-gen-doc" data-pub-id="<?= (int) $p->id ?>">Maak PDF Formulieren aan</button>
                     <button type="button" class="button button-small vzw-delete-pub" data-id="<?= (int) $p->id ?>">✕</button>
                 </td>

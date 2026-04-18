@@ -51,7 +51,7 @@ $roles = [
         <?php endif; ?>
     </div>
     <p style="margin:8px 0 0">
-        <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-board&edit=' . $m->id ) ) ?>" class="button button-small"><?php esc_html_e( 'Bewerk', 'eme-vzw-helper' ); ?></a>
+        <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-board&edit=' . $m->id ) ) ?>" class="button button-small"><?php esc_html_e( 'Bewerk', 'eme-vzw-helper' ); ?></a>
         <button class="button button-small vzw-delete-board" data-id="<?= (int) $m->id ?>"><?php esc_html_e( 'Deactiveer', 'eme-vzw-helper' ); ?></button>
     </p>
 </div>
@@ -78,7 +78,7 @@ $roles = [
         <?php endif; ?>
     </div>
     <p style="margin:8px 0 0;display:flex;gap:4px;flex-wrap:wrap">
-        <a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-board&edit=' . $m->id ) ) ?>" class="button button-small"><?php esc_html_e( 'Bewerk', 'eme-vzw-helper' ); ?></a>
+        <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-board&edit=' . $m->id ) ) ?>" class="button button-small"><?php esc_html_e( 'Bewerk', 'eme-vzw-helper' ); ?></a>
         <button class="button button-small vzw-reactivate-board" data-id="<?= (int) $m->id ?>"><?php esc_html_e( 'Heractiveer', 'eme-vzw-helper' ); ?></button>
         <button class="button button-small vzw-purge-board" data-id="<?= (int) $m->id ?>" style="color:#d63638;border-color:#d63638"><?php esc_html_e( 'Verwijder', 'eme-vzw-helper' ); ?></button>
     </p>
@@ -172,7 +172,7 @@ $roles = [
 
 <p>
     <button type="submit" class="button button-primary submit-btn"><?php esc_html_e( 'Opslaan', 'eme-vzw-helper' ); ?></button>
-    <?php if ( $edit_m ): ?><a href="<?= esc_url( admin_url( 'admin.php?page=eme-vzw-helper-board' ) ) ?>" class="button"><?php esc_html_e( 'Annuleren', 'eme-vzw-helper' ); ?></a><?php endif; ?>
+    <?php if ( $edit_m ): ?><a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-board' ) ) ?>" class="button"><?php esc_html_e( 'Annuleren', 'eme-vzw-helper' ); ?></a><?php endif; ?>
 </p>
 </form>
 </div>

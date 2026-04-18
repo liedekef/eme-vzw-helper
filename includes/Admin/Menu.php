@@ -10,24 +10,24 @@ class Menu {
 
     public static function register(): void {
         add_menu_page(
-            __( 'EME VZW Helper', 'eme-vzw-helper' ),
-            __( 'EME VZW Helper', 'eme-vzw-helper' ),
+            __( 'EME VZW Helper', 'emevzwhelper' ),
+            __( 'EME VZW Helper', 'emevzwhelper' ),
             'manage_options',
-            'eme-vzw-helper',
+            'emevzwhelper',
             [ __CLASS__, 'page_dashboard' ],
             'dashicons-groups',
             57
         );
 
         foreach ( [
-            [ 'eme-vzw-helper',              __( 'Dashboard', 'eme-vzw-helper' ),          'page_dashboard'   ],
-            [ 'eme-vzw-helper-checklist',    __( 'Compliance Checklist', 'eme-vzw-helper' ),'page_checklist'  ],
-            [ 'eme-vzw-helper-publications', __( 'Publicaties', 'eme-vzw-helper' ),         'page_publications'],
-            [ 'eme-vzw-helper-board',        __( 'Bestuur', 'eme-vzw-helper' ),             'page_board'      ],
-            [ 'eme-vzw-helper-patrimony',    __( 'Staat van het Vermogen', 'eme-vzw-helper' ),'page_patrimony' ],
-            [ 'eme-vzw-helper-config',       __( 'Instellingen VZW', 'eme-vzw-helper' ),    'page_config'     ],
+            [ 'emevzwhelper',              __( 'Dashboard', 'eme-vzw-helper' ),             'page_dashboard'   ],
+            [ 'emevzwhelper-checklist',    __( 'Compliance Checklist', 'eme-vzw-helper' ),  'page_checklist'   ],
+            [ 'emevzwhelper-publications', __( 'Publicaties', 'eme-vzw-helper' ),           'page_publications'],
+            [ 'emevzwhelper-board',        __( 'Bestuur', 'eme-vzw-helper' ),               'page_board'       ],
+            [ 'emevzwhelper-patrimony',    __( 'Staat van het Vermogen', 'eme-vzw-helper' ),'page_patrimony'   ],
+            [ 'emevzwhelper-config',       __( 'Instellingen VZW', 'eme-vzw-helper' ),      'page_config'      ],
         ] as [ $slug, $title, $method ] ) {
-            add_submenu_page( 'eme-vzw-helper', $title, $title, 'manage_options', $slug, [ __CLASS__, $method ] );
+            add_submenu_page( 'emevzwhelper', $title, $title, 'manage_options', $slug, [ __CLASS__, $method ] );
         }
     }
 

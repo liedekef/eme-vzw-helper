@@ -178,7 +178,7 @@
 
     // Year selector
     document.getElementById('vzw-fiscal-year')?.addEventListener('change', function() {
-        window.location = `${window.location.pathname}?page=eme-vzw-helper-checklist&year=${this.value}`;
+        window.location = `${window.location.pathname}?page=emevzwhelper-checklist&year=${this.value}`;
     });
 
     /* ════════════════════════════════════════════════════════════════
@@ -456,7 +456,7 @@
     const vzwPatrimonyYearSelect = document.getElementById('vzw-patrimony-year');
     if (vzwPatrimonyYearSelect) {
         vzwPatrimonyYearSelect.addEventListener('change', function() {
-            window.location = `${window.location.pathname}?page=eme-vzw-helper-patrimony&fiscal_year=${this.value}`;
+            window.location = `${window.location.pathname}?page=emevzwhelper-patrimony&fiscal_year=${this.value}`;
         });
 
         document.querySelectorAll('.vzw-amount').forEach(function(el) {
