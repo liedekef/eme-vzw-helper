@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 
     const DB_VERSION_OPTION = 'emevzw_db_version';
-    const DB_VERSION        = '4';
+    const DB_VERSION        = '5';
 
     public static function activate(): void {
         self::create_tables();
@@ -25,6 +25,9 @@ class Installer {
         if ( $current_version && $current_version < 4 ) {
             $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN website VARCHAR(200) NOT NULL DEFAULT ''" );
             $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN email VARCHAR(200) NOT NULL DEFAULT ''" );
+        }
+        if ( $current_version && $current_version < 5 ) {
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN currency VARCHAR(10) NOT NULL DEFAULT 'EUR'") ;
         }
     }
 
@@ -64,6 +67,7 @@ class Installer {
             fiscal_year_start_dd    TINYINT         NOT NULL DEFAULT 1,
             fiscal_year_end_mm      TINYINT         NOT NULL DEFAULT 12,
             fiscal_year_end_dd      TINYINT         NOT NULL DEFAULT 31,
+            currency                VARCHAR(10)     NOT NULL DEFAULT 'EUR',
             ubo_last_confirmed      DATE                     DEFAULT NULL,
             board_mandate_end       DATE                     DEFAULT NULL,
             notification_email      VARCHAR(150)    NOT NULL DEFAULT '',

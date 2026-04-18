@@ -75,7 +75,7 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
     </div>
 </div>
 
-<h3><?php esc_html_e( 'Boekjaar', 'eme-vzw-helper' ); ?></h3>
+<h3><?php esc_html_e( 'Boekjaar en valuta', 'eme-vzw-helper' ); ?></h3>
 <div class="vzw-row">
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Start dag', 'eme-vzw-helper' ); ?></label>
@@ -92,6 +92,13 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Einde maand', 'eme-vzw-helper' ); ?></label>
         <input type="number" name="fiscal_year_end_mm" value="<?= (int) ( $config->fiscal_year_end_mm ?? 12 ) ?>" min="1" max="12">
+    </div>
+</div>
+<div class="vzw-row">
+    <div class="vzw-field" style="max-width:80px">
+        <label><?php esc_html_e( 'Valuta', 'eme-vzw-helper' ); ?></label>
+        <input type="text" name="currency" value="<?= esc_attr( $config->currency ) ?>" maxlength="3" style="width:60px">
+        <p class="description"><?php esc_html_e( 'ISO-valutacode, bv. EUR', 'eme-vzw-helper' ); ?></p>
     </div>
 </div>
 

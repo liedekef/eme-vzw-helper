@@ -68,6 +68,7 @@ class Config {
             'website'              => eme_sanitize_request( $data['website'] ?? '' ),
             'email'                => eme_sanitize_request( $data['email'] ?? '' ),
             'court'                => eme_sanitize_request( $data['court'] ?? '' ),
+            'currency'             => strtoupper( substr( eme_sanitize_request( $data['currency'] ?? 'EUR' ), 0, 3 ) ),
             'fiscal_year_start_mm' => max( 1, min( 12, (int) ( $data['fiscal_year_start_mm'] ?? 1 ) ) ),
             'fiscal_year_start_dd' => max( 1, min( 31, (int) ( $data['fiscal_year_start_dd'] ?? 1 ) ) ),
             'fiscal_year_end_mm'   => max( 1, min( 12, (int) ( $data['fiscal_year_end_mm'] ?? 12 ) ) ),

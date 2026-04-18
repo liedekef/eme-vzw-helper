@@ -91,7 +91,7 @@ $depr_method_label = $p->depr_method === 'degressive'
         Ondernemingsnr. <?= $vzw_number ?>
     </p>
     <p class="vzw-subtitle">
-        <?= $website ?> <?= $email ?>
+        <?= $website ?> | <?= $email ?>
     </p>
 
     <div class="doc-title">Boekjaar <?= $year ?> Bijlage C

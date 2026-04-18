@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name:       EME VZW Helper
- * Plugin URI:        https://github.com/your-repo/eme-vzw-helper
+ * Plugin URI:        https://github.com/liedekef/eme-vzw-helper
  * Description:       VZW compliance checklist, wettelijke publicaties (Formulier 1 & 2), statutenwijziging en UBO-beheer als uitbreiding op Events Made Easy.
  * Version:           1.0.2
  * Author:            Your Name
- * Author URI:        https://yoursite.be
+ * Author URI:        https://www.e-dynamics.be
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       eme-vzw-helper
@@ -26,7 +26,7 @@ spl_autoload_register( function ( string $class ): void {
     $prefix = 'EMEVzw\\';
     if ( strncmp( $prefix, $class, strlen( $prefix ) ) !== 0 ) return;
     $file = EME_VZW_DIR . 'includes/' . str_replace( '\\', DIRECTORY_SEPARATOR, substr( $class, strlen( $prefix ) ) ) . '.php';
-    if ( file_exists( $file ) ) require $file;
+    if ( file_exists( $file ) ) require_once $file;
 } );
 
 function eme_vzw_helper_init(): void {
