@@ -137,6 +137,7 @@ $g_yr   = $score['by_group']['current_year'];
 <?php if ( $deadlines ): ?>
 <div class="vzw-form-box" style="margin-top:20px">
 <h2><?php esc_html_e( 'Aankomende deadlines', 'eme-vzw-helper' ); ?></h2>
+<p><?php esc_html_e( 'Deadline aanpassen? Ga naar Instellingen.', 'eme-vzw-helper' ); ?></p>
 <ul class="vzw-deadline-list">
 <?php foreach ( $deadlines as $dl ):
     $icon  = $dl['urgent'] ? '⚠️' : '📅';

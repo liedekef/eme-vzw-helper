@@ -72,10 +72,7 @@ class Config {
             'fiscal_year_start_dd' => max( 1, min( 31, (int) ( $data['fiscal_year_start_dd'] ?? 1 ) ) ),
             'fiscal_year_end_mm'   => max( 1, min( 12, (int) ( $data['fiscal_year_end_mm'] ?? 12 ) ) ),
             'fiscal_year_end_dd'   => max( 1, min( 31, (int) ( $data['fiscal_year_end_dd'] ?? 31 ) ) ),
-            'vat_liable'           => (int) (bool) ( $data['vat_liable'] ?? 0 ),
-            'is_micro_vzw'         => (int) (bool) ( $data['is_micro_vzw'] ?? 1 ),
             'ubo_last_confirmed'   => ! empty( $data['ubo_last_confirmed'] ) ? eme_sanitize_request( $data['ubo_last_confirmed'] ) : null,
-            'statutes_last_published'=> ! empty( $data['statutes_last_published'] ) ? eme_sanitize_request( $data['statutes_last_published'] ) : null,
             'board_mandate_end'    => ! empty( $data['board_mandate_end'] ) ? eme_sanitize_request( $data['board_mandate_end'] ) : null,
             'notification_email'   => eme_sanitize_email( $data['notification_email'] ?? '' ),
         ];

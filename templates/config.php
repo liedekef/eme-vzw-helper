@@ -95,24 +95,7 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
     </div>
 </div>
 
-<h3><?php esc_html_e( 'Wettelijke statussen', 'eme-vzw-helper' ); ?></h3>
-<div class="vzw-row">
-    <div class="vzw-field">
-        <label><?php esc_html_e( 'Micro VZW?', 'eme-vzw-helper' ); ?></label>
-        <label style="display:flex;align-items:center;gap:6px;margin-top:6px">
-            <input type="checkbox" name="is_micro_vzw" value="1" <?= checked( $config->is_micro_vzw ?? 1, 1 ) ?>>
-            <?php esc_html_e( 'Ja, dit is een micro-VZW (enkelvoudige boekhouding)', 'eme-vzw-helper' ); ?>
-        </label>
-    </div>
-    <div class="vzw-field">
-        <label><?php esc_html_e( 'BTW-plichtig?', 'eme-vzw-helper' ); ?></label>
-        <label style="display:flex;align-items:center;gap:6px;margin-top:6px">
-            <input type="checkbox" name="vat_liable" value="1" <?= checked( $config->vat_liable ?? 0, 1 ) ?>>
-            <?php esc_html_e( 'Ja, de VZW is BTW-plichtig', 'eme-vzw-helper' ); ?>
-        </label>
-    </div>
-</div>
-
+<h3><?php esc_html_e( 'Deadlines', 'eme-vzw-helper' ); ?></h3>
 <div class="vzw-row">
     <div class="vzw-field">
         <label><?php esc_html_e( 'Einde bestuursmandaat', 'eme-vzw-helper' ); ?></label>
@@ -120,33 +103,22 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
         <span class="description"><?php esc_html_e( 'Datum waarop het huidig bestuur zijn mandaat verliest. Herinnering 30 dagen op voorhand.', 'eme-vzw-helper' ); ?></span>
     </div>
     <div class="vzw-field">
-        <label><?php esc_html_e( 'Laatste statuten gepubliceerd', 'eme-vzw-helper' ); ?></label>
-        <input type="date" name="statutes_last_published" value="<?= esc_attr( $config->statutes_last_published ?? '' ) ?>">
-    </div>
-</div>
-
-<div class="vzw-row">
-    <div class="vzw-field">
         <label><?php esc_html_e( 'UBO-register laatste bevestiging', 'eme-vzw-helper' ); ?></label>
         <input type="date" name="ubo_last_confirmed" value="<?= esc_attr( $config->ubo_last_confirmed ?? '' ) ?>">
         <span class="description"><?php esc_html_e( 'Jaarlijkse bevestiging vereist. Herinnering bij > 11 maanden.', 'eme-vzw-helper' ); ?></span>
     </div>
 </div>
 
-<div class="vzw-form-box" style="border-color:#d63638">
-<h2 style="color:#d63638"><?php esc_html_e( 'Gevaarzone', 'eme-vzw-helper' ); ?></h2>
-<table class="form-table">
-<tr>
-    <th><?php esc_html_e( 'Data verwijderen bij deactivatie', 'eme-vzw-helper' ); ?></th>
-    <td>
+<div class="vzw-row" style="border: 1px solid #d63638; padding: 10px;">
+    <div class="vzw-field">
+    <h2 style="color:#d63638"><?php esc_html_e( 'Gevaarzone', 'eme-vzw-helper' ); ?></h2>
+    <label><?php esc_html_e( 'Data verwijderen bij deactivatie', 'eme-vzw-helper' ); ?></label><br>
         <select name="delete_on_uninstall">
             <option value="no"  <?= selected( 'no',  $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Nee – data bewaren (aanbevolen)', 'eme-vzw-helper' ); ?></option>
             <option value="yes" <?= selected( 'yes', $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Ja – ALLE data verwijderen bij uninstall', 'eme-vzw-helper' ); ?></option>
         </select>
         <p class="description" style="color:#d63638"><?php esc_html_e( 'LET OP: "Ja" verwijdert permanent alle instellingen en tabellen!', 'eme-vzw-helper' ); ?></p>
-    </td>
-</tr>
-</table>
+    </div>
 </div>
 
 <p><button type="submit" class="button button-primary submit-btn"><?php esc_html_e( 'Instellingen opslaan', 'eme-vzw-helper' ); ?></button></p>
