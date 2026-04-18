@@ -1,6 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 $config = EMEVzw\Config::get();
+$emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninstall');
 ?>
 <div class="wrap vzw-wrap">
 <h1><?php esc_html_e( 'Instellingen VZW', 'eme-vzw-helper' ); ?></h1>
@@ -132,8 +133,25 @@ $config = EMEVzw\Config::get();
     </div>
 </div>
 
+<div class="vzw-form-box" style="border-color:#d63638">
+<h2 style="color:#d63638"><?php esc_html_e( 'Gevaarzone', 'eme-vzw-helper' ); ?></h2>
+<table class="form-table">
+<tr>
+    <th><?php esc_html_e( 'Data verwijderen bij deactivatie', 'eme-vzw-helper' ); ?></th>
+    <td>
+        <select name="delete_on_uninstall">
+            <option value="no"  <?= selected( 'no',  $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Nee – data bewaren (aanbevolen)', 'eme-vzw-helper' ); ?></option>
+            <option value="yes" <?= selected( 'yes', $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Ja – ALLE data verwijderen bij uninstall', 'eme-vzw-helper' ); ?></option>
+        </select>
+        <p class="description" style="color:#d63638"><?php esc_html_e( 'LET OP: "Ja" verwijdert permanent alle instellingen en tabellen!', 'eme-vzw-helper' ); ?></p>
+    </td>
+</tr>
+</table>
+</div>
+
 <p><button type="submit" class="button button-primary submit-btn"><?php esc_html_e( 'Instellingen opslaan', 'eme-vzw-helper' ); ?></button></p>
 </form>
+
 </div>
 
 <div class="vzw-form-box" style="background:#f9f9ff">
@@ -148,4 +166,4 @@ $config = EMEVzw\Config::get();
     <li><a href="https://eservices.minfin.fgov.be/taxonweb/" target="_blank"><?php esc_html_e( 'Tax-on-Web – Rechtspersonenbelasting', 'eme-vzw-helper' ); ?></a></li>
 </ul>
 </div>
-</div>
+

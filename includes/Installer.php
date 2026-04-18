@@ -33,10 +33,10 @@ class Installer {
     }
 
     public static function uninstall(): void {
-        if ( get_option( 'eme_vzw_delete_on_uninstall' ) !== 'yes' ) return;
+        if ( get_option( 'emevzw_helper_delete_on_uninstall' ) !== 'yes' ) return;
         self::drop_tables();
         delete_option( self::DB_VERSION_OPTION );
-        delete_option( 'emevzw_config' );
+        delete_option( 'emevzw_helper_delete_on_uninstall' );
     }
 
     public static function create_tables(): void {

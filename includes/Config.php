@@ -51,6 +51,9 @@ class Config {
 
     public static function save( array $data ): int|\WP_Error {
         global $wpdb;
+
+        update_option( 'emevzw_helper_delete_on_uninstall', sanitize_key($_POST['delete_on_uninstall']) );
+
         $row = [
             'vzw_name'             => eme_sanitize_request( $data['vzw_name'] ?? '' ),
             'vzw_shortname'        => eme_sanitize_request( $data['vzw_shortname'] ?? '' ),

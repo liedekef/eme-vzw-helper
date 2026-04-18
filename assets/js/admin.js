@@ -400,7 +400,7 @@
             const data = {};
             formData.forEach((value, key) => { data[key] = value; });
             ajax('eme_vzw_save_board_member', data, () => location.reload(), function(msg) {
-                $btn.textContent = 'Opslaan';
+                $btn.textContent = i18n.save;
                 $btn.disabled = false;
                 alert(msg);
             });
@@ -423,6 +423,10 @@
                     $btn.textContent = i18n.save;
                     $btn.disabled = false;
                 }, 1800);
+            }, function(msg) {
+                $btn.textContent = i18n.save;
+                $btn.disabled = false;
+                alert(msg);
             });
         });
     }
