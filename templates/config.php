@@ -67,7 +67,7 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
         <label><?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="court" value="<?= esc_attr( $config->court ?? '' ) ?>" placeholder="Ondernemingsrechtbank Gent">
+        <input type="text" name="court" value="<?= esc_attr( $config->court ?? '' ) ?>" placeholder="Ondernemingsrechtbank">
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>
@@ -130,6 +130,7 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 <h2><?php esc_html_e( 'Nuttige links', 'eme-vzw-helper' ); ?></h2>
 <ul style="margin:0;padding-left:20px;font-size:13px;line-height:1.8">
     <li><a href="https://kbo.economie.fgov.be/" target="_blank"><?php esc_html_e( 'Kruispuntbank van Ondernemingen (KBO)', 'eme-vzw-helper' ); ?></a></li>
+    <li><a href="https://justitie.belgium.be/nl/zoek_een_rechtbank_of_parket" target="_blank"><?php esc_html_e( 'Zoek een ondernemingsrechtbank in je buurt', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://www.ejustice.just.fgov.be/cgi/welcome.pl" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad – publicatiekosten', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://financien.belgium.be/nl/E-services/Ubo-register" target="_blank"><?php esc_html_e( 'UBO-register uitleg', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://www.minfin.fgov.be/ubo/" target="_blank"><?php esc_html_e( 'Toegang tot UBO-register', 'eme-vzw-helper' ); ?></a></li>
