@@ -54,6 +54,11 @@ class Config {
 
         update_option( 'emevzw_helper_delete_on_uninstall', sanitize_key($_POST['delete_on_uninstall']) );
 
+        $currency = strtoupper( substr( eme_sanitize_request( $data['currency'] ?? 'EUR' ), 0, 3 ) );
+        if (!self::isValidCurrencyCode($currency)) {
+            $currency = 'EUR';
+        }
+
         $row = [
             'vzw_name'             => eme_sanitize_request( $data['vzw_name'] ?? '' ),
             'vzw_shortname'        => eme_sanitize_request( $data['vzw_shortname'] ?? '' ),
@@ -68,7 +73,7 @@ class Config {
             'website'              => eme_sanitize_request( $data['website'] ?? '' ),
             'email'                => eme_sanitize_request( $data['email'] ?? '' ),
             'court'                => eme_sanitize_request( $data['court'] ?? '' ),
-            'currency'             => strtoupper( substr( eme_sanitize_request( $data['currency'] ?? 'EUR' ), 0, 3 ) ),
+            'currency'             => $currency,
             'fiscal_year_start_mm' => max( 1, min( 12, (int) ( $data['fiscal_year_start_mm'] ?? 1 ) ) ),
             'fiscal_year_start_dd' => max( 1, min( 31, (int) ( $data['fiscal_year_start_dd'] ?? 1 ) ) ),
             'fiscal_year_end_mm'   => max( 1, min( 12, (int) ( $data['fiscal_year_end_mm'] ?? 12 ) ) ),
@@ -173,4 +178,15 @@ class Config {
         $wpdb->delete( $wpdb->prefix . 'emevzw_board', [ 'id' => $id ], [ '%d' ] );
         wp_send_json_success();
     }
+
+    private static function isValidCurrencyCode($currency) {
+        $currencies = \ResourceBundle::create('curr', 'ICUDATA-curr', false);
+        if ($currencies === null) {
+            return false;
+        }
+
+        $currencyInfo = $currencies->get('Currencies');
+        return $currencyInfo !== null && $currencyInfo->get($currency) !== null;
+    }
+
 }

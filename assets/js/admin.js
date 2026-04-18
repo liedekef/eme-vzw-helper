@@ -60,43 +60,6 @@
         .catch(() => (onError || alert)('Verbindingsfout met server.'));
     }
 
-    /* ── Generic AJAX ────────────────────────────────────────────── */
-    function ajaxold(action, data, onSuccess, onError) {
-        // Als data een string is, maak er een object van
-        if (typeof data === 'string') {
-            var params = new URLSearchParams(data);
-            data = {};
-            for (let [key, value] of params) {
-                data[key] = value;
-            }
-        }
-
-        const formData = new URLSearchParams();
-        formData.append('action', action);
-        formData.append('nonce', nonce);
-
-        for (let [key, value] of Object.entries(data)) {
-            formData.append(key, value);
-        }
-
-        fetch(ajaxUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData.toString()
-        })
-        .then(response => response.json())
-        .then(r => {
-            if (r.success) {
-                onSuccess && onSuccess(r.data);
-            } else {
-                (onError || alert)(r.data || 'Fout');
-            }
-        })
-        .catch(() => (onError || alert)('Verbindingsfout'));
-    }
-
     // Helper: find all matching elements inside container
     function findAll(container, selector) {
         return Array.from(container.querySelectorAll(selector));
@@ -420,9 +383,8 @@
                 $btn.textContent = i18n.saved;
                 $btn.disabled = false;
                 setTimeout(() => {
-                    $btn.textContent = i18n.save;
-                    $btn.disabled = false;
-                }, 1800);
+                    location.reload();
+                }, 500);
             }, function(msg) {
                 $btn.textContent = i18n.save;
                 $btn.disabled = false;
