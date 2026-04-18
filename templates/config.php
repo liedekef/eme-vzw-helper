@@ -112,7 +112,7 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 <div class="vzw-row" style="border: 1px solid #d63638; padding: 10px;">
     <div class="vzw-field">
     <h2 style="color:#d63638"><?php esc_html_e( 'Gevaarzone', 'eme-vzw-helper' ); ?></h2>
-    <label><?php esc_html_e( 'Data verwijderen bij deactivatie', 'eme-vzw-helper' ); ?></label><br>
+    <label><?php esc_html_e( 'Data verwijderen bij deactivatie', 'eme-vzw-helper' ); ?></label>
         <select name="delete_on_uninstall">
             <option value="no"  <?= selected( 'no',  $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Nee – data bewaren (aanbevolen)', 'eme-vzw-helper' ); ?></option>
             <option value="yes" <?= selected( 'yes', $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Ja – ALLE data verwijderen bij uninstall', 'eme-vzw-helper' ); ?></option>
