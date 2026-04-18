@@ -9,7 +9,6 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 <div class="vzw-form-box">
 <h2><?php esc_html_e( 'Identificatie', 'eme-vzw-helper' ); ?></h2>
 <form id="vzw-config-form">
-<input type="hidden" name="id" value="<?= $config ? (int) $config->id : 1 ?>">
 
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
@@ -69,6 +68,12 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
         <label><?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?></label>
         <input type="text" name="court" value="<?= esc_attr( $config->court ?? '' ) ?>" placeholder="Ondernemingsrechtbank">
     </div>
+    <div class="vzw-field" style="flex:2">
+        <label><?php esc_html_e( 'Adres rechtbank', 'eme-vzw-helper' ); ?></label>
+        <input type="text" name="court_address" value="<?= esc_attr( $config->court_address ?? '' ) ?>" placeholder="Straat, postcode, stad">
+    </div>
+</div>
+<div class="vzw-row">
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>
         <input type="email" name="notification_email" value="<?= esc_attr( $config->notification_email ?? '' ) ?>">

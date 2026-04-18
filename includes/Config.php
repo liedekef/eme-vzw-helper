@@ -12,12 +12,34 @@ class Config {
         add_action( 'wp_ajax_eme_vzw_purge_board_member',  [ __CLASS__, 'ajax_purge_board' ] );
     }
 
-    public static function get( int $id = 1 ): ?object {
-        global $wpdb;
-        return $wpdb->get_row( $wpdb->prepare(
-            "SELECT * FROM `{$wpdb->prefix}emevzw_config` WHERE id = %d",
-            $id
-        ) );
+    private const OPTION_NAME = 'emevzw_helper_settings';
+
+    public static function get(): object {
+        $defaults = [
+            'vzw_name'             => '',
+            'vzw_shortname'       => '',
+            'vzw_number'         => '',
+            'vzw_legal_form'     => 'VZW',
+            'street'             => '',
+            'house_number'       => '',
+            'house_bus'         => '',
+            'postal_code'       => '',
+            'city'              => '',
+            'country'          => 'België',
+            'website'          => '',
+            'email'            => '',
+            'court'            => '',
+            'court_address'    => '',
+            'fiscal_year_start_mm' => 1,
+            'fiscal_year_start_dd' => 1,
+            'fiscal_year_end_mm'   => 12,
+            'fiscal_year_end_dd' => 31,
+            'currency'         => 'EUR',
+            'ubo_last_confirmed' => null,
+            'board_mandate_end'=> null,
+            'notification_email' => '',
+        ];
+        return (object) wp_parse_args( get_option( self::OPTION_NAME, [] ), $defaults );
     }
 
     public static function get_active_board_members(): array {
@@ -50,12 +72,12 @@ class Config {
     }
 
     public static function save( array $data ): int|\WP_Error {
-        global $wpdb;
-
-        update_option( 'emevzw_helper_delete_on_uninstall', sanitize_key($_POST['delete_on_uninstall']) );
+        if ( ! empty( $_POST['delete_on_uninstall'] ) ) {
+            update_option( 'emevzw_helper_delete_on_uninstall', sanitize_key( $_POST['delete_on_uninstall'] ) );
+        }
 
         $currency = strtoupper( substr( eme_sanitize_request( $data['currency'] ?? 'EUR' ), 0, 3 ) );
-        if (!self::isValidCurrencyCode($currency)) {
+        if ( ! self::isValidCurrencyCode( $currency ) ) {
             $currency = 'EUR';
         }
 
@@ -73,6 +95,7 @@ class Config {
             'website'              => eme_sanitize_request( $data['website'] ?? '' ),
             'email'                => eme_sanitize_request( $data['email'] ?? '' ),
             'court'                => eme_sanitize_request( $data['court'] ?? '' ),
+            'court_address'       => eme_sanitize_request( $data['court_address'] ?? '' ),
             'currency'             => $currency,
             'fiscal_year_start_mm' => max( 1, min( 12, (int) ( $data['fiscal_year_start_mm'] ?? 1 ) ) ),
             'fiscal_year_start_dd' => max( 1, min( 31, (int) ( $data['fiscal_year_start_dd'] ?? 1 ) ) ),
@@ -83,18 +106,8 @@ class Config {
             'notification_email'   => eme_sanitize_email( $data['notification_email'] ?? '' ),
         ];
 
-        $id = isset( $data['id'] ) ? (int) $data['id'] : 1;
-        $exists = (int) $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM `{$wpdb->prefix}emevzw_config` WHERE id = %d", $id
-        ) );
-
-        if ( $exists ) {
-            $wpdb->update( $wpdb->prefix . 'emevzw_config', $row, [ 'id' => $id ], null, [ '%d' ] );
-        } else {
-            $wpdb->insert( $wpdb->prefix . 'emevzw_config', $row );
-            $id = (int) $wpdb->insert_id;
-        }
-        return $id;
+        update_option( self::OPTION_NAME, $row );
+        return 1;
     }
 
     public static function save_board_member( array $data ): int|\WP_Error {

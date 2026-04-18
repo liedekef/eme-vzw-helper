@@ -18,8 +18,11 @@ $website    = esc_html( $config->website  ?? '' );
 $email      = esc_html( $config->email ?? '' );
 $year       = (int) $p->fiscal_year;
 
+$formatter = new \NumberFormatter( 'nl_BE', \NumberFormatter::CURRENCY );
+
 // Helper: bedrag formatteren
-$fmt = fn( float $v ) => number_format( $v, 2, ',', '.' ) . ' €';
+//$fmt = fn( float $v ) => number_format( $v, 2, ',', '.' ) . ' €';
+$fmt = fn( float $v ) => $formatter->formatCurrency( $v,$config->currency );
 $nihil = fn( string $s ) => trim( $s ) !== '' ? nl2br( esc_html( $s ) ) : '<em>Nihil</em>';
 
 // Afschrijvingstabel regels
@@ -37,7 +40,7 @@ $depr_method_label = $p->depr_method === 'degressive'
   * { box-sizing: border-box; }
   body { font-family: Helvetica, Arial, sans-serif; font-size: 9pt; color: #000; margin: 0; padding: 0; }
 
-  .page { width: 190mm; margin: 0 auto; padding: 10mm 0; }
+  .page { width: 250mm; margin: 0 auto; padding: 10mm 0; }
 
   h1.vzw-title { font-size: 12pt; font-weight: bold; margin: 0 0 2pt; text-align: center; }
   .vzw-subtitle { font-size: 9pt; color: #333; margin: 0 0 8pt; text-align: center; }

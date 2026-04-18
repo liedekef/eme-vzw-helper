@@ -21,14 +21,6 @@ class Installer {
     private static function migrate(): void {
         global $wpdb;
         $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
-
-        if ( $current_version && $current_version < 4 ) {
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN website VARCHAR(200) NOT NULL DEFAULT ''" );
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN email VARCHAR(200) NOT NULL DEFAULT ''" );
-        }
-        if ( $current_version && $current_version < 5 ) {
-            $wpdb->query( "ALTER TABLE {$wpdb->prefix}emevzw_config ADD COLUMN currency VARCHAR(10) NOT NULL DEFAULT 'EUR'") ;
-        }
     }
 
     public static function deactivate(): void {
@@ -40,41 +32,13 @@ class Installer {
         self::drop_tables();
         delete_option( self::DB_VERSION_OPTION );
         delete_option( 'emevzw_helper_delete_on_uninstall' );
+        delete_option( 'emevzw_helper_settings' );
     }
 
     public static function create_tables(): void {
         global $wpdb;
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         $charset = $wpdb->get_charset_collate();
-
-        // ── VZW Configuration (one row per VZW) ─────────────────────────
-        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_config (
-            id                      INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-            vzw_name                VARCHAR(200)    NOT NULL DEFAULT '',
-            vzw_shortname           VARCHAR(100)    NOT NULL DEFAULT '',
-            vzw_number              VARCHAR(12)     NOT NULL DEFAULT '',
-            vzw_legal_form          VARCHAR(50)     NOT NULL DEFAULT 'VZW',
-            street                  VARCHAR(150)    NOT NULL DEFAULT '',
-            house_number            VARCHAR(20)     NOT NULL DEFAULT '',
-            house_bus               VARCHAR(20)     NOT NULL DEFAULT '',
-            postal_code             VARCHAR(10)     NOT NULL DEFAULT '',
-            city                    VARCHAR(100)    NOT NULL DEFAULT '',
-            country                 VARCHAR(50)     NOT NULL DEFAULT 'België',
-            website                 VARCHAR(200)    NOT NULL DEFAULT '',
-            email                   VARCHAR(200)    NOT NULL DEFAULT '',
-            court                   VARCHAR(150)    NOT NULL DEFAULT '',
-            fiscal_year_start_mm    TINYINT         NOT NULL DEFAULT 1,
-            fiscal_year_start_dd    TINYINT         NOT NULL DEFAULT 1,
-            fiscal_year_end_mm      TINYINT         NOT NULL DEFAULT 12,
-            fiscal_year_end_dd      TINYINT         NOT NULL DEFAULT 31,
-            currency                VARCHAR(10)     NOT NULL DEFAULT 'EUR',
-            ubo_last_confirmed      DATE                     DEFAULT NULL,
-            board_mandate_end       DATE                     DEFAULT NULL,
-            notification_email      VARCHAR(150)    NOT NULL DEFAULT '',
-            created_at              DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at              DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
-        ) $charset;" );
 
         // ── Board members (bestuurders) ──────────────────────────────────
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_board (
@@ -224,7 +188,7 @@ class Installer {
 
     private static function drop_tables(): void {
         global $wpdb;
-        foreach ( [ 'emevzw_pub_board','emevzw_publications','emevzw_checks','emevzw_patrimony','emevzw_board','emevzw_config' ] as $t ) {
+        foreach ( [ 'emevzw_pub_board','emevzw_publications','emevzw_checks','emevzw_patrimony','emevzw_board' ] as $t ) {
             $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$t}" ); // phpcs:ignore
         }
     }
