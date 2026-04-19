@@ -65,14 +65,40 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
-        <label><?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?></label>
+        <label>
+            <?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?>
+            <button type="button" class="vzw-help-btn" data-id="vzw-help-rpr">?</button>
+        </label>
         <input type="text" name="court" value="<?= esc_attr( $config->court ?? '' ) ?>" placeholder="Ondernemingsrechtbank">
+        <p class="description"><?php esc_html_e( 'Voorbeeld: "RPR Antwerpen, afdeling Mechelen". Klik op het help-icoontje voor de correcte vereiste vermelding.', 'eme-vzw-helper' ); ?></p>
     </div>
     <div class="vzw-field" style="flex:2">
         <label><?php esc_html_e( 'Adres rechtbank', 'eme-vzw-helper' ); ?></label>
         <input type="text" name="court_address" value="<?= esc_attr( $config->court_address ?? '' ) ?>" placeholder="Straat, postcode, stad">
     </div>
 </div>
+<dialog id="vzw-help-rpr" class="vzw-help-dialog">
+    <h4><?php esc_html_e( 'Wat betekent RPR?', 'eme-vzw-helper' ); ?></h4>
+    <p><?php esc_html_e( 'RPR is de afkorting voor rechtspersonenregister. De plaats die na RPR weergegeven wordt, geeft aan onder welk gerechtelijk arrondissement een rechtspersoon valt of maw welke ondernemingsrechtbank of rechtbank van koophandel bevoegd is.', 'eme-vzw-helper' ); ?></p>
+    <p><?php esc_html_e( 'Artikel 2:20 van het Wetboek van vennootschappen en verenigingen (WVV) verplicht rechtspersonen om op al hun uitgaande correspondentie (zoals facturen) het woord rechtspersonenregister of RPR, gevolgd door de rechtbank van de zetel van de rechtspersoon, te vermelden.', 'eme-vzw-helper' ); ?></p>
+    <h4><?php esc_html_e( 'Welk RPR moet ik op mijn factuur vermelden?', 'eme-vzw-helper' ); ?></h4>
+<p>
+De indeling van deze rechtbanken van koophandel is de volgende:<br>
+<b>Antwerpen</b>, met afdelingen Antwerpen, Hasselt, Mechelen, Tongeren en Turnhout<br>
+<b>Brussel</b><br>
+<b>Gent</b>, met afdelingen Brugge, Dendermonde, Gent, Ieper, Kortrijk, Oostende, Oudenaarde en Veurne<br>
+<b>Leuven</b><br>
+<b>Nijvel</b><br>
+<b>Bergen-Charleroi</b>, met afdelingen Bergen, Charleroi en Doornik<br>
+<b>Luik</b>, met afdelingen Arlon, Dinant, Hoei, Luik, Marche-en-Famenne, Namen, Neufchâteau en Verviers<br>
+<b>Eupen</b>
+</p>
+    <h4><?php esc_html_e( 'Officiële vermelding', 'eme-vzw-helper' ); ?></h4>
+<p>
+Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld moest worden, moet nu "RPR Gent, Afdeling Dendermonde" staan
+</p>
+    <div class="dialog-footer"><button type="button" commandfor="vzw-help-rpr" command="close"><?php esc_html_e( 'Sluiten', 'eme-vzw-helper' ); ?></button></div>
+</dialog>
 <div class="vzw-row">
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>

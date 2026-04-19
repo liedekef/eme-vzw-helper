@@ -4,6 +4,22 @@
     'use strict';
 
     const { nonce, ajaxUrl, i18n } = emeVzw;
+
+    /* ════════════════════════════════════════════════════════════════
+     * HELP DIALOGS
+     * ════════════════════════════════════════════════════════════════ */
+    document.querySelectorAll('dialog.vzw-help-dialog').forEach(function(dlg) {
+        dlg.addEventListener('click', function(e) {
+            if (e.target === dlg) dlg.close();
+        });
+    });
+    document.querySelectorAll('.vzw-help-btn').forEach(function(e) {
+        e.addEventListener('click', function(e) {
+            const targetId = e.target.dataset.id;
+            console.log(targetId);
+            document.getElementById(targetId)?.showModal();
+        });
+    });
     /**
      * Recursieve helper: zet complexe JS-objecten om naar FormData met bracket-keys.
      * Bijv: { board_changes: [{ id: 1 }] } wordt board_changes[0][id]=1
