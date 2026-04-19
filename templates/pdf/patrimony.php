@@ -17,6 +17,7 @@ $postal     = esc_html( trim( ( $config->postal_code ?? '' ) . ' ' . ( $config->
 $website    = esc_html( $config->website  ?? '' );
 $email      = esc_html( $config->email ?? '' );
 $year       = (int) $p->fiscal_year;
+$court      = esc_html( $config->court ?? '' );
 
 $formatter = new \NumberFormatter( 'nl_BE', \NumberFormatter::CURRENCY );
 
@@ -94,10 +95,12 @@ $depr_method_label = $p->depr_method === 'degressive'
         Ondernemingsnr. <?= $vzw_number ?>
     </p>
     <p class="vzw-subtitle">
-        <?= $website ?> | <?= $email ?>
+        <?= $website ?> | <?= $email ?><br>
+        <?= $court ?>
     </p>
 
-    <div class="doc-title">Boekjaar <?= $year ?> Bijlage C
+    <div class="doc-title">
+        Boekjaar <?= $year ?> Bijlage C
         <br>
         Inventaris van Activa, Rechten, Schulden en Verbintenissen
     </div>

@@ -219,7 +219,7 @@ class Patrimony {
         $dompdf = new \Dompdf\Dompdf( $options );
         $dompdf->loadHtml( '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"></head><body>'
             . $html . '</body></html>' );
-        $dompdf->setPaper( 'A4', 'portrait' );
+        $dompdf->setPaper( 'A4', 'landscape' );
         $dompdf->render();
         $dompdf->stream( 'StaatVanHetVermogen_' . $year . '.pdf', [ 'Attachment' => false ] );
         exit;
