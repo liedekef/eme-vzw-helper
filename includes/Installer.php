@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 
     const DB_VERSION_OPTION = 'emevzw_db_version';
-    const DB_VERSION        = '5';
+    const DB_VERSION        = '6';
 
     public static function activate(): void {
         self::create_tables();
@@ -21,6 +21,23 @@ class Installer {
     private static function migrate(): void {
         global $wpdb;
         $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
+
+        // v6: role → legal_capacity (wettelijke hoedanigheid) + function_title (interne functie)
+        if ( $current_version < 6 ) {
+            $table = $wpdb->prefix . 'emevzw_board';
+            $cols  = $wpdb->get_col( "DESC `{$table}`", 0 );
+
+            // Hernoem 'role' naar 'legal_capacity' indien nog niet gedaan
+            if ( in_array( 'role', $cols, true ) && ! in_array( 'legal_capacity', $cols, true ) ) {
+                $wpdb->query( "ALTER TABLE `{$table}` CHANGE `role` `legal_capacity` VARCHAR(80) NOT NULL DEFAULT 'bestuurder'" );
+            }
+
+            // Voeg 'function_title' toe indien niet aanwezig
+            $cols = $wpdb->get_col( "DESC `{$table}`", 0 ); // opnieuw ophalen na rename
+            if ( ! in_array( 'function_title', $cols, true ) ) {
+                $wpdb->query( "ALTER TABLE `{$table}` ADD COLUMN `function_title` VARCHAR(80) NOT NULL DEFAULT '' AFTER `legal_capacity`" );
+            }
+        }
     }
 
     public static function deactivate(): void {
@@ -54,7 +71,8 @@ class Installer {
             postal_code         VARCHAR(10)     NOT NULL DEFAULT '',
             city                VARCHAR(100)    NOT NULL DEFAULT '',
             country             VARCHAR(50)     NOT NULL DEFAULT 'België',
-            role                VARCHAR(50)     NOT NULL DEFAULT 'bestuurder',
+            legal_capacity      VARCHAR(80)     NOT NULL DEFAULT 'bestuurder',
+            function_title      VARCHAR(80)     NOT NULL DEFAULT '',
             email               VARCHAR(150)    NOT NULL DEFAULT '',
             phone               VARCHAR(30)     NOT NULL DEFAULT '',
             appointed_date      DATE                     DEFAULT NULL,

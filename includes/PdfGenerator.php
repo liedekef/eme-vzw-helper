@@ -359,23 +359,23 @@ class PdfGenerator {
         $secretaris = null;
 
         foreach ( $active_board as $m ) {
-            $role_lower = strtolower( $m->role ?? '' );
-            // Zoek naar voorzitter/president
-            if ( preg_match( '/(voorzitter|president|chair)/i', $role_lower ) ) {
+            $func_lower = strtolower( $m->function_title ?? '' );
+            // Zoek naar voorzitter/president op basis van function_title
+            if ( preg_match( '/(voorzitter|president|chair)/i', $func_lower ) ) {
                 $voorzitter = $m;
             }
-            // Zoek naar secretaris
-            if ( preg_match( '/(secretaris|secretary)/i', $role_lower ) ) {
+            // Zoek naar secretaris op basis van function_title
+            if ( preg_match( '/(secretaris|secretary)/i', $func_lower ) ) {
                 $secretaris = $m;
             }
         }
 
         $signatory_parts = [];
         if ( $voorzitter ) {
-            $signatory_parts[] = sprintf( '%s %s, %s', $voorzitter->first_name, $voorzitter->last_name, 'bestuurder');
+            $signatory_parts[] = sprintf( '%s %s, %s', $voorzitter->first_name, $voorzitter->last_name, $voorzitter->legal_capacity ?? 'bestuurder' );
         }
         if ( $secretaris ) {
-            $signatory_parts[] = sprintf( '%s %s, %s', $secretaris->first_name, $secretaris->last_name, 'bestuurder');
+            $signatory_parts[] = sprintf( '%s %s, %s', $secretaris->first_name, $secretaris->last_name, $secretaris->legal_capacity ?? 'bestuurder' );
         }
 
         // Voeg toe als er minstens 1 gevonden is

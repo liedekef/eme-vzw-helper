@@ -93,7 +93,7 @@ $status_labels = [
                             <optgroup label="<?php esc_attr_e( 'Actief', 'eme-vzw-helper' ); ?>">
                             <?php foreach ( $board_members_active as $m ): ?>
                             <option value="<?= (int) $m->id ?>" <?= selected( $m->id, $bc->board_id ?? 0, false ) ?>>
-                                <?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->role ? ' (' . $m->role . ')' : '' ) ) ?>
+                                <?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?>
                             </option>
                             <?php endforeach; ?>
                             </optgroup>
@@ -101,7 +101,7 @@ $status_labels = [
                             <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>">
                             <?php foreach ( $board_members_inactive as $m ): ?>
                             <option value="<?= (int) $m->id ?>" <?= selected( $m->id, $bc->board_id ?? 0, false ) ?>>
-                                <?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->role ? ' (' . $m->role . ')' : '' ) ) ?>
+                                <?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?>
                             </option>
                             <?php endforeach; ?>
                             </optgroup>
@@ -131,13 +131,13 @@ $status_labels = [
                         <option value=""><?php esc_html_e( '— Kies —', 'eme-vzw-helper' ); ?></option>
                         <optgroup label="<?php esc_attr_e( 'Actief', 'eme-vzw-helper' ); ?>">
                         <?php foreach ( $board_members_active as $m ): ?>
-                        <option value="<?= (int) $m->id ?>"><?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->role ? ' (' . $m->role . ')' : '' ) ) ?></option>
+                        <option value="<?= (int) $m->id ?>"><?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?></option>
                         <?php endforeach; ?>
                         </optgroup>
                         <?php if ( $board_members_inactive ): ?>
                         <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>">
                         <?php foreach ( $board_members_inactive as $m ): ?>
-                        <option value="<?= (int) $m->id ?>"><?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->role ? ' (' . $m->role . ')' : '' ) ) ?></option>
+                        <option value="<?= (int) $m->id ?>"><?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?></option>
                         <?php endforeach; ?>
                         </optgroup>
                         <?php endif; ?>

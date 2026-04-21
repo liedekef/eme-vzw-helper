@@ -16,27 +16,31 @@ if ( ! empty( $config->house_bus ) ) {
 $postal  = esc_html( trim( ( $config->postal_code ?? '' ) . ' ' . ( $config->city ?? '' ) ) );
 $rpr     = esc_html( $config->court ?? '' );
 
-// Vertegenwoordigers (voorzitter + secretaris)
-$active_board = EMEVzw\Config::get_active_board_members();
+// Vertegenwoordigers: zoek op function_title (voorzitter + secretaris)
+$active_board       = EMEVzw\Config::get_active_board_members();
 $vertegenwoordigers = [];
 foreach ( $active_board as $m ) {
-    $role_lower = strtolower( $m->role ?? '' );
-    if ( preg_match( '/(voorzitter|president|chair)/i', $role_lower ) ) {
+    $func_lower = strtolower( $m->function_title ?? '' );
+    if ( preg_match( '/(voorzitter|president|chair)/i', $func_lower ) ) {
         $vertegenwoordigers[] = $m;
-    } elseif ( preg_match( '/(secretaris|secretary)/i', $role_lower ) ) {
+    } elseif ( preg_match( '/(secretaris|secretary)/i', $func_lower ) ) {
         $vertegenwoordigers[] = $m;
     }
 }
 
-// Uniek array (vermijd dubbelingen als iemand beide rollen heeft)
+// Uniek array (vermijd dubbelingen als iemand beide functies heeft)
 $vertegenwoordigers = array_unique( $vertegenwoordigers, SORT_REGULAR );
 
-// Bouw de vertegenwoordiger-string op
+// Bouw de vertegenwoordiger-string op: "Naam, wettelijke hoedanigheid (interne functie)"
 $vertegenwoordiger_str = '';
 if ( ! empty( $vertegenwoordigers ) ) {
     $parts = [];
     foreach ( $vertegenwoordigers as $v ) {
-        $parts[] = esc_html( $v->first_name . ' ' . $v->last_name . ', ' . ( $v->role ?? 'bestuurder' ) );
+        $label = $v->first_name . ' ' . $v->last_name . ', ' . ( $v->legal_capacity ?? 'bestuurder' );
+        if ( ! empty( $v->function_title ) ) {
+            $label .= ' (' . $v->function_title . ')';
+        }
+        $parts[] = esc_html( $label );
     }
     $vertegenwoordiger_str = implode( ' en ', $parts );
 }
@@ -45,22 +49,14 @@ if ( ! empty( $vertegenwoordigers ) ) {
 $today = date_i18n( 'd/m/Y' );
 $city  = esc_html( $config->city ?? '' );
 
-// Hoedanigheid mapping
-$hoedanigheid_map = [
-    'voorzitter'  => 'Bestuurder / Voorzitter',
-    'president'   => 'Bestuurder / Voorzitter',
-    'secretaris'  => 'Bestuurder / Secretaris',
-    'penningmeester' => 'Bestuurder / Penningmeester',
-    'treasurer'   => 'Bestuurder / Penningmeester',
-];
-$get_hoedanigheid = function( string $role ) use ( $hoedanigheid_map ): string {
-    $lower = strtolower( $role );
-    foreach ( $hoedanigheid_map as $key => $label ) {
-        if ( str_contains( $lower, $key ) ) return $label;
-    }
-    return 'Bestuurder';
+// legal_capacity is al de correcte wettelijke benaming — geen mapping meer nodig.
+// Optioneel: toon ook de interne functie tussen haakjes als die er is.
+$format_hoedanigheid = function( object $c ): string {
+    $cap = $c->legal_capacity ?? 'bestuurder';
+    return ! empty( $c->function_title )
+        ? esc_html( $cap . ' (' . $c->function_title . ')' )
+        : esc_html( $cap );
 };
-  //.page { width: 210mm; margin: 0 auto; padding: 15mm 15mm 15mm 15mm; }
 ?>
 <style>
   * { box-sizing: border-box; }
@@ -177,7 +173,7 @@ $get_hoedanigheid = function( string $role ) use ( $hoedanigheid_map ): string {
                             – <?= esc_html( $c->national_id ) ?>
                         <?php endif; ?>
                     </td>
-                    <td><?= esc_html( $get_hoedanigheid( $c->role ?? '' ) ) ?></td>
+                    <td><?= $format_hoedanigheid( $c ) ?></td>
                 </tr>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -227,7 +223,7 @@ $get_hoedanigheid = function( string $role ) use ( $hoedanigheid_map ): string {
                 <div class="sig-line"></div>
                 <div class="sig-identity">
                     <?= esc_html( $v->first_name . ' ' . $v->last_name ) ?><br>
-                    <em><?= esc_html( $v->role ?? 'Bestuurder' ) ?></em>
+                    <em><?= esc_html( $v->legal_capacity ?? 'bestuurder' ) ?><?= ! empty( $v->function_title ) ? ' · ' . esc_html( $v->function_title ) : '' ?></em>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -243,7 +239,7 @@ $get_hoedanigheid = function( string $role ) use ( $hoedanigheid_map ): string {
     <!-- VOETNOTEN -->
     <div class="footer-note">
         <p><span class="footnote-ref">(1)</span> Identiteitsgegevens + hoedanigheid van de extern bevoegde vertegenwoordigers</p>
-        <p><span class="footnote-ref">(2)</span> bestuurder, zaakvoerder, commissaris, dagelijks bestuurder, lid van een directiecomité, directieraad of raad van toezicht, vereffenaar van een rechtspersoon, de vertegenwoordiger voor de werkzaamheden van een bijkantoor, gedelegeerd bestuurder, vaste vertegenwoordiger</p>
+        <p><span class="footnote-ref">(2)</span> bestuurder, zaakvoerder, vaste vertegenwoordiger rechtspersoon, plaatsvervangend vaste vertegenwoordiger rechtspersoon, lid van de toezichtraad, lid van het directiecomité, lid van de directieraad, vereffenaar, wettelijk vertegenwoordiger</p>
     </div>
 
 </div>
