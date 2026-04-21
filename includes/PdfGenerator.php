@@ -466,6 +466,63 @@ class PdfGenerator {
         return $gen->output( 'Formulier_II.pdf', $dest );
     }
 
+    /* ======================================================================
+     *  BESTUURSVERBOD VERKLARING (wet 4 mei 2023)
+     * ====================================================================== */
+
+    /**
+     * Genereert de "Bijzondere Verklaring Bestuursverbod" als HTML-gebaseerde PDF via dompdf.
+     * Één exemplaar per nieuw benoemde bestuurder (of alle bestuurswijzigingen van een publicatie).
+     *
+     * @param int    $pub_id  Publicatie-ID
+     * @param string $dest    'I' = inline browser, 'D' = download, 'S' = string
+     * @param bool   $debug   Debugmodus
+     */
+    public static function generate_bestuursverbod( int $pub_id, string $dest = 'I', bool $debug = false ): void {
+        $pub     = Publications::get( $pub_id );
+        $config  = Config::get();
+        $changes = Publications::get_board_changes( $pub_id );
+
+        if ( ! $pub || ! $config ) {
+            throw new \RuntimeException( 'Publicatie of config niet gevonden.' );
+        }
+
+        // Render het HTML-template naar string
+        ob_start();
+        include EME_VZW_DIR . 'templates/pdf/bestuursverbod.php';
+        $html = ob_get_clean();
+
+        $full_html = '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>';
+
+        // Laad dompdf via Events Made Easy (zelfde aanpak als Patrimony)
+        $dompdf_autoload = WP_PLUGIN_DIR . '/events-made-easy/includes/dompdf/vendor/autoload.php';
+
+        if ( ! file_exists( $dompdf_autoload ) ) {
+            // Fallback: stuur HTML direct naar browser (print-naar-PDF via browser)
+            header( 'Content-Type: text/html; charset=UTF-8' );
+            echo $full_html;
+            exit;
+        }
+
+        require_once $dompdf_autoload;
+
+        $options = new \Dompdf\Options();
+        $options->set( 'isHtml5ParserEnabled', true );
+        $options->set( 'isRemoteEnabled', false );
+        $options->set( 'defaultFont', 'Helvetica' );
+
+        $pdf = new \Dompdf\Dompdf( $options );
+        $pdf->loadHtml( $full_html );
+        $pdf->setPaper( 'A4', 'portrait' );
+        $pdf->render();
+
+        $filename = 'Verklaring_Bestuursverbod_' . date( 'Ymd' ) . '.pdf';
+
+        $attachment = ( $dest === 'D' ) ? true : false;
+        $pdf->stream( sanitize_file_name( $filename ), [ 'Attachment' => $attachment ] );
+        exit;
+    }
+
     /**
      * Genereert een gecombineerde PDF met 3 exemplaren van Formulier I
      * gevolgd door 2 exemplaren van Formulier II, in één enkele PDF-output.

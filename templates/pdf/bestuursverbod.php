@@ -1,0 +1,249 @@
+<?php
+/**
+ * PDF template: Bijzondere Verklaring Bestuursverbod (wet 4 mei 2023)
+ * Variabelen: $pub (publicatie), $config (vzw config), $changes (array van bestuurswijzigingen)
+ * Gerenderd via TCPDF (PdfGenerator) of als HTML-fallback.
+ */
+defined( 'ABSPATH' ) || exit;
+
+$vzw_name    = esc_html( $config->vzw_name ?? '' );
+$vzw_form    = esc_html( $config->vzw_legal_form ?? 'VZW' );
+$vzw_number  = esc_html( $config->vzw_number ?? '' );
+$street      = esc_html( trim( ( $config->street ?? '' ) . ' ' . ( $config->house_number ?? '' ) ) );
+if ( ! empty( $config->house_bus ) ) {
+    $street .= esc_html( ' bus ' . $config->house_bus );
+}
+$postal  = esc_html( trim( ( $config->postal_code ?? '' ) . ' ' . ( $config->city ?? '' ) ) );
+$rpr     = esc_html( $config->court ?? '' );
+
+// Vertegenwoordigers (voorzitter + secretaris)
+$active_board = EMEVzw\Config::get_active_board_members();
+$vertegenwoordigers = [];
+foreach ( $active_board as $m ) {
+    $role_lower = strtolower( $m->role ?? '' );
+    if ( preg_match( '/(voorzitter|president|chair)/i', $role_lower ) ) {
+        $vertegenwoordigers[] = $m;
+    } elseif ( preg_match( '/(secretaris|secretary)/i', $role_lower ) ) {
+        $vertegenwoordigers[] = $m;
+    }
+}
+
+// Uniek array (vermijd dubbelingen als iemand beide rollen heeft)
+$vertegenwoordigers = array_unique( $vertegenwoordigers, SORT_REGULAR );
+
+// Bouw de vertegenwoordiger-string op
+$vertegenwoordiger_str = '';
+if ( ! empty( $vertegenwoordigers ) ) {
+    $parts = [];
+    foreach ( $vertegenwoordigers as $v ) {
+        $parts[] = esc_html( $v->first_name . ' ' . $v->last_name . ', ' . ( $v->role ?? 'bestuurder' ) );
+    }
+    $vertegenwoordiger_str = implode( ' en ', $parts );
+}
+
+// Datum vandaag
+$today = date_i18n( 'd/m/Y' );
+$city  = esc_html( $config->city ?? '' );
+
+// Hoedanigheid mapping
+$hoedanigheid_map = [
+    'voorzitter'  => 'Bestuurder / Voorzitter',
+    'president'   => 'Bestuurder / Voorzitter',
+    'secretaris'  => 'Bestuurder / Secretaris',
+    'penningmeester' => 'Bestuurder / Penningmeester',
+    'treasurer'   => 'Bestuurder / Penningmeester',
+];
+$get_hoedanigheid = function( string $role ) use ( $hoedanigheid_map ): string {
+    $lower = strtolower( $role );
+    foreach ( $hoedanigheid_map as $key => $label ) {
+        if ( str_contains( $lower, $key ) ) return $label;
+    }
+    return 'Bestuurder';
+};
+  //.page { width: 210mm; margin: 0 auto; padding: 15mm 15mm 15mm 15mm; }
+?>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 9.5pt; color: #000; margin: 0; padding: 0; }
+  .page { width: 180mm; margin: 0 auto; padding: 15mm 0; }
+
+  .doc-title {
+      font-size: 11pt; font-weight: bold; text-align: center;
+      border-top: 2px solid #000; border-bottom: 2px solid #000;
+      padding: 5pt 0; margin-bottom: 10pt; text-transform: uppercase;
+      letter-spacing: 0.5pt;
+  }
+  .doc-subtitle {
+      font-size: 9pt; text-align: center; font-style: italic;
+      margin-bottom: 14pt; color: #333;
+  }
+
+  .entity-block { border: 1px solid #aaa; padding: 8pt 10pt; margin-bottom: 12pt; }
+  .entity-block table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  .entity-block td { padding: 2pt 4pt; vertical-align: top; }
+  .entity-block td.label { font-weight: bold; width: 38%; color: #222; white-space: nowrap; }
+  .entity-block td.value { border-bottom: 1px dotted #bbb; }
+
+  .section-title { font-size: 9.5pt; font-weight: bold; margin: 12pt 0 6pt; }
+
+  .persons-table { width: 100%; border-collapse: collapse; margin: 6pt 0 12pt; font-size: 9pt; }
+  .persons-table th { background: #e8e8e8; padding: 4pt 6pt; border: 1px solid #999; text-align: left; font-size: 8.5pt; }
+  .persons-table td { padding: 4pt 6pt; border: 1px solid #ccc; vertical-align: top; }
+
+  .declaration-text { font-size: 9pt; line-height: 1.6; text-align: justify; margin-bottom: 10pt; }
+
+  .verboden-list { font-size: 8.5pt; line-height: 1.5; padding-left: 15pt; margin: 8pt 0; }
+  .verboden-list li { margin-bottom: 6pt; }
+
+  .signature-block { margin-top: 20pt; }
+  .signature-row { display: flex; gap: 20pt; }
+  .signature-col { flex: 1; }
+  .sig-label { font-size: 8.5pt; color: #555; margin-bottom: 3pt; }
+  .sig-line { border-bottom: 1px solid #000; height: 30pt; margin-bottom: 3pt; }
+  .sig-identity { font-size: 8pt; color: #666; font-style: italic; }
+
+  .place-date { font-size: 9pt; margin-bottom: 12pt; }
+  .place-date .field { border-bottom: 1px solid #000; display: inline-block; min-width: 100pt; }
+
+  .footer-note {
+      margin-top: 14pt; font-size: 7.5pt; color: #666;
+      border-top: 1px solid #ccc; padding-top: 5pt;
+  }
+  .footnote-ref { font-size: 7pt; vertical-align: super; }
+</style>
+
+<div class="page">
+
+    <!-- TITEL -->
+    <div class="doc-title">
+        Bijzondere verklaring
+    </div>
+    <div class="doc-subtitle">
+        in toepassing van de wet betreffende het Centraal register van bestuursverboden van 4 mei 2023
+    </div>
+
+    <!-- ENTITEIT -->
+    <div class="entity-block">
+        <table>
+            <tr>
+                <td class="label">Naam :</td>
+                <td class="value"><?= $vzw_name ?></td>
+            </tr>
+            <tr>
+                <td class="label">Rechtsvorm :</td>
+                <td class="value"><?= $vzw_form ?></td>
+            </tr>
+            <tr>
+                <td class="label">Ondernemingsnr :</td>
+                <td class="value"><?= $vzw_number ?></td>
+            </tr>
+            <tr>
+                <td class="label">Zetel :</td>
+                <td class="value"><?= $street ?>, <?= $postal ?></td>
+            </tr>
+            <tr>
+                <td class="label">RPR :</td>
+                <td class="value"><?= $rpr ?></td>
+            </tr>
+            <tr>
+                <td class="label">Vertegenwoordigd door<span class="footnote-ref">(1)</span> :</td>
+                <td class="value"><?= $vertegenwoordiger_str ?></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- VERKLARING TEKST -->
+    <p class="declaration-text">
+        Verklaart/verklaren hierbij, in toepassing van <strong>artikel 13</strong> van de wet betreffende
+        het Centraal register van bestuursverboden van <strong>4 mei 2023</strong>, dat tegen de hierna
+        vermelde persoon/personen
+    </p>
+
+    <!-- PERSONEN TABEL -->
+    <table class="persons-table">
+        <thead>
+            <tr>
+                <th>Naam – voornaam – rijksregisternummer</th>
+                <th>Hoedanigheid<span class="footnote-ref">(2)</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ( ! empty( $changes ) ): ?>
+                <?php foreach ( $changes as $c ): ?>
+                <tr>
+                    <td>
+                        <?= esc_html( $c->last_name . ' ' . $c->first_name ) ?>
+                        <?php if ( ! empty( $c->national_id ) ): ?>
+                            – <?= esc_html( $c->national_id ) ?>
+                        <?php endif; ?>
+                    </td>
+                    <td><?= esc_html( $get_hoedanigheid( $c->role ?? '' ) ) ?></td>
+                </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="2" style="color:#999;font-style:italic">Geen bestuurswijzigingen gevonden.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+
+    <!-- VERBOD TEKST -->
+    <p class="declaration-text">
+        <strong>geen veroordeling werd uitgesproken</strong> door een rechtscollege van een lidstaat van
+        de Europese Economische Ruimte tot een verbod dat soortgelijk is aan één van de hierna vermelde
+        verboden zoals opgenomen in artikel 6 van de wet van 4 mei 2023 bedoelde verboden:
+    </p>
+
+    <ol class="verboden-list">
+        <li>
+            het verbod een werkzaamheid of een functie uit te oefenen overeenkomstig de artikelen 1,
+            1bis en 2 van het koninklijk besluit nr.&nbsp;22 van 24 oktober 1934 betreffende het
+            rechterlijk verbod aan bepaalde veroordeelden en gefailleerden om bepaalde functies, beroepen
+            of werkzaamheden uit te oefenen;
+        </li>
+        <li>
+            het verbod een werkzaamheid of een functie uit te oefenen overeenkomstig artikel 3quater van
+            het koninklijk besluit nr.&nbsp;22 van 24 oktober 1934 betreffende het rechterlijk verbod aan
+            bepaalde veroordeelden en gefailleerden om bepaalde functies, beroepen of werkzaamheden uit te
+            oefenen, en het verbod aan gefailleerden of daarmee gelijkgestelde personen om bepaalde
+            functies, beroepen of werkzaamheden uit te oefenen overeenkomstig artikel&nbsp;XX.229 van het
+            Wetboek van economisch recht.
+        </li>
+    </ol>
+
+    <!-- DATUM & HANDTEKENING -->
+    <p class="declaration-text" style="margin-top:12pt;">
+        Aldus opgemaakt en getekend te
+        <span class="field"><?= $city ?></span>
+        &nbsp;&nbsp;op&nbsp;&nbsp;
+        <span class="field"><?= $today ?></span>
+    </p>
+
+    <!-- HANDTEKENINGEN -->
+    <div class="signature-block">
+        <div class="signature-row">
+            <?php foreach ( $vertegenwoordigers as $v ): ?>
+            <div class="signature-col">
+                <div class="sig-label">Handtekening</div>
+                <div class="sig-line"></div>
+                <div class="sig-identity">
+                    <?= esc_html( $v->first_name . ' ' . $v->last_name ) ?><br>
+                    <em><?= esc_html( $v->role ?? 'Bestuurder' ) ?></em>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            <?php if ( empty( $vertegenwoordigers ) ): ?>
+            <div class="signature-col">
+                <div class="sig-label">Handtekening (identiteit/hoedanigheid vertegenwoordiger)</div>
+                <div class="sig-line"></div>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- VOETNOTEN -->
+    <div class="footer-note">
+        <p><span class="footnote-ref">(1)</span> Identiteitsgegevens + hoedanigheid van de extern bevoegde vertegenwoordigers</p>
+        <p><span class="footnote-ref">(2)</span> bestuurder, zaakvoerder, commissaris, dagelijks bestuurder, lid van een directiecomité, directieraad of raad van toezicht, vereffenaar van een rechtspersoon, de vertegenwoordiger voor de werkzaamheden van een bijkantoor, gedelegeerd bestuurder, vaste vertegenwoordiger</p>
+    </div>
+
+</div>

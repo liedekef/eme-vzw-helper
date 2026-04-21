@@ -20,6 +20,7 @@ class Publications {
         add_action( 'wp_ajax_eme_vzw_delete_publication',     [ __CLASS__, 'ajax_delete' ] );
         // Serve generated PDFs
         add_action( 'wp_ajax_eme_vzw_download_pdf',           [ __CLASS__, 'ajax_download_pdf' ] );
+        add_action( 'wp_ajax_eme_vzw_download_bestuursverbod', [ __CLASS__, 'ajax_download_bestuursverbod' ] );
     }
 
     /* ------------------------------------------------------------------
@@ -156,6 +157,33 @@ class Publications {
                 error_log( 'EME VZW PDF Error: ' . $e->getMessage() );
             }
             wp_die( esc_html__( 'Fout bij genereren formulier: ' . $e->getMessage(), 'eme-vzw-helper' ) );
+        }
+    }
+
+    /**
+     * Genereer en stream de Verklaring Bestuursverbod PDF.
+     */
+    public static function ajax_download_bestuursverbod(): void {
+        if ( ! wp_verify_nonce( $_GET['nonce'] ?? '', 'eme_vzw_nonce' ) ) {
+            wp_die( esc_html__( 'Ongeldige beveiligingstoken.', 'eme-vzw-helper' ), 403 );
+        }
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Onvoldoende rechten.', 'eme-vzw-helper' ), 403 );
+        }
+
+        $pub_id = (int) ( $_GET['pub_id'] ?? 0 );
+        if ( $pub_id <= 0 ) {
+            wp_die( esc_html__( 'Ongeldige publicatie-ID.', 'eme-vzw-helper' ), 400 );
+        }
+
+        try {
+            PdfGenerator::generate_bestuursverbod( $pub_id, 'I' );
+            exit;
+        } catch ( \Throwable $e ) {
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                error_log( 'EME VZW Bestuursverbod PDF Error: ' . $e->getMessage() );
+            }
+            wp_die( esc_html__( 'Fout bij genereren verklaring: ' . $e->getMessage(), 'eme-vzw-helper' ) );
         }
     }
 }

@@ -290,6 +290,14 @@
         window.open(url, '_blank');
     }
 
+    // Generate Verklaring Bestuursverbod PDF
+    function handleGenBestuursverbod(btn) {
+        const pubId = btn.dataset.pubId;
+        if (!pubId) return;
+        const url = `${ajaxUrl}?action=eme_vzw_download_bestuursverbod&nonce=${nonce}&pub_id=${pubId}`;
+        window.open(url, '_blank');
+    }
+
     // Delete patrimony
     function handleDeletePatrimony(btn) {
         if (!confirm(i18n.confirm_delete_patrimony)) return;
@@ -351,6 +359,7 @@
         'btn-add-board-change': handleAddBoardChange,
         'vzw-remove-row':       handleRemoveRow,
         'vzw-gen-doc':          handleGenDoc,
+        'vzw-gen-bestuursverbod': handleGenBestuursverbod,
         'vzw-delete-pub':       handleDeletePub,
         'vzw-delete-patrimony': handleDeletePatrimony,
         'vzw-delete-board':     handleDeleteBoard,
@@ -563,7 +572,7 @@
             const birthdate  = document.querySelector('input[name=birth_date]');
             const birthplace = document.querySelector('input[name=birth_place]');
             const address1   = document.querySelector('input[name=street]');
-            const address2   = document.querySelector('input[name=house_bus]');
+            const address2   = document.querySelector('input[name=house_number]');
             const zip        = document.querySelector('input[name=postal_code]');
             const city       = document.querySelector('input[name=city]');
             if (lastname)   { lastname.value   = opt?.dataset.lastname   || '';}

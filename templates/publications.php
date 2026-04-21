@@ -17,7 +17,7 @@ $status_labels = [
 <div class="wrap vzw-wrap">
     <h1><?php esc_html_e( 'Wettelijke Publicaties', 'eme-vzw-helper' ); ?></h1>
     <p style="color:#646970">
-        <?php esc_html_e( 'Maak Formulier I & II aan voor neerlegging bij de griffie.', 'eme-vzw-helper' ); ?>
+        <?php esc_html_e( 'Maak Formulieren I & II en verklaring op eer bestuursverbod voor neerlegging bij de griffie.', 'eme-vzw-helper' ); ?>
     </p>
     <?php if (!$pub) : ?>
     <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ) ?>" class="button" style="margin-bottom:16px">
@@ -174,7 +174,8 @@ $status_labels = [
         <div id="vzw-doc-buttons" style="<?= $pub ? '' : 'display:none' ?>;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f1">
             <h3 style="margin:0 0 10px"><?php esc_html_e( 'Documenten genereren', 'eme-vzw-helper' ); ?></h3>
             <div class="doc-btns" style="display:flex;gap:8px;flex-wrap:wrap">
-                <button type="button" class="button button-primary vzw-gen-doc" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📄 Maak PDF Formulieren aan</button>
+                <button type="button" class="button button-primary vzw-gen-doc" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📄 Maak Formulieren I & II aan</button>
+                <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📋 Verklaring op eer bestuursverbod</button>
             </div>
         </div>
     </div>
@@ -194,7 +195,8 @@ $status_labels = [
                 <td><span class="status-badge status-<?= esc_attr( $p->status ) ?>"><?= esc_html( $status_labels[ $p->status ] ?? $p->status ) ?></span></td>
                 <td>
                     <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $p->id ) ) ?>" class="button button-small">Bewerk</a>
-                    <button type="button" class="button button-small vzw-gen-doc" data-pub-id="<?= (int) $p->id ?>">Maak PDF Formulieren aan</button>
+                    <button type="button" class="button button-small vzw-gen-doc" data-pub-id="<?= (int) $p->id ?>">Maak Formulieren I &amp; II aan</button>
+                    <button type="button" class="button button-small vzw-gen-bestuursverbod" data-pub-id="<?= (int) $p->id ?>">Verklaring op eer bestuursverbod</button>
                     <button type="button" class="button button-small vzw-delete-pub" data-id="<?= (int) $p->id ?>">✕</button>
                 </td>
             </tr>
