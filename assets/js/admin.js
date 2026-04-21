@@ -16,7 +16,6 @@
     document.querySelectorAll('.vzw-help-btn').forEach(function(e) {
         e.addEventListener('click', function(e) {
             const targetId = e.target.dataset.id;
-            console.log(targetId);
             document.getElementById(targetId)?.showModal();
         });
     });
@@ -564,7 +563,6 @@
             // first hide all personal info, then show informational info on the selected person
             // Read extra fields stored on the <option> by SnapSelect
             const opt = this.querySelector(`option[value="${value}"]`);
-            console.log(opt);
             const lastname   = document.querySelector('input[name=last_name]');
             const firstname  = document.querySelector('input[name=first_name]');
             const email      = document.querySelector('input[name=email]');

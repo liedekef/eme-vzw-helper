@@ -170,17 +170,20 @@ $status_labels = [
             </p>
         </form>
 
-        <!-- DOC BUTTONS (onveranderd) -->
+        <!-- DOC BUTTONS -->
         <div id="vzw-doc-buttons" style="<?= $pub ? '' : 'display:none' ?>;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f1">
             <h3 style="margin:0 0 10px"><?php esc_html_e( 'Documenten genereren', 'eme-vzw-helper' ); ?></h3>
             <div class="doc-btns" style="display:flex;gap:8px;flex-wrap:wrap">
                 <button type="button" class="button button-primary vzw-gen-doc" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📄 Maak Formulieren I & II aan</button>
                 <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📋 Verklaring op eer bestuursverbod</button>
+                <?php if ($pub): ?>
+                <button type="button" class="button vzw-help-btn" data-id="vzw-howto-dialog-<?= (int) $pub->id ?>" style="width:auto;border-radius:4px;padding:0 10px" title="<?php esc_attr_e( 'Hoe neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe neerleggen?</button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <!-- TABEL MET ALLE PUBLICATIES (onveranderd) -->
+    <!-- TABEL MET ALLE PUBLICATIES -->
     <?php if ( $all_pubs ): ?>
     <h2 style="margin-top:28px"><?php esc_html_e( 'Alle publicaties', 'eme-vzw-helper' ); ?></h2>
     <table class="vzw-pub-table">
@@ -197,7 +200,9 @@ $status_labels = [
                     <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $p->id ) ) ?>" class="button button-small">Bewerk</a>
                     <button type="button" class="button button-small vzw-gen-doc" data-pub-id="<?= (int) $p->id ?>">Maak Formulieren I &amp; II aan</button>
                     <button type="button" class="button button-small vzw-gen-bestuursverbod" data-pub-id="<?= (int) $p->id ?>">Verklaring op eer bestuursverbod</button>
+                    <button type="button" class="button vzw-help-btn" data-id="vzw-howto-dialog-<?= (int) $p->id ?>" style="width:auto;border-radius:4px;padding:0 10px" title="<?php esc_attr_e( 'Hoe neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe neerleggen?</button>
                     <button type="button" class="button button-small vzw-delete-pub" data-id="<?= (int) $p->id ?>">✕</button>
+                    <?php include EME_VZW_DIR . 'templates/publication-help.php' ?>
                 </td>
             </tr>
         <?php endforeach; ?>

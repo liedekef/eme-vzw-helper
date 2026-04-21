@@ -303,3 +303,92 @@ dialog.vzw-help-dialog::backdrop { background: rgba(0,0,0,.5); }
     .vzw-summary  { flex-direction: column; }
     .vzw-board-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Howto / neerlegging dialog ─────────────────────────────────────── */
+dialog.vzw-howto-dialog {
+    max-width: 680px;
+    width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px 28px;
+}
+dialog.vzw-howto-dialog h4 {
+    font-size: 16px;
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f1;
+}
+
+.vzw-howto-step {
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f0f0f1;
+}
+.vzw-howto-step:last-of-type { border-bottom: none; margin-bottom: 0; }
+
+.vzw-howto-step-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #1d2327;
+}
+.vzw-howto-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #2271b1;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.vzw-howto-list {
+    margin: 0 0 8px 0;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+.vzw-howto-list li { margin-bottom: 5px; }
+.vzw-howto-doc { font-weight: 600; display: block; }
+.vzw-howto-copies { color: #646970; font-size: 12px; }
+
+.vzw-howto-note {
+    background: #fff8e5;
+    border-left: 3px solid #dba617;
+    padding: 6px 10px;
+    font-size: 12px;
+    margin: 0 0 10px;
+    border-radius: 0 3px 3px 0;
+}
+
+.vzw-howto-bank {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 6px;
+}
+.vzw-howto-bank td {
+    padding: 4px 8px;
+    vertical-align: top;
+    border-bottom: 1px solid #f0f0f1;
+}
+.vzw-howto-bank td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+    width: 120px;
+    color: #3c434a;
+}
+.vzw-howto-bank code {
+    background: #f6f7f7;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+.vzw-howto-meta { color: #646970; font-size: 11px; margin-left: 6px; }
