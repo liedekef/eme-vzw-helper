@@ -99,12 +99,6 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
 </p>
     <div class="dialog-footer"><button type="button" commandfor="vzw-help-rpr" command="close"><?php esc_html_e( 'Sluiten', 'eme-vzw-helper' ); ?></button></div>
 </dialog>
-<div class="vzw-row">
-    <div class="vzw-field">
-        <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>
-        <input type="email" name="notification_email" value="<?= esc_attr( $config->notification_email ?? '' ) ?>">
-    </div>
-</div>
 
 <h3><?php esc_html_e( 'Boekjaar en valuta', 'eme-vzw-helper' ); ?></h3>
 <div class="vzw-row">
@@ -144,6 +138,10 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
         <label><?php esc_html_e( 'UBO-register laatste bevestiging', 'eme-vzw-helper' ); ?></label>
         <input type="date" name="ubo_last_confirmed" value="<?= esc_attr( $config->ubo_last_confirmed ?? '' ) ?>">
         <span class="description"><?php esc_html_e( 'Jaarlijkse bevestiging vereist. Herinnering bij > 11 maanden.', 'eme-vzw-helper' ); ?></span>
+    </div>
+    <div class="vzw-field">
+        <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>
+        <input type="email" name="notification_email" value="<?= esc_attr( $config->notification_email ?? '' ) ?>">
     </div>
 </div>
 

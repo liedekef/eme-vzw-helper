@@ -481,4 +481,102 @@
         recalcPatrimony();
     }
 
+    function initSnapSelectRemote(selector, options = {}) {
+        // Convert selector to elements array
+        const elements = typeof selector === 'string'
+            ? Array.from(document.querySelectorAll(selector))
+            : [selector];
+
+        if (!elements.length) return [];
+
+        return Array.from(elements).map(el => {
+            // Guard: skip if already initialised
+            if (el.snapselectInstance) return el.snapselectInstance;
+
+            if (!el.id) {
+                el.id = 'snap-select-' + Math.random().toString(36).slice(2, 11);
+            }
+
+            const pagesize = options.pagesize || 30;
+            // Build the ajax.url function, incorporating any extra data
+            const config = {
+                placeholder:    options.placeholder    || undefined,
+                defaultText:    options.defaultText    || 'Select',
+                closeOnSelect:  !el.multiple,
+                showClearButton:     options.showClearButton !== undefined ? options.showClearButton : undefined,
+                onItemAdd:      typeof options.onItemAdd    === 'function' ? options.onItemAdd    : undefined,
+                onItemDelete:   typeof options.onItemDelete === 'function' ? options.onItemDelete : undefined,
+                ajax: {
+                    // Allow caller to pass a custom url function (e.g. for state→country cascade)
+                    url: options.url || ajaxUrl,
+                    cache: options.cache !== undefined ? options.cache : undefined,
+                    pagesize: pagesize,
+                    data: options.data || {},
+                    processResults: function(data, search, page) {
+                        // EME backend returns { TotalRecordCount, Records:[{id,text},...] }
+                        // or a plain array
+                        const records = Array.isArray(data)
+                            ? data
+                            : (data.Records || []);
+                        let hasMore;
+                        if (data.hasMore !== undefined) {
+                            hasMore = data.hasMore;
+                        } else {
+                            const total   = data.TotalRecordCount !== undefined
+                                ? data.TotalRecordCount
+                                : records.length;
+                            hasMore = total > page * pagesize;
+                            // the next if covers the case where all rows are returned in 1 go, not respecting paging
+                            if (data.TotalRecordCount !== undefined && records.length >= data.TotalRecordCount)
+                                hasMore = false;
+                        }
+                        return { results: records, hasMore };
+                    },
+                }
+            };
+            const instance = new SnapSelectClass(el, config);
+
+            // Expose a .snapselect property on the element
+            el.snapselectInstance = instance;
+
+            return instance;
+        });
+    }
+    initSnapSelectRemote('select.emevzw_snapselect_searchemeperson', {
+        placeholder: 'Zoek een bestaande persoon uit Events Made Easy',
+        showClearButton: true,
+        data: function(search, page) {
+            return {
+                action: 'eme_vzw_snapselect_searchemeperson',
+                eme_admin_nonce: i18n.emeadminnonce,
+            };
+        },
+        onItemAdd: function(value, text) {
+            // first hide all personal info, then show informational info on the selected person
+            // Read extra fields stored on the <option> by SnapSelect
+            const opt = this.querySelector(`option[value="${value}"]`);
+            console.log(opt);
+            const lastname   = document.querySelector('input[name=last_name]');
+            const firstname  = document.querySelector('input[name=first_name]');
+            const email      = document.querySelector('input[name=email]');
+            const phone      = document.querySelector('input[name=phone]');
+            const birthdate  = document.querySelector('input[name=birth_date]');
+            const birthplace = document.querySelector('input[name=birth_place]');
+            const address1   = document.querySelector('input[name=street]');
+            const address2   = document.querySelector('input[name=house_bus]');
+            const zip        = document.querySelector('input[name=postal_code]');
+            const city       = document.querySelector('input[name=city]');
+            if (lastname)   { lastname.value   = opt?.dataset.lastname   || '';}
+            if (firstname)  { firstname.value  = opt?.dataset.firstname  || '';}
+            if (email)      { email.value      = opt?.dataset.email      || '';}
+            if (phone)      { phone.value      = opt?.dataset.phone      || '';}
+            if (birthdate)  { birthdate.value  = opt?.dataset.birthdate  || '';}
+            if (birthplace) { birthplace.value = opt?.dataset.birthplace || '';}
+            if (address1)   { address1.value   = opt?.dataset.address1   || '';}
+            if (address2)   { address2.value   = opt?.dataset.address2   || '';}
+            if (zip)        { zip.value        = opt?.dataset.zip        || '';}
+            if (city)       { city.value       = opt?.dataset.city       || '';}
+        }
+    });
+
 })();

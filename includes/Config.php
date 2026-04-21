@@ -10,6 +10,7 @@ class Config {
         add_action( 'wp_ajax_eme_vzw_save_board_member',   [ __CLASS__, 'ajax_save_board' ] );
         add_action( 'wp_ajax_eme_vzw_delete_board_member', [ __CLASS__, 'ajax_delete_board' ] );
         add_action( 'wp_ajax_eme_vzw_purge_board_member',  [ __CLASS__, 'ajax_purge_board' ] );
+        add_action( 'wp_ajax_eme_vzw_snapselect_searchemeperson', 'eme_ajax_chooseperson_snapselect' );
     }
 
     private const OPTION_NAME = 'emevzw_helper_settings';

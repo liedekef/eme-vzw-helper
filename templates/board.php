@@ -94,6 +94,12 @@ $roles = [
 <input type="hidden" name="id" value="<?= $edit_m ? (int) $edit_m->id : 0 ?>">
 <input type="hidden" name="is_active" value="<?= $edit_m ? (int) $edit_m->is_active : 1 ?>">
 
+<?php if (!$edit_m): ?>
+<select id='choose_eme_person' name='choose_eme_person'
+    data-placeholder="<?php esc_attr_e( 'Select a person', 'events-made-easy' ); ?>"
+    class="emevzw_snapselect_searchemeperson">
+</select>
+<?php endif;?>
 <div class="vzw-row">
     <div class="vzw-field">
         <label><?php esc_html_e( 'Rechtspersoon?', 'eme-vzw-helper' ); ?></label>
