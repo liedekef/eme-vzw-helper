@@ -15,6 +15,51 @@ class Config {
 
     private const OPTION_NAME = 'emevzw_helper_settings';
 
+    /**
+     * Officiële wettelijke hoedanigheden (wet 4 mei 2023 + WVV).
+     * Sleutel = waarde opgeslagen in DB, label = vertaalde weergavenaam.
+     */
+    public static function legal_capacities(): array {
+        return [
+            'bestuurder'                                             => __( 'Bestuurder', 'eme-vzw-helper' ),
+            'zaakvoerder'                                            => __( 'Zaakvoerder', 'eme-vzw-helper' ),
+            'vaste vertegenwoordiger rechtspersoon'                  => __( 'Vaste vertegenwoordiger rechtspersoon', 'eme-vzw-helper' ),
+            'plaatsvervangend vaste vertegenwoordiger rechtspersoon' => __( 'Plaatsvervangend vaste vertegenwoordiger rechtspersoon', 'eme-vzw-helper' ),
+            'lid van de toezichtraad'                                => __( 'Lid van de toezichtraad', 'eme-vzw-helper' ),
+            'lid van het directiecomité'                             => __( 'Lid van het directiecomité', 'eme-vzw-helper' ),
+            'lid van de directieraad'                                => __( 'Lid van de directieraad', 'eme-vzw-helper' ),
+            'vereffenaar'                                            => __( 'Vereffenaar', 'eme-vzw-helper' ),
+            'wettelijk vertegenwoordiger'                            => __( 'Wettelijk vertegenwoordiger', 'eme-vzw-helper' ),
+        ];
+    }
+
+    /**
+     * Interne functies (optioneel, voor vertegenwoordiging en weergave).
+     * Sleutel = waarde opgeslagen in DB, label = vertaalde weergavenaam.
+     */
+    public static function function_titles(): array {
+        return [
+            ''                     => __( '— Geen —', 'eme-vzw-helper' ),
+            'voorzitter'           => __( 'Voorzitter', 'eme-vzw-helper' ),
+            'ondervoorzitter'      => __( 'Ondervoorzitter', 'eme-vzw-helper' ),
+            'secretaris'           => __( 'Secretaris', 'eme-vzw-helper' ),
+            'penningmeester'       => __( 'Penningmeester', 'eme-vzw-helper' ),
+            'dagelijks bestuurder' => __( 'Dagelijks bestuurder', 'eme-vzw-helper' ),
+        ];
+    }
+
+    /**
+     * Vertaal een DB-sleutel naar het gelokaliseerde label.
+     * Geeft de sleutel zelf terug als er geen match is (veilige fallback).
+     */
+    public static function legal_capacity_label( string $key ): string {
+        return self::legal_capacities()[ $key ] ?? $key;
+    }
+
+    public static function function_title_label( string $key ): string {
+        return self::function_titles()[ $key ] ?? $key;
+    }
+
     public static function get(): object {
         $defaults = [
             'vzw_name'             => '',

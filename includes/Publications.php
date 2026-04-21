@@ -48,7 +48,7 @@ class Publications {
         return $wpdb->get_results( $wpdb->prepare(
             "SELECT pb.*, b.first_name, b.last_name, b.national_id, b.birth_place, b.birth_date,
                     b.street, b.house_number, b.house_bus, b.postal_code, b.city, b.country,
-                    b.role, b.is_legal_entity, b.legal_name, b.legal_number, b.legal_representative
+                    b.legal_capacity, b.function_title, b.is_legal_entity, b.legal_name, b.legal_number, b.legal_representative
              FROM `{$wpdb->prefix}emevzw_pub_board` pb
              JOIN  `{$wpdb->prefix}emevzw_board` b ON b.id = pb.board_id
              WHERE pb.publication_id = %d

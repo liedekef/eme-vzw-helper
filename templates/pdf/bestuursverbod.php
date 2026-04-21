@@ -36,26 +36,31 @@ $vertegenwoordiger_str = '';
 if ( ! empty( $vertegenwoordigers ) ) {
     $parts = [];
     foreach ( $vertegenwoordigers as $v ) {
-        $label = $v->first_name . ' ' . $v->last_name . ', ' . ( $v->legal_capacity ?? 'bestuurder' );
-        if ( ! empty( $v->function_title ) ) {
-            $label .= ' (' . $v->function_title . ')';
-        }
+        $cap   = EMEVzw\Config::legal_capacity_label( $v->legal_capacity ?? 'bestuurder' );
+        $func  = ! empty( $v->function_title )
+            ? EMEVzw\Config::function_title_label( $v->function_title )
+            : '';
+        $label = $v->first_name . ' ' . $v->last_name . ', ' . $cap;
+        if ( $func ) $label .= ' (' . $func . ')';
         $parts[] = esc_html( $label );
     }
     $vertegenwoordiger_str = implode( ' en ', $parts );
 }
 
+$legal_capacities = EMEVzw\Config::legal_capacities();
+
 // Datum vandaag
 $today = date_i18n( 'd/m/Y' );
 $city  = esc_html( $config->city ?? '' );
 
-// legal_capacity is al de correcte wettelijke benaming — geen mapping meer nodig.
-// Optioneel: toon ook de interne functie tussen haakjes als die er is.
+// legal_capacity is de correcte wettelijke benaming — gebruik de gelokaliseerde label via Config.
+// Toon optioneel ook de interne functie tussen haakjes.
 $format_hoedanigheid = function( object $c ): string {
-    $cap = $c->legal_capacity ?? 'bestuurder';
-    return ! empty( $c->function_title )
-        ? esc_html( $cap . ' (' . $c->function_title . ')' )
-        : esc_html( $cap );
+    $cap   = EMEVzw\Config::legal_capacity_label( $c->legal_capacity ?? 'bestuurder' );
+    $func  = ! empty( $c->function_title )
+        ? EMEVzw\Config::function_title_label( $c->function_title )
+        : '';
+    return esc_html( $func ? $cap . ' (' . $func . ')' : $cap );
 };
 ?>
 <style>
@@ -223,7 +228,7 @@ $format_hoedanigheid = function( object $c ): string {
                 <div class="sig-line"></div>
                 <div class="sig-identity">
                     <?= esc_html( $v->first_name . ' ' . $v->last_name ) ?><br>
-                    <em><?= esc_html( $v->legal_capacity ?? 'bestuurder' ) ?><?= ! empty( $v->function_title ) ? ' · ' . esc_html( $v->function_title ) : '' ?></em>
+                    <em><?= esc_html( EMEVzw\Config::legal_capacity_label( $v->legal_capacity ?? 'bestuurder' ) ) ?><?= ! empty( $v->function_title ) ? ' · ' . esc_html( EMEVzw\Config::function_title_label( $v->function_title ) ) : '' ?></em>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -239,7 +244,9 @@ $format_hoedanigheid = function( object $c ): string {
     <!-- VOETNOTEN -->
     <div class="footer-note">
         <p><span class="footnote-ref">(1)</span> Identiteitsgegevens + hoedanigheid van de extern bevoegde vertegenwoordigers</p>
-        <p><span class="footnote-ref">(2)</span> bestuurder, zaakvoerder, vaste vertegenwoordiger rechtspersoon, plaatsvervangend vaste vertegenwoordiger rechtspersoon, lid van de toezichtraad, lid van het directiecomité, lid van de directieraad, vereffenaar, wettelijk vertegenwoordiger</p>
+        <p><span class="footnote-ref">(2)</span>
+            <?= join(', ', array_values($legal_capacities)); ?>
+        </p>
     </div>
 
 </div>

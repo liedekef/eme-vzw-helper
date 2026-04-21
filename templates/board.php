@@ -7,26 +7,8 @@ $all_members      = EMEVzw\Config::get_all_board_members();
 $members          = array_filter( $all_members, fn( $m ) => (int) $m->is_active === 1 );
 $members_inactive = array_filter( $all_members, fn( $m ) => (int) $m->is_active === 0 );
 
-$legal_capacities = [
-    'bestuurder'                                      => __( 'Bestuurder', 'eme-vzw-helper' ),
-    'zaakvoerder'                                     => __( 'Zaakvoerder', 'eme-vzw-helper' ),
-    'vaste vertegenwoordiger rechtspersoon'           => __( 'Vaste vertegenwoordiger rechtspersoon', 'eme-vzw-helper' ),
-    'plaatsvervangend vaste vertegenwoordiger rechtspersoon' => __( 'Plaatsvervangend vaste vertegenwoordiger rechtspersoon', 'eme-vzw-helper' ),
-    'lid van de toezichtraad'                         => __( 'Lid van de toezichtraad', 'eme-vzw-helper' ),
-    'lid van het directiecomité'                      => __( 'Lid van het directiecomité', 'eme-vzw-helper' ),
-    'lid van de directieraad'                         => __( 'Lid van de directieraad', 'eme-vzw-helper' ),
-    'vereffenaar'                                     => __( 'Vereffenaar', 'eme-vzw-helper' ),
-    'wettelijk vertegenwoordiger'                     => __( 'Wettelijk vertegenwoordiger', 'eme-vzw-helper' ),
-];
-
-$function_titles = [
-    ''                => __( '— Geen —', 'eme-vzw-helper' ),
-    'voorzitter'      => __( 'Voorzitter', 'eme-vzw-helper' ),
-    'ondervoorzitter' => __( 'Ondervoorzitter', 'eme-vzw-helper' ),
-    'secretaris'      => __( 'Secretaris', 'eme-vzw-helper' ),
-    'penningmeester'  => __( 'Penningmeester', 'eme-vzw-helper' ),
-    'dagelijks bestuurder' => __( 'Dagelijks bestuurder', 'eme-vzw-helper' ),
-];
+$legal_capacities = EMEVzw\Config::legal_capacities();
+$function_titles  = EMEVzw\Config::function_titles();
 ?>
 <div class="wrap vzw-wrap">
 <h1><?php esc_html_e( 'Bestuur', 'eme-vzw-helper' ); ?></h1>
@@ -42,7 +24,7 @@ $function_titles = [
 <div class="vzw-board-card" style="<?= $expired ? 'border-color:#d63638' : '' ?>">
     <div class="avatar"><?= esc_html( $initials ) ?></div>
     <h4><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></h4>
-    <span class="role-badge"><?= esc_html( $m->legal_capacity ) ?><?= $m->function_title ? ' · ' . esc_html( $m->function_title ) : '' ?></span>
+    <span class="role-badge"><?= esc_html( EMEVzw\Config::legal_capacity_label($m->legal_capacity) ) ?><?= $m->function_title ? ' · ' . esc_html( EMEVzw\Config::function_title_label($m->function_title) ) : '' ?></span>
     <div class="meta">
         <?php if ( $m->email ): ?>
         <div><?= esc_html( $m->email ) ?></div>
