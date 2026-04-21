@@ -167,12 +167,13 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
 <ul style="margin:0;padding-left:20px;font-size:13px;line-height:1.8">
     <li><a href="https://kbo.economie.fgov.be/" target="_blank"><?php esc_html_e( 'Kruispuntbank van Ondernemingen (KBO)', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://justitie.belgium.be/nl/zoek_een_rechtbank_of_parket" target="_blank"><?php esc_html_e( 'Zoek een ondernemingsrechtbank in je buurt', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://www.ejustice.just.fgov.be/cgi/welcome.pl" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad – publicatiekosten', 'eme-vzw-helper' ); ?></a></li>
+    <li><a href="https://www.ejustice.just.fgov.be/cgi_tsv_pub/page.pl?language=nl&type=formu" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad - Richtlijnen publicatieformulieren', 'eme-vzw-helper' ); ?></a></li>
+    <li><a href="https://www.ejustice.just.fgov.be/cgi_tsv_pub/page.pl?language=nl&type=p" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad – publicatiekosten', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://financien.belgium.be/nl/E-services/Ubo-register" target="_blank"><?php esc_html_e( 'UBO-register uitleg', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://www.minfin.fgov.be/ubo/" target="_blank"><?php esc_html_e( 'Toegang tot UBO-register', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://www.rechtbanken-tribunaux.be/nl/node/2867" target="_blank"><?php esc_html_e( 'Richtlijnen neerlegging publicatieformulieren', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://financien.belgium.be/nl/vzws/aangifte/patrimoniumtaks" target="_blank"><?php esc_html_e( 'Patrimoniumtaks – FOD Financiën', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://eservices.minfin.fgov.be/taxonweb/" target="_blank"><?php esc_html_e( 'Tax-on-Web – Rechtspersonenbelasting', 'eme-vzw-helper' ); ?></a></li>
+    <li><a href="https://justban.just.fgov.be/" target="_blank"><?php esc_html_e( 'Centraal Register van Bestuursverboden', 'eme-vzw-helper' ); ?></a></li>
 </ul>
 </div>
 
