@@ -26,7 +26,7 @@ $court_address  = $config->court_address ?? '';
                 <p class="vzw-howto-note">⚠️ <?php esc_html_e( 'Print de volgende documenten', 'eme-vzw-helper' ); ?> <strong><?php esc_html_e( 'NIET recto-verso', 'eme-vzw-helper' ); ?></strong>.</p>
                 <ul class="vzw-howto-list">
                     <li>
-                        <span class="vzw-howto-doc">📄 <?php esc_html_e( 'Formulier I & II (PDF)', 'eme-vzw-helper' ); ?></span>
+                        <span class="vzw-howto-doc">📄 <?php esc_html_e( 'Formulier I & II (PDF), gebruik de voorziene knop.', 'eme-vzw-helper' ); ?></span>
                         <span class="vzw-howto-copies"><?php esc_html_e( '3 ex. Form. I + 2 ex. Form. II — al samengebundeld in de gegenereerde PDF', 'eme-vzw-helper' ); ?></span>
                     </li>
                     <?php if ( $has_board ): ?>
@@ -40,7 +40,7 @@ $court_address  = $config->court_address ?? '';
                     </li>
                     <li>
                         <span class="vzw-howto-doc">📋 <?php esc_html_e( 'Verklaring op eer bestuursverbod', 'eme-vzw-helper' ); ?></span>
-                        <span class="vzw-howto-copies"><?php esc_html_e( 'Gebruik de knop "Verklaring op eer bestuursverbod" hierboven.', 'eme-vzw-helper' ); ?></span>
+                        <span class="vzw-howto-copies"><?php esc_html_e( 'Gebruik de knop "Verklaring op eer bestuursverbod".', 'eme-vzw-helper' ); ?></span>
                     </li>
                     <?php endif; ?>
                     <?php if ( $has_statutes ): ?>
