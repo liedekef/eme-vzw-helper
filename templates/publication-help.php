@@ -119,6 +119,7 @@ $court_address  = $config->court_address ?? '';
                 <p><?php esc_html_e( 'Controleer of je deze documenten hebt:', 'eme-vzw-helper' ); ?></p>
                 <ul class="vzw-howto-list">
                     <?php if ( $has_board || $has_statutes): ?>
+                    <li><?php esc_html_e( 'Betalingsbewijs overschrijving', 'eme-vzw-helper' ); ?></li>
                     <li><?php esc_html_e( '3 exemplaren Formulier I', 'eme-vzw-helper' ); ?></li>
                     <li><?php esc_html_e( '2 exemplaren Formulier II', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>
@@ -130,7 +131,6 @@ $court_address  = $config->court_address ?? '';
                     <li><?php esc_html_e( 'Kopie identiteitsbewijzen betrokken bestuurders', 'eme-vzw-helper' ); ?></li>
                     <li><?php esc_html_e( 'Verklaring op eer bestuursverbod', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>
-                    <li><?php esc_html_e( 'Betalingsbewijs overschrijving', 'eme-vzw-helper' ); ?></li>
                     <li><?php esc_html_e( 'Aanbevolen: gezegelde geadresseerde omslag (naar jezelf) voor ontvangstbewijs.', 'eme-vzw-helper' ); ?></li>
                 </ul>
                 <?php if ( $court_address ): ?>
