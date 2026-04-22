@@ -71,8 +71,8 @@ $court_address  = $config->court_address ?? '';
                     <li><strong><?php esc_html_e( 'Form. I – Luik B', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( '(3 ex.): op de achterzijde van de laatste pagina: naam + handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
                     <li><strong><?php esc_html_e( 'Form. I – Luik C', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( '(3 ex.): op de voorzijde onder de gedrukte naam: handtekening.', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>
-                    <?php if ( $has_board ): ?>
                     <li><strong><?php esc_html_e( 'Verslag', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
+                    <?php if ( $has_board ): ?>
                     <li><strong><?php esc_html_e( 'Verklaring bestuursverbod', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': onderaan naam, hoedanigheid en handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>
                     <?php if ( $has_statutes ): ?>
@@ -80,13 +80,14 @@ $court_address  = $config->court_address ?? '';
                     <?php endif; ?>
                 </ul>
             </div>
-            <?php if ( $has_board || $has_statutes): ?>
+
             <!-- ── STAP 3: BETALEN ── -->
             <div class="vzw-howto-step">
                 <div class="vzw-howto-step-title">
                     <span class="vzw-howto-num">3</span>
                     <?php esc_html_e( 'Betalen voor de publicatie', 'eme-vzw-helper' ); ?>
                 </div>
+                <?php if ( $has_board || $has_statutes): ?>
                 <p class="vzw-howto-note">⚠️ <?php esc_html_e( 'Rond 1 maart wijzigt het tarief jaarlijks. Wacht bij twijfel tot na 1 maart.', 'eme-vzw-helper' ); ?></p>
                 <table class="vzw-howto-bank">
                     <tr><td><?php esc_html_e( 'Bedrag', 'eme-vzw-helper' ); ?></td>
@@ -104,8 +105,11 @@ $court_address  = $config->court_address ?? '';
                     <tr><td><?php esc_html_e( 'Mededeling', 'eme-vzw-helper' ); ?></td>
                         <td><code>"Ondernemingsnummer <?= esc_html( $vzw_nr ) ?>"</code></td></tr>
                 </table>
+                <?php else: ?>
+                    <p class="vzw-howto-note"> <?php esc_html_e( 'Geen betaling nodig, geen wijzigingen.', 'eme-vzw-helper' ); ?></p>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
+ 
             <!-- ── STAP 4: OPSTUREN ── -->
             <div class="vzw-howto-step">
                 <div class="vzw-howto-step-title">
