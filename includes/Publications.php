@@ -95,6 +95,7 @@ class Publications {
         }
 
         // Board changes
+        $wpdb->delete( $wpdb->prefix . 'emevzw_pub_board', [ 'publication_id' => $id ], [ '%d' ] );
         if ( isset( $data['board_changes'] ) && is_array( $data['board_changes'] ) ) {
             $wpdb->delete( $wpdb->prefix . 'emevzw_pub_board', [ 'publication_id' => $id ], [ '%d' ] );
             foreach ( $data['board_changes'] as $bc ) {
