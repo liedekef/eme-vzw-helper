@@ -65,8 +65,7 @@ $format_hoedanigheid = function( object $c ): string {
 ?>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: Helvetica, Arial, sans-serif; font-size: 9.5pt; color: #000; margin: 0; padding: 0; }
-  .page { width: 180mm; margin: 0 auto; padding: 15mm 0; }
+  body { font-family: Helvetica, Arial, sans-serif;}
 
   .doc-title {
       font-size: 11pt; font-weight: bold; text-align: center;
