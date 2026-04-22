@@ -15,7 +15,7 @@ $court_address  = $config->court_address ?? '';
 
 ?>
     <dialog id="vzw-howto-dialog-<?= $p->id?>" class="vzw-help-dialog vzw-howto-dialog">
-            <h1><?php esc_html_e( 'Checklist neerlegging bij de griffie', 'eme-vzw-helper' ); ?></h1>
+            <h4><?php esc_html_e( 'Checklist neerlegging bij de griffie', 'eme-vzw-helper' ); ?></h4>
 
             <!-- ── STAP 1: DOCUMENTEN ── -->
             <div class="vzw-howto-step">
