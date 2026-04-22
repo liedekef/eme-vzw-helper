@@ -25,15 +25,23 @@ $court_address  = $config->court_address ?? '';
                 </div>
                 <p class="vzw-howto-note">⚠️ <?php esc_html_e( 'Print de volgende documenten', 'eme-vzw-helper' ); ?> <strong><?php esc_html_e( 'NIET recto-verso', 'eme-vzw-helper' ); ?></strong>.</p>
                 <ul class="vzw-howto-list">
+                    <?php if ( $has_board || $has_statutes): ?>
                     <li>
                         <span class="vzw-howto-doc">📄 <?php esc_html_e( 'Formulier I & II (PDF), gebruik de voorziene knop.', 'eme-vzw-helper' ); ?></span>
                         <span class="vzw-howto-copies"><?php esc_html_e( '3 ex. Form. I + 2 ex. Form. II — al samengebundeld in de gegenereerde PDF', 'eme-vzw-helper' ); ?></span>
                     </li>
-                    <?php if ( $has_board ): ?>
+                    <?php endif; ?>
                     <li>
                         <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Verslag Bestuursorgaan / Algemene Vergadering', 'eme-vzw-helper' ); ?></span>
                         <span class="vzw-howto-copies"><?php esc_html_e( 'Bewijs dat de wijzigingen rechtsgeldig beslist werden.', 'eme-vzw-helper' ); ?></span>
                     </li>
+                    <li>
+                        <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Staat van het vermogen', 'eme-vzw-helper' ); ?></span>
+                    </li>
+                    <li>
+                        <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></span>
+                    </li>
+                    <?php if ( $has_board ): ?>
                     <li>
                         <span class="vzw-howto-doc">🪪 <?php esc_html_e( 'Kopie identiteitsbewijzen (voor- én achterkant)', 'eme-vzw-helper' ); ?></span>
                         <span class="vzw-howto-copies"><?php esc_html_e( 'Van elke betrokken bestuurder (benoemd of ontslagen).', 'eme-vzw-helper' ); ?></span>
@@ -59,8 +67,10 @@ $court_address  = $config->court_address ?? '';
                     <?php esc_html_e( 'Alle exemplaren ondertekenen', 'eme-vzw-helper' ); ?>
                 </div>
                 <ul class="vzw-howto-list">
+                    <?php if ( $has_board || $has_statutes): ?>
                     <li><strong><?php esc_html_e( 'Form. I – Luik B', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( '(3 ex.): op de achterzijde van de laatste pagina: naam + handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
                     <li><strong><?php esc_html_e( 'Form. I – Luik C', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( '(3 ex.): op de voorzijde onder de gedrukte naam: handtekening.', 'eme-vzw-helper' ); ?></li>
+                    <?php endif; ?>
                     <?php if ( $has_board ): ?>
                     <li><strong><?php esc_html_e( 'Verslag', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
                     <li><strong><?php esc_html_e( 'Verklaring bestuursverbod', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': onderaan naam, hoedanigheid en handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
@@ -70,7 +80,7 @@ $court_address  = $config->court_address ?? '';
                     <?php endif; ?>
                 </ul>
             </div>
-
+            <?php if ( $has_board || $has_statutes): ?>
             <!-- ── STAP 3: BETALEN ── -->
             <div class="vzw-howto-step">
                 <div class="vzw-howto-step-title">
@@ -95,6 +105,7 @@ $court_address  = $config->court_address ?? '';
                         <td><code>"Ondernemingsnummer <?= esc_html( $vzw_nr ) ?>"</code></td></tr>
                 </table>
             </div>
+            <?php endif; ?>
             <!-- ── STAP 4: OPSTUREN ── -->
             <div class="vzw-howto-step">
                 <div class="vzw-howto-step-title">
@@ -103,11 +114,15 @@ $court_address  = $config->court_address ?? '';
                 </div>
                 <p><?php esc_html_e( 'Controleer of je deze documenten hebt:', 'eme-vzw-helper' ); ?></p>
                 <ul class="vzw-howto-list">
+                    <?php if ( $has_board || $has_statutes): ?>
                     <li><?php esc_html_e( '3 exemplaren Formulier I', 'eme-vzw-helper' ); ?></li>
                     <li><?php esc_html_e( '2 exemplaren Formulier II', 'eme-vzw-helper' ); ?></li>
+                    <?php endif; ?>
                     <?php if ( $has_statutes ): ?><li><?php esc_html_e( 'Gecoördineerde statuten', 'eme-vzw-helper' ); ?></li><?php endif; ?>
-                    <?php if ( $has_board ): ?>
                     <li><?php esc_html_e( 'Verslag Algemene Vergadering', 'eme-vzw-helper' ); ?></li>
+                    <li><?php esc_html_e( 'Staat van het vermogen', 'eme-vzw-helper' ); ?></li>
+                    <li><?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></li>
+                    <?php if ( $has_board ): ?>
                     <li><?php esc_html_e( 'Kopie identiteitsbewijzen betrokken bestuurders', 'eme-vzw-helper' ); ?></li>
                     <li><?php esc_html_e( 'Verklaring op eer bestuursverbod', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>
