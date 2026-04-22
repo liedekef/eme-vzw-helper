@@ -285,16 +285,62 @@
     function handleGenDoc(btn) {
         const pubId = btn.dataset.pubId;
         if (!pubId) return;
+        const originalText = btn.textContent;
+        btn.textContent = i18n.pleasewait;
+        btn.disabled = true;
+
         const url = `${ajaxUrl}?action=eme_vzw_download_pdf&nonce=${nonce}&pub_id=${pubId}`;
-        window.open(url, '_blank');
+        fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            link.download = `Formulieren-${date}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+            btn.disabled = false;
+            btn.textContent = originalText;
+        })
+        .catch(error => {
+            console.error('Download failed:', error);
+            btn.disabled = false;
+            btn.textContent = originalText;
+        });
     }
 
     // Generate Verklaring Bestuursverbod PDF
     function handleGenBestuursverbod(btn) {
         const pubId = btn.dataset.pubId;
         if (!pubId) return;
+        const originalText = btn.textContent;
+        btn.textContent = i18n.pleasewait;
+        btn.disabled = true;
+
         const url = `${ajaxUrl}?action=eme_vzw_download_bestuursverbod&nonce=${nonce}&pub_id=${pubId}`;
-        window.open(url, '_blank');
+        fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            link.download = `Bestuursverbod-${date}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+            btn.disabled = false;
+            btn.textContent = originalText;
+        })
+        .catch(error => {
+            console.error('Download failed:', error);
+            btn.disabled = false;
+            btn.textContent = originalText;
+        });
     }
 
     // Delete patrimony

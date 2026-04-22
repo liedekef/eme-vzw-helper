@@ -28,7 +28,7 @@ class Assets {
                 'save'           => __( 'Opslaan', 'eme-vzw-helper' ),
                 'saving'         => __( 'Opslaan…', 'eme-vzw-helper' ),
                 'saved'          => __( 'Opgeslagen', 'eme-vzw-helper' ),
-                'print_form'     => __( 'Afdrukken als PDF', 'eme-vzw-helper' ),
+                'pleasewait'     => __( 'Wachten aub', 'eme-vzw-helper' ),
                 'emeadminnonce'  => wp_create_nonce( 'eme_admin' ),
             ],
         ] );
