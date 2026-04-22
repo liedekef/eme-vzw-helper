@@ -9,18 +9,19 @@ defined( 'ABSPATH' ) || exit;
  *  - Formulier II (luik A + C): KBO-update
  *  - Statutenwijziging: volledig document voor griffie
  *
- * PDF generation uses fpdf2 (bundled) or falls back to HTML-print.
+ * PDF generation uses dompdf (from EME) or falls back to HTML-print.
  * The layout reproduces the official Belgian government forms exactly
  * as required by the griffie (KB 29 april 2019).
  */
 class Publications {
 
     public static function init(): void {
-        add_action( 'wp_ajax_eme_vzw_save_publication',       [ __CLASS__, 'ajax_save' ] );
-        add_action( 'wp_ajax_eme_vzw_delete_publication',     [ __CLASS__, 'ajax_delete' ] );
+        add_action( 'wp_ajax_eme_vzw_save_publication',        [ __CLASS__, 'ajax_save' ] );
+        add_action( 'wp_ajax_eme_vzw_delete_publication',      [ __CLASS__, 'ajax_delete' ] );
         // Serve generated PDFs
-        add_action( 'wp_ajax_eme_vzw_download_pdf',           [ __CLASS__, 'ajax_download_pdf' ] );
+        add_action( 'wp_ajax_eme_vzw_download_pdf',            [ __CLASS__, 'ajax_download_pdf' ] );
         add_action( 'wp_ajax_eme_vzw_download_bestuursverbod', [ __CLASS__, 'ajax_download_bestuursverbod' ] );
+        add_action( 'wp_ajax_eme_vzw_howto_send',              [ __CLASS__, 'ajax_howto_send' ] );
     }
 
     /* ------------------------------------------------------------------
@@ -133,15 +134,25 @@ class Publications {
     }
 
     /**
+     * Generate the howto
+     */
+    public static function ajax_howto_send(): void {
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
+
+        $pub_id = (int) ( $_POST['pub_id'] ?? 0 );
+        ob_start();
+        include EME_VZW_DIR . 'templates/publication-help.php';
+        $data = ob_get_clean();
+        wp_send_json_success( $data );
+    }
+
+    /**
      * Generate and stream a PDF.
      */
     public static function ajax_download_pdf(): void {
-        if ( ! wp_verify_nonce( $_GET['nonce'] ?? '', 'eme_vzw_nonce' ) ) {
-            wp_die( esc_html__( 'Ongeldige beveiligingstoken.', 'eme-vzw-helper' ), 403 );
-        }
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'Onvoldoende rechten.', 'eme-vzw-helper' ), 403 );
-        }
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
 
         $pub_id = (int) ( $_GET['pub_id'] ?? 0 );
         $debug  = isset( $_GET['debug'] );
@@ -165,12 +176,8 @@ class Publications {
      * Genereer en stream de Verklaring Bestuursverbod PDF.
      */
     public static function ajax_download_bestuursverbod(): void {
-        if ( ! wp_verify_nonce( $_GET['nonce'] ?? '', 'eme_vzw_nonce' ) ) {
-            wp_die( esc_html__( 'Ongeldige beveiligingstoken.', 'eme-vzw-helper' ), 403 );
-        }
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'Onvoldoende rechten.', 'eme-vzw-helper' ), 403 );
-        }
+        check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
 
         $pub_id = (int) ( $_GET['pub_id'] ?? 0 );
         if ( $pub_id <= 0 ) {

@@ -544,9 +544,11 @@ class PdfGenerator {
             $gen->build_form1_pages( $pub, $config, $changes );
         }
 
-        // 2 exemplaren van Formulier II
-        for ( $i = 0; $i < 2; $i++ ) {
-            $gen->build_form2_pages( $pub, $config, $changes );
+        if ($changes) {
+            // 2 exemplaren van Formulier II
+            for ( $i = 0; $i < 2; $i++ ) {
+                $gen->build_form2_pages( $pub, $config, $changes );
+            }
         }
 
         return $gen->output( 'Formulieren.pdf', $dest );

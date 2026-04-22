@@ -1,22 +1,29 @@
 <?php
 /**
  * template: hulp bij neerleggen
- * Variabelen: $p (publicatie), $config (vzw config), $changes (array van bestuurswijzigingen)
+ * Variabelen: $pub_id (publicatie), $config (vzw config), $changes (array van bestuurswijzigingen)
  */
 
 defined( 'ABSPATH' ) || exit;
 
 $config         = EMEVzw\Config::get();
-$has_board      = ! empty( EMEVzw\Publications::get_board_changes( $p->id ));
-$has_statutes   = ! empty( trim( $p->statute_text ?? '' ) );
+$pub            = $pub_id ? EMEVzw\Publications::get( $pub_id ) : null;
+if ($pub) {
+    $has_board      = ! empty( EMEVzw\Publications::get_board_changes( $pub_id ));
+    $has_statutes   = ! empty( trim( $pub->statute_text ?? '' ) );
+} else {
+    $has_board      = false;
+    $has_statutes   = false;
+}
 $vzw_nr         = $config->vzw_number ?? '';
 $court_name     = $config->court ?? 'Griffie Ondernemingsrechtbank';
 $court_address  = $config->court_address ?? '';
 
 ?>
-    <dialog id="vzw-howto-dialog-<?= $p->id?>" class="vzw-help-dialog vzw-howto-dialog">
+            <?php if (!$pub): ?>
+            <h4><?php esc_html_e( 'De stappen hieronder zijn voor het geval er geen wijzigingen zijn in het bestuur of de statuten. Indien deze er wel zijn, zullen die zichtbaar worden.', 'eme-vzw-helper' ); ?></h4>
+            <?php endif; ?>
             <h4><?php esc_html_e( 'Checklist neerlegging bij de griffie', 'eme-vzw-helper' ); ?></h4>
-
             <!-- ── STAP 1: DOCUMENTEN ── -->
             <div class="vzw-howto-step">
                 <div class="vzw-howto-step-title">
@@ -27,8 +34,12 @@ $court_address  = $config->court_address ?? '';
                 <ul class="vzw-howto-list">
                     <?php if ( $has_board || $has_statutes): ?>
                     <li>
-                        <span class="vzw-howto-doc">📄 <?php esc_html_e( 'Formulier I & II (PDF), gebruik de voorziene knop.', 'eme-vzw-helper' ); ?></span>
+                        <span class="vzw-howto-doc">📄 <?php esc_html_e( 'Formulier I & II (PDF), gebruik de voorziene knop. Indien geen bestuurswijziging, zal Formulier II niet aangemaakt worden (geen KBO wijziging nodig).', 'eme-vzw-helper' ); ?></span>
                         <span class="vzw-howto-copies"><?php esc_html_e( '3 ex. Form. I + 2 ex. Form. II — al samengebundeld in de gegenereerde PDF', 'eme-vzw-helper' ); ?></span>
+                    </li>
+                    <?php else: ?>
+                    <li>
+                        <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Geen Formulier I of II aangezien er geen wijzigingen zijn.', 'eme-vzw-helper' ); ?></span>
                     </li>
                     <?php endif; ?>
                     <li>
@@ -70,6 +81,7 @@ $court_address  = $config->court_address ?? '';
                     <?php if ( $has_board || $has_statutes): ?>
                     <li><strong><?php esc_html_e( 'Form. I – Luik B', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( '(3 ex.): op de achterzijde van de laatste pagina: naam + handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
                     <li><strong><?php esc_html_e( 'Form. I – Luik C', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( '(3 ex.): op de voorzijde onder de gedrukte naam: handtekening.', 'eme-vzw-helper' ); ?></li>
+                    <li><strong><?php esc_html_e( 'Formulier II niet ondertekenen', 'eme-vzw-helper' ); ?></strong></li>
                     <?php endif; ?>
                     <li><strong><?php esc_html_e( 'Verslag', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
                     <?php if ( $has_board ): ?>
@@ -150,9 +162,3 @@ $court_address  = $config->court_address ?? '';
                     <a href="mailto:info.staatsblad@just.fgov.be">info.staatsblad@just.fgov.be</a>
                 </p>
             </div>
-
-            <div class="dialog-footer">
-                <button type="button" onclick="this.closest('dialog').close()">✕ <?php esc_html_e( 'Sluiten', 'eme-vzw-helper' ); ?></button>
-            </div>
-        </dialog>
-

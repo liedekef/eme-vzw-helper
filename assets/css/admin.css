@@ -320,8 +320,7 @@ dialog.vzw-howto-dialog h4 {
 }
 
 .vzw-howto-step {
-    margin-bottom: 20px;
-    padding-bottom: 18px;
+    margin-bottom: 10px;
     border-bottom: 1px solid #f0f0f1;
 }
 .vzw-howto-step:last-of-type { border-bottom: none; margin-bottom: 0; }

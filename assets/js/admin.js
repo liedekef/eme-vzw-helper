@@ -343,6 +343,42 @@
         });
     }
 
+    // Howto dialog
+    function handleVzwHowtoSend(btn) {
+        const pubId = btn.dataset.pubId || 0;
+        const url = `${ajaxUrl}?action=eme_vzw_howto_send&nonce=${nonce}&pub_id=${pubId}`;
+        ajax('eme_vzw_howto_send', { pub_id: pubId, nonce: nonce }, function(data) {
+            // Create dialog element
+            const dialog = document.createElement('dialog');
+            dialog.id = "dialog-vzw-howto-send";
+            dialog.classList.add("vzw-help-dialog", "vzw-howto-dialog");
+
+            // Add content from response
+            dialog.innerHTML = `
+            <div>
+                ${data}
+                <div class="dialog-footer"><button type="button" commandfor="dialog-vzw-howto-send" command="close">Sluiten</button></div>
+            </div>
+            `;
+
+            // Add to body and show
+            document.body.appendChild(dialog);
+            dialog.showModal(); // Opens as modal dialog
+
+            // Optional: Close dialog when clicking backdrop (for modal)
+            dialog.addEventListener('click', (e) => {
+                if (e.target === dialog) {
+                    dialog.close();
+                }
+            });
+
+            // Optional: Remove from DOM when closed
+            dialog.addEventListener('close', () => {
+                dialog.remove();
+            });
+        });
+    }
+
     // Delete patrimony
     function handleDeletePatrimony(btn) {
         if (!confirm(i18n.confirm_delete_patrimony)) return;
@@ -404,6 +440,7 @@
         'btn-add-board-change': handleAddBoardChange,
         'vzw-remove-row':       handleRemoveRow,
         'vzw-gen-doc':          handleGenDoc,
+        'vzw-howto-send':       handleVzwHowtoSend,
         'vzw-gen-bestuursverbod': handleGenBestuursverbod,
         'vzw-delete-pub':       handleDeletePub,
         'vzw-delete-patrimony': handleDeletePatrimony,
