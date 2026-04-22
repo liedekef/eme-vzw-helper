@@ -39,9 +39,7 @@ $depr_method_label = $p->depr_method === 'degressive'
 ?>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: Helvetica, Arial, sans-serif; font-size: 9pt; color: #000; margin: 0; padding: 0; }
-
-  .page { width: 250mm; margin: 0 auto; padding: 10mm 0; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 9.5pt; }
 
   h1.vzw-title { font-size: 12pt; font-weight: bold; margin: 0 0 2pt; text-align: center; }
   .vzw-subtitle { font-size: 9pt; color: #333; margin: 0 0 8pt; text-align: center; }
