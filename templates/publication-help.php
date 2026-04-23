@@ -83,7 +83,9 @@ $court_address  = $config->court_address ?? '';
                     <li><strong><?php esc_html_e( 'Form. I – Luik C', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( '(3 ex.): op de voorzijde onder de gedrukte naam: handtekening.', 'eme-vzw-helper' ); ?></li>
                     <li><strong><?php esc_html_e( 'Formulier II niet ondertekenen', 'eme-vzw-helper' ); ?></strong></li>
                     <?php endif; ?>
-                    <li><strong><?php esc_html_e( 'Verslag', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
+                    <li><strong><?php esc_html_e( 'Verslag Bestuursorgaan / Algemene Vergadering', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
+                    <li><strong><?php esc_html_e( 'Staat van het Vermogen', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
+                    <li><strong><?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
                     <?php if ( $has_board ): ?>
                     <li><strong><?php esc_html_e( 'Verklaring bestuursverbod', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': onderaan naam, hoedanigheid en handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>
@@ -143,7 +145,7 @@ $court_address  = $config->court_address ?? '';
                     <li><?php esc_html_e( 'Kopie identiteitsbewijzen betrokken bestuurders', 'eme-vzw-helper' ); ?></li>
                     <li><?php esc_html_e( 'Verklaring op eer bestuursverbod', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>
-                    <li><?php esc_html_e( 'Aanbevolen: gezegelde geadresseerde omslag (naar jezelf) voor ontvangstbewijs.', 'eme-vzw-helper' ); ?></li>
+                    <li><?php esc_html_e( 'Aanbevolen: gezegelde geadresseerde omslag (naar jezelf) voor ontvangstbewijs. Indien je dit doet, ook Staat van het Vermogen/Staat van Ontvangsten en Uitgaven/Verslag AV in tweevoud meegeven!', 'eme-vzw-helper' ); ?></li>
                 </ul>
                 <?php if ( $court_address ): ?>
                 <p style="margin-top:8px"><?php esc_html_e( 'Stuur op naar:', 'eme-vzw-helper' ); ?><br>

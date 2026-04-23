@@ -96,8 +96,9 @@ $format_hoedanigheid = function( object $c ): string {
   .verboden-list li { margin-bottom: 6pt; }
 
   .signature-block { margin-top: 20pt; }
-  .signature-row { display: flex; gap: 20pt; }
-  .signature-col { flex: 1; }
+  .signature-table { width: 100%; border-collapse: collapse; }
+  .signature-table td { vertical-align: bottom; padding: 0 12pt 0 0; width: 50%; }
+  .signature-table td:last-child { padding-right: 0; }
   .sig-label { font-size: 8.5pt; color: #555; margin-bottom: 3pt; }
   .sig-line { border-bottom: 1px solid #000; height: 30pt; margin-bottom: 3pt; }
   .sig-identity { font-size: 8pt; color: #666; font-style: italic; }
@@ -220,24 +221,35 @@ $format_hoedanigheid = function( object $c ): string {
 
     <!-- HANDTEKENINGEN -->
     <div class="signature-block">
-        <div class="signature-row">
-            <?php foreach ( $vertegenwoordigers as $v ): ?>
-            <div class="signature-col">
-                <div class="sig-label">Handtekening</div>
-                <div class="sig-line"></div>
-                <div class="sig-identity">
-                    <?= esc_html( $v->first_name . ' ' . $v->last_name ) ?><br>
-                    <em><?= esc_html( EMEVzw\Config::legal_capacity_label( $v->legal_capacity ?? 'bestuurder' ) ) ?><?= ! empty( $v->function_title ) ? ' · ' . esc_html( EMEVzw\Config::function_title_label( $v->function_title ) ) : '' ?></em>
-                </div>
-            </div>
-            <?php endforeach; ?>
-            <?php if ( empty( $vertegenwoordigers ) ): ?>
-            <div class="signature-col">
-                <div class="sig-label">Handtekening (identiteit/hoedanigheid vertegenwoordiger)</div>
-                <div class="sig-line"></div>
-            </div>
+        <table class="signature-table">
+            <?php if ( ! empty( $vertegenwoordigers ) ): ?>
+                <?php foreach ( array_chunk( $vertegenwoordigers, 2 ) as $vertegenwoordigers_per2 ): ?>
+                <tr>
+                    <?php foreach ( $vertegenwoordigers_per2 as $v ): ?>
+                    <td>
+                        <div class="sig-identity">
+                            <?= esc_html( $v->first_name . ' ' . $v->last_name ) ?><br>
+                            <em><?= esc_html( EMEVzw\Config::legal_capacity_label( $v->legal_capacity ?? 'bestuurder' ) ) ?><?= ! empty( $v->function_title ) ? ' · ' . esc_html( EMEVzw\Config::function_title_label( $v->function_title ) ) : '' ?></em>
+                        </div>
+                        <div class="sig-label">Handtekening</div>
+                        <div class="sig-line"></div>
+                    </td>
+                    <?php endforeach; ?>
+                    <?php if ( count( $vertegenwoordigers_per2 ) === 1 ): ?>
+                    <td></td>
+                    <?php endif; ?>
+                </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td>
+                        <div class="sig-label">Handtekening (identiteit/hoedanigheid vertegenwoordiger)</div>
+                        <div class="sig-line"></div>
+                    </td>
+                    <td></td>
+                </tr>
             <?php endif; ?>
-        </div>
+        </table>
     </div>
 
     <!-- VOETNOTEN -->
