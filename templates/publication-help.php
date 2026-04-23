@@ -12,8 +12,8 @@ if ($pub) {
     $has_board      = ! empty( EMEVzw\Publications::get_board_changes( $pub_id ));
     $has_statutes   = ! empty( trim( $pub->statute_text ?? '' ) );
 } else {
-    $has_board      = false;
-    $has_statutes   = false;
+    $has_board      = true;
+    $has_statutes   = true;
 }
 $vzw_nr         = $config->vzw_number ?? '';
 $court_name     = $config->court ?? 'Griffie Ondernemingsrechtbank';
@@ -21,7 +21,7 @@ $court_address  = $config->court_address ?? '';
 
 ?>
             <?php if (!$pub): ?>
-            <h4><?php esc_html_e( 'De stappen hieronder zijn voor het geval er geen wijzigingen zijn in het bestuur of de statuten. Indien deze er wel zijn, zullen die zichtbaar worden.', 'eme-vzw-helper' ); ?></h4>
+            <h4><?php esc_html_e( 'De stappen hieronder zijn een algemeen voorbeeld. Er zijn afwijkingen indien geen bestuurswijziging of statutenwijziging, deze worden dan per publicatie uitgelegd.', 'eme-vzw-helper' ); ?></h4>
             <?php endif; ?>
             <h4><?php esc_html_e( 'Checklist neerlegging bij de griffie', 'eme-vzw-helper' ); ?></h4>
             <!-- ── STAP 1: DOCUMENTEN ── -->
@@ -84,8 +84,7 @@ $court_address  = $config->court_address ?? '';
                     <li><strong><?php esc_html_e( 'Formulier II niet ondertekenen', 'eme-vzw-helper' ); ?></strong></li>
                     <?php endif; ?>
                     <li><strong><?php esc_html_e( 'Verslag Bestuursorgaan / Algemene Vergadering', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
-                    <li><strong><?php esc_html_e( 'Staat van het Vermogen', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
-                    <li><strong><?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': elke betrokkene parafeert elke pagina; op de laatste pagina volledige naam + handtekening.', 'eme-vzw-helper' ); ?></li>
+                    <li><strong><?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': naam + handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
                     <?php if ( $has_board ): ?>
                     <li><strong><?php esc_html_e( 'Verklaring bestuursverbod', 'eme-vzw-helper' ); ?></strong> <?php esc_html_e( ': onderaan naam, hoedanigheid en handtekening van de vertegenwoordiger(s).', 'eme-vzw-helper' ); ?></li>
                     <?php endif; ?>

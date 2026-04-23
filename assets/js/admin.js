@@ -16,7 +16,10 @@
     document.querySelectorAll('.vzw-help-btn').forEach(function(e) {
         e.addEventListener('click', function(e) {
             const targetId = e.target.dataset.id;
-            document.getElementById(targetId)?.showModal();
+            const helpDialog = document.getElementById(targetId);
+            helpDialog.showModal();
+            helpDialog.focus();
+            helpDialog.scrollTop = 0;
         });
     });
     /**
@@ -352,6 +355,7 @@
             const dialog = document.createElement('dialog');
             dialog.id = "dialog-vzw-howto-send";
             dialog.classList.add("vzw-help-dialog", "vzw-howto-dialog");
+            dialog.autofocus = true;
 
             // Add content from response
             dialog.innerHTML = `
@@ -364,6 +368,8 @@
             // Add to body and show
             document.body.appendChild(dialog);
             dialog.showModal(); // Opens as modal dialog
+            dialog.focus();
+            dialog.scrollTop = 0;
 
             // Optional: Close dialog when clicking backdrop (for modal)
             dialog.addEventListener('click', (e) => {
