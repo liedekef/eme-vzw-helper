@@ -379,14 +379,6 @@
         });
     }
 
-    // Delete patrimony
-    function handleDeletePatrimony(btn) {
-        if (!confirm(i18n.confirm_delete_patrimony)) return;
-        ajax('eme_vzw_delete_patrimony', { id: btn.dataset.id, nonce: nonce }, function() {
-                setTimeout(() => location.reload(), 350);
-        });
-    }
-
     // Delete publication
     function handleDeletePub(btn) {
         if (!confirm(i18n.confirm_delete_pub)) return;
@@ -443,7 +435,6 @@
         'vzw-howto-send':       handleVzwHowtoSend,
         'vzw-gen-bestuursverbod': handleGenBestuursverbod,
         'vzw-delete-pub':       handleDeletePub,
-        'vzw-delete-patrimony': handleDeletePatrimony,
         'vzw-delete-board':     handleDeleteBoard,
         'vzw-reactivate-board': handleReactivateBoard,
         'vzw-purge-board':      handlePurgeBoard,
@@ -509,67 +500,6 @@
             if (legalFields) legalFields.style.display = this.checked ? 'block' : 'none';
             if (naturalFields) naturalFields.style.display = this.checked ? 'none' : 'block';
         });
-    }
-
-
-    /* ════════════════════════════════════════════════════════════════
-     * PATRIMONY
-     * ════════════════════════════════════════════════════════════════ */
-    const patrimonyForm = document.getElementById('vzw-patrimony-form');
-    if (patrimonyForm) {
-        patrimonyForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const $btn = this.querySelector('.submit-btn');
-            $btn.disabled = true;
-            $btn.textContent = emeVzw.i18n.saving;
-            const formData = new FormData(this);
-            const data = {};
-            formData.forEach((value, key) => { data[key] = value; });
-            ajax('eme_vzw_save_patrimony', data, function() {
-                $btn.textContent = i18n.saved;
-                $btn.disabled = false;
-                setTimeout(() => {
-                    $btn.textContent = i18n.save;
-                    $btn.disabled = false;
-                }, 1800);
-            }, function(msg) {
-                $btn.textContent = i18n.save;
-                $btn.disabled = false;
-                alert(msg);
-            });
-        });
-    }
-
-    function recalcPatrimony() {
-        let assets = 0, liab = 0, rights = 0, oblig = 0;
-        document.querySelectorAll('.vzw-amount').forEach(function(el) {
-            const v = parseBE(el.value); // needed to get the real international number
-            const s = el.dataset.section;
-            if (s === 'assets') assets += v;
-            if (s === 'liab')   liab   += v;
-            if (s === 'rights') rights += v;
-            if (s === 'oblig')  oblig  += v;
-        });
-        document.getElementById('total-assets').textContent = formatCurrency(assets);
-        document.getElementById('total-liab').textContent   = formatCurrency(liab);
-        document.getElementById('total-rights').textContent = formatCurrency(rights);
-        document.getElementById('total-oblig').textContent  = formatCurrency(oblig);
-        const net = assets - liab;
-        const netEl = document.getElementById('total-net');
-        netEl.textContent = formatCurrency(net);
-        netEl.style.color = net < 0 ? '#d63638' : '#00a32a';
-    }
-
-    const vzwPatrimonyYearSelect = document.getElementById('vzw-patrimony-year');
-    if (vzwPatrimonyYearSelect) {
-        vzwPatrimonyYearSelect.addEventListener('change', function() {
-            window.location = `${window.location.pathname}?page=emevzwhelper-patrimony&fiscal_year=${this.value}`;
-        });
-
-        document.querySelectorAll('.vzw-amount').forEach(function(el) {
-            el.addEventListener('input', recalcPatrimony);
-        });
-        recalcPatrimony();
     }
 
     function initSnapSelectRemote(selector, options = {}) {

@@ -20,7 +20,6 @@ class Assets {
             'ajaxUrl' => admin_url( 'admin-ajax.php' ),
             'i18n'    => [
                 'confirm_delete_pub' => __( 'Publicatie verwijderen?', 'eme-vzw-helper' ),
-                'confirm_delete_patrimony' => __( 'Staat van Vermogen verwijderen?', 'eme-vzw-helper' ),
                 'confirm_delete'     => __( 'Bestuurder deactiveren? Je kan dit ongedaan maken via "Heractiveer".', 'eme-vzw-helper' ),
                 'confirm_reactivate' => __( 'Bestuurder terug activeren?', 'eme-vzw-helper' ),
                 'confirm_purge'      => __( 'Bestuurder DEFINITIEF verwijderen? Dit kan niet ongedaan worden gemaakt.', 'eme-vzw-helper' ),

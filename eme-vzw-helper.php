@@ -43,7 +43,6 @@ function eme_vzw_helper_init(): void {
     EMEVzw\Config::init();
     EMEVzw\Checklist::init();
     EMEVzw\Publications::init();
-    EMEVzw\Patrimony::init();
     EMEVzw\Notifications::init();
     EMEVzw\Assets::init();
 }

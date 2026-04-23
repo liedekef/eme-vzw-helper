@@ -24,7 +24,6 @@ class Menu {
             [ 'emevzwhelper-checklist',    __( 'Compliance Checklist', 'eme-vzw-helper' ),  'page_checklist'   ],
             [ 'emevzwhelper-publications', __( 'Publicaties', 'eme-vzw-helper' ),           'page_publications'],
             [ 'emevzwhelper-board',        __( 'Bestuur', 'eme-vzw-helper' ),               'page_board'       ],
-            [ 'emevzwhelper-patrimony',    __( 'Staat van het Vermogen', 'eme-vzw-helper' ),'page_patrimony'   ],
             [ 'emevzwhelper-config',       __( 'Instellingen VZW', 'eme-vzw-helper' ),      'page_config'      ],
         ] as [ $slug, $title, $method ] ) {
             add_submenu_page( 'emevzwhelper', $title, $title, 'manage_options', $slug, [ __CLASS__, $method ] );
@@ -41,6 +40,5 @@ class Menu {
     public static function page_checklist():   void { self::tpl( 'checklist' ); }
     public static function page_publications():void { self::tpl( 'publications' ); }
     public static function page_board():       void { self::tpl( 'board' ); }
-    public static function page_patrimony():   void { self::tpl( 'patrimony' ); }
     public static function page_config():      void { self::tpl( 'config' ); }
 }

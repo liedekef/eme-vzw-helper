@@ -130,67 +130,6 @@ class Installer {
             KEY idx_status (status)
         ) $charset;" );
 
-        // ── Staat van het Vermogen (Bijlage C – per boekjaar) ───────────
-        $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_patrimony (
-            id                          INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-            fiscal_year                 SMALLINT        NOT NULL,
-
-            -- Sectie 1: Waarderingsregels (art. 6)
-            depr_machines_new_years     TINYINT         NOT NULL DEFAULT 5,
-            depr_machines_used_years    TINYINT         NOT NULL DEFAULT 2,
-            depr_computers_new_years    TINYINT         NOT NULL DEFAULT 5,
-            depr_computers_used_years   TINYINT         NOT NULL DEFAULT 2,
-            depr_furniture_new_years    TINYINT         NOT NULL DEFAULT 5,
-            depr_furniture_used_years   TINYINT         NOT NULL DEFAULT 2,
-            depr_other_new_years        TINYINT         NOT NULL DEFAULT 5,
-            depr_other_used_years       TINYINT         NOT NULL DEFAULT 2,
-            depr_method                 VARCHAR(12)     NOT NULL DEFAULT 'linear',
-            cash_valuation_note         TEXT,
-
-            -- Sectie 2: Aanpassing waarderingsregels (art. 7)
-            valuation_changes           TEXT,
-
-            -- Sectie 3: Bijkomende inlichtingen (art. 14)
-            additional_info             TEXT,
-
-            -- Sectie 4: Bezittingen
-            asset_real_estate           DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            asset_machines              DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            asset_movables              DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            asset_stocks                DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            asset_receivables           DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            asset_investments           DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            asset_cash                  DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            asset_other                 DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-
-            -- Sectie 4: Schulden
-            liab_financial              DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            liab_suppliers              DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            liab_members                DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            liab_fiscal_social          DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            liab_other                  DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-
-            -- Sectie 4: Rechten
-            right_subsidies             DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            right_donations             DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            right_other                 DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-
-            -- Sectie 4: Verplichtingen
-            oblig_mortgages             DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            oblig_guarantees            DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-            oblig_other                 DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-
-            -- Sectie 5
-            non_numeric_obligations     TEXT,
-
-            status                      ENUM('draft','final') NOT NULL DEFAULT 'draft',
-            notes                       TEXT,
-            created_at                  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at                  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY uniq_year (fiscal_year)
-        ) $charset;" );
-
         // ── Publication board members (who changed in this publication) ──
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_pub_board (
             id              INT UNSIGNED    NOT NULL AUTO_INCREMENT,
@@ -206,7 +145,7 @@ class Installer {
 
     private static function drop_tables(): void {
         global $wpdb;
-        foreach ( [ 'emevzw_pub_board','emevzw_publications','emevzw_checks','emevzw_patrimony','emevzw_board' ] as $t ) {
+        foreach ( [ 'emevzw_pub_board','emevzw_publications','emevzw_checks','emevzw_board' ] as $t ) {
             $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$t}" ); // phpcs:ignore
         }
     }
