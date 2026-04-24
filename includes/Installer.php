@@ -13,6 +13,9 @@ class Installer {
         self::migrate();
         update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
         //flush_rewrite_rules();
+        if ( ! wp_next_scheduled( 'eme_vzw_daily_check' ) ) {
+            wp_schedule_event( time(), 'daily', 'eme_vzw_daily_check' );
+        }
     }
 
     /**
@@ -42,6 +45,10 @@ class Installer {
 
     public static function deactivate(): void {
         //flush_rewrite_rules();
+        $timestamp = wp_next_scheduled( 'eme_vzw_daily_check' );
+        if ( $timestamp ) {
+            wp_unschedule_event( $timestamp, 'eme_vzw_daily_check' );
+        }
     }
 
     public static function uninstall(): void {

@@ -142,6 +142,7 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>
         <input type="email" name="notification_email" value="<?= esc_attr( $config->notification_email ?? '' ) ?>">
+        <span class="description"><?php esc_html_e( 'Herinneringen worden max 1 keer per week verstuurd.', 'eme-vzw-helper' ); ?></span>
     </div>
 </div>
 

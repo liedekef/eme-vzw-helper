@@ -7,9 +7,6 @@ class Notifications {
 
     public static function init(): void {
         add_action( 'eme_vzw_daily_check', [ __CLASS__, 'run_checks' ] );
-        if ( ! wp_next_scheduled( 'eme_vzw_daily_check' ) ) {
-            wp_schedule_event( time(), 'daily', 'eme_vzw_daily_check' );
-        }
     }
 
     public static function run_checks(): void {
@@ -18,35 +15,44 @@ class Notifications {
 
         $today    = new \DateTime( current_time( 'Y-m-d' ) );
         $warnings = [];
+        $sent_log = get_option( 'emevzw_notification_sent', [] ); // ['key' => timestamp]
 
-        // Board mandate end warning (30 days)
+        $week_ago = time() - ( 7 * DAY_IN_SECONDS );
+
+        // Board mandate end warning (30 dagen)
         if ( $config->board_mandate_end ) {
             $end  = new \DateTime( $config->board_mandate_end );
             $diff = $today->diff( $end );
             if ( $end >= $today && $diff->days <= 30 ) {
-                $warnings[] = sprintf(
-                    __( 'Bestuursmandaat loopt af op %s (nog %d dagen).', 'eme-vzw-helper' ),
-                    date_i18n( 'd/m/Y', strtotime( $config->board_mandate_end ) ),
-                    $diff->days
-                );
+                if ( empty( $sent_log['board_mandate'] ) || $sent_log['board_mandate'] < $week_ago ) {
+                    $warnings['board_mandate'] = sprintf(
+                        __( 'Bestuursmandaat loopt af op %s (nog %d dagen).', 'eme-vzw-helper' ),
+                        date_i18n( 'd/m/Y', strtotime( $config->board_mandate_end ) ),
+                        $diff->days
+                    );
+                }
             }
         }
 
-        // UBO annual confirmation (warn if > 11 months ago)
+        // UBO jaarlijkse bevestiging
         if ( $config->ubo_last_confirmed ) {
             $last = new \DateTime( $config->ubo_last_confirmed );
             $diff = $last->diff( $today );
             if ( $diff->days >= 335 ) {
-                $warnings[] = __( 'UBO-register: jaarlijkse bevestiging vereist. Laatste bevestiging was meer dan 11 maanden geleden.', 'eme-vzw-helper' );
+                if ( empty( $sent_log['ubo'] ) || $sent_log['ubo'] < $week_ago ) {
+                    $warnings['ubo'] = __( 'UBO-register: jaarlijkse bevestiging vereist. Laatste bevestiging was meer dan 11 maanden geleden.', 'eme-vzw-helper' );
+                }
             }
         }
 
-        // Patrimonium tax (30 March reminder)
+        // Patrimoniumtaks (14 dagen voor 31 maart)
         $march31 = new \DateTime( $today->format( 'Y' ) . '-03-31' );
         if ( $today <= $march31 ) {
             $diff = $today->diff( $march31 );
             if ( $diff->days <= 14 ) {
-                $warnings[] = __( 'Aangifte Patrimoniumtaks: deadline is 31 maart.', 'eme-vzw-helper' );
+                if ( empty( $sent_log['patrimony'] ) || $sent_log['patrimony'] < $week_ago ) {
+                    $warnings['patrimony'] = __( 'Aangifte Patrimoniumtaks: deadline is 31 maart.', 'eme-vzw-helper' );
+                }
             }
         }
 
@@ -57,5 +63,11 @@ class Notifications {
             sprintf( __( '[%s] VZW Compliance – Actie vereist', 'eme-vzw-helper' ), $config->vzw_name ),
             implode( "\n\n", $warnings ) . "\n\n" . admin_url( 'admin.php?page=emevzwhelper' )
         );
+
+        // Log de verzonden warnings
+        foreach ( array_keys( $warnings ) as $key ) {
+            $sent_log[ $key ] = time();
+        }
+        update_option( 'emevzw_notification_sent', $sent_log );
     }
 }
