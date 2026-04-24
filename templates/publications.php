@@ -10,18 +10,19 @@ $board_members_inactive = array_filter( $all_members, fn( $m ) => (int) $m->is_a
 
 $status_labels = [
     'draft'     => __( 'Concept', 'eme-vzw-helper' ),
-    'submitted' => __( 'Ingediend', 'eme-vzw-helper' ),
+    'submitted' => __( 'Neergelegd', 'eme-vzw-helper' ),
     'published' => __( 'Gepubliceerd', 'eme-vzw-helper' ),
 ];
 ?>
 <div class="wrap vzw-wrap">
-    <h1><?php esc_html_e( 'Wettelijke Publicaties', 'eme-vzw-helper' ); ?></h1>
-    <p style="color:#646970">
-        <?php esc_html_e( 'Maak Formulieren I & II en verklaring op eer bestuursverbod voor neerlegging bij de griffie.', 'eme-vzw-helper' ); ?>
-    </p>
-    <?php if (!$pub) : ?>
+    <h1><?php esc_html_e( 'Wettelijke Publicaties', 'eme-vzw-helper' ); ?>
     <button type="button" class="button vzw-howto-send" data-pub-id="" title="<?php esc_attr_e( 'Hoe een neerlegging doen bij de griffie (algemeen)?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe een neerlegging doen bij de griffie (algemeen)?</button>
-    <?php endif; ?>
+    </h1>
+    <p style="color:#646970">
+        <?php esc_html_e( 'Hier kan je Formulieren I & II en verklaring op eer bestuursverbod aanmaken voor neerlegging bij de griffie.', 'eme-vzw-helper' ); ?>
+        <br>➡️
+        <?php esc_html_e( 'Tip: maak elk jaar een publicatie aan, zelfs indien er geen wijzigingen zijn. De tips hier zijn telkens van belang bij neerleggen bij de griffie, zelfs indien het enkel om een simpele jaarrekening gaat.', 'eme-vzw-helper' ); ?>
+    </p>
 
     <div class="vzw-form-box">
         <h2><?= $pub ? esc_html__( 'Publicatie bewerken', 'eme-vzw-helper' ) : esc_html__( 'Nieuwe publicatie aanmaken', 'eme-vzw-helper' ) ?></h2>
@@ -49,7 +50,7 @@ $status_labels = [
 
             <div class="vzw-row">
                 <div class="vzw-field">
-                    <label><?php esc_html_e( 'Ingediend op', 'eme-vzw-helper' ); ?></label>
+                    <label><?php esc_html_e( 'Neergelegd op', 'eme-vzw-helper' ); ?></label>
                     <input type="date" name="submitted_date" value="<?= esc_attr( $pub->submitted_date ?? '' ) ?>">
                 </div>
                 <div class="vzw-field">
@@ -79,8 +80,7 @@ $status_labels = [
             </div>
 
             <!-- BESTUURSWIJZIGINGEN -->
-            <h3 style="margin-top:16px"><?php esc_html_e( 'Bestuurswijzigingen', 'eme-vzw-helper' ); ?></h3>
-            <p class="description"><?php esc_html_e( 'B = Benoeming, E = Einde/Ontslag', 'eme-vzw-helper' ); ?></p>
+            <h3 style="margin-top:16px"><?php esc_html_e( 'Bestuurswijzigingen (benoeming/ontslag)', 'eme-vzw-helper' ); ?></h3>
             <div id="vzw-board-changes-list">
                 <?php foreach ( $board_changes as $bc ): ?>
                 <div class="vzw-board-change-row vzw-row" style="background:#f9f9f9;padding:8px;border-radius:4px;margin-bottom:6px">
@@ -153,7 +153,7 @@ $status_labels = [
                 </div>
                 <div style="padding-top:22px"><button type="button" class="button button-small vzw-remove-row">✕</button></div>
             </div>
-            <button type="button" id="btn-add-board-change" class="button" style="margin-bottom:16px">+ Bestuurder toevoegen</button>
+            <button type="button" id="btn-add-board-change" class="button" style="margin-bottom:16px">+ Bestuurswijziging toevoegen</button>
 
             <!-- STATUTENWIJZIGINGEN (ENKEL VELD) -->
             <h3 style="margin-top:20px"><?php esc_html_e( 'Statutenwijzigingen', 'eme-vzw-helper' ); ?></h3>
@@ -172,8 +172,12 @@ $status_labels = [
         <div id="vzw-doc-buttons" style="<?= $pub ? '' : 'display:none' ?>;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f1">
             <h3 style="margin:0 0 10px"><?php esc_html_e( 'Documenten genereren', 'eme-vzw-helper' ); ?></h3>
             <div class="doc-btns" style="display:flex;gap:8px;flex-wrap:wrap">
+                <?php if ($pub && ($board_changes || !empty($pub->statute_text))): ?>
                 <button type="button" class="button vzw-gen-doc" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📄 Maak Formulieren I & II aan</button>
+                <?php endif; ?>
+                <?php if ($pub && $board_changes): ?>
                 <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📋 Verklaring op eer bestuursverbod</button>
+                <?php endif; ?>
                 <?php if ($pub): ?>
                 <button type="button" class="button vzw-howto-send" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>" title="<?php esc_attr_e( 'Hoe deze publicatie neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe deze publicatie neerleggen?</button>
                 <?php endif; ?>
@@ -189,15 +193,22 @@ $status_labels = [
             <th>#</th><th><?php esc_html_e( 'Datum AV', 'eme-vzw-helper' ); ?></th><th><?php esc_html_e( 'Status', 'eme-vzw-helper' ); ?></th><th><?php esc_html_e( 'Acties', 'eme-vzw-helper' ); ?></th>
         </tr></thead>
         <tbody>
-        <?php foreach ( $all_pubs as $p ): ?>
+	<?php foreach ( $all_pubs as $p ):
+		$board_changes= EMEVzw\Publications::get_board_changes( $p->id );
+		$statute_changes = !empty($p->statute_text);
+	?>
             <tr>
                 <td><?= (int) $p->id ?></td>
                 <td><?= esc_html( date_i18n( 'd/m/Y', strtotime( $p->av_date ) ) ) ?></td>
                 <td><span class="status-badge status-<?= esc_attr( $p->status ) ?>"><?= esc_html( $status_labels[ $p->status ] ?? $p->status ) ?></span></td>
                 <td>
                     <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $p->id ) ) ?>" class="button button-small">Bewerk</a>
+		    <?php if ($board_changes || $statute_changes): ?>
                     <button type="button" class="button vzw-gen-doc" data-pub-id="<?= (int) $p->id ?>">📄 Maak Formulieren I & II aan</button>
+               	    <?php endif; ?>
+		    <?php if ($board_changes): ?>
                     <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?= $p ? (int) $p->id : '' ?>">📋 Verklaring op eer bestuursverbod</button>
+               	    <?php endif; ?>
                     <button type="button" class="button vzw-howto-send" data-pub-id="<?= (int) $p->id ?>" title="<?php esc_attr_e( 'Hoe deze publicatie neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe deze publicatie neerleggen?</button>
                     <button type="button" class="button button-small vzw-delete-pub" data-id="<?= (int) $p->id ?>">✕</button>
                 </td>

@@ -168,7 +168,7 @@ $g_yr   = $score['by_group']['current_year'];
 </tr></thead>
 <tbody>
 <?php
-$status_labels= [ 'draft' => __( 'Concept', 'eme-vzw-helper' ), 'submitted' => __( 'Ingediend', 'eme-vzw-helper' ), 'published' => __( 'Gepubliceerd', 'eme-vzw-helper' ) ];
+$status_labels= [ 'draft' => __( 'Concept', 'eme-vzw-helper' ), 'submitted' => __( 'Neergelegd', 'eme-vzw-helper' ), 'published' => __( 'Gepubliceerd', 'eme-vzw-helper' ) ];
 foreach ( array_slice( $pubs, 0, 5 ) as $pub ):
 ?>
 <tr>

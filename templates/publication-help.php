@@ -39,7 +39,7 @@ $court_address  = $config->court_address ?? '';
                     </li>
                     <?php else: ?>
                     <li>
-                        <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Geen Formulier I of II aangezien er geen wijzigingen zijn.', 'eme-vzw-helper' ); ?></span>
+                        <span class="vzw-howto-doc">✅ <?php esc_html_e( 'Geen Formulier I of II aangezien er geen wijzigingen zijn.', 'eme-vzw-helper' ); ?></span>
                     </li>
                     <?php endif; ?>
                     <li>
@@ -60,6 +60,10 @@ $court_address  = $config->court_address ?? '';
                     <li>
                         <span class="vzw-howto-doc">📋 <?php esc_html_e( 'Verklaring op eer bestuursverbod', 'eme-vzw-helper' ); ?></span>
                         <span class="vzw-howto-copies"><?php esc_html_e( 'Gebruik de knop "Verklaring op eer bestuursverbod".', 'eme-vzw-helper' ); ?></span>
+                    </li>
+                    <?php else: ?>
+                    <li>
+                        <span class="vzw-howto-doc">✅ <?php esc_html_e( 'Geen Verklaring op eer bestuursverbod aangezien er geen wijzigingen zijn.', 'eme-vzw-helper' ); ?></span>
                     </li>
                     <?php endif; ?>
                     <?php if ( $has_statutes ): ?>
@@ -119,7 +123,7 @@ $court_address  = $config->court_address ?? '';
                         <td><code>"Ondernemingsnummer <?= esc_html( $vzw_nr ) ?>"</code></td></tr>
                 </table>
                 <?php else: ?>
-                    <p class="vzw-howto-note"> <?php esc_html_e( 'Geen betaling nodig, geen wijzigingen.', 'eme-vzw-helper' ); ?></p>
+                    <p class="vzw-howto-note">✅ <?php esc_html_e( 'Geen betaling nodig, geen wijzigingen.', 'eme-vzw-helper' ); ?></p>
                 <?php endif; ?>
             </div>
  
