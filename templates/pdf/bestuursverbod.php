@@ -16,20 +16,7 @@ if ( ! empty( $config->house_bus ) ) {
 $postal  = esc_html( trim( ( $config->postal_code ?? '' ) . ' ' . ( $config->city ?? '' ) ) );
 $rpr     = esc_html( $config->court ?? '' );
 
-// Vertegenwoordigers: zoek op function_title (voorzitter + secretaris)
-$active_board       = EMEVzw\Config::get_active_board_members();
-$vertegenwoordigers = [];
-foreach ( $active_board as $m ) {
-    $func_lower = strtolower( $m->function_title ?? '' );
-    if ( preg_match( '/(voorzitter|president|chair)/i', $func_lower ) ) {
-        $vertegenwoordigers[] = $m;
-    } elseif ( preg_match( '/(secretaris|secretary)/i', $func_lower ) ) {
-        $vertegenwoordigers[] = $m;
-    }
-}
-
-// Uniek array (vermijd dubbelingen als iemand beide functies heeft)
-$vertegenwoordigers = array_unique( $vertegenwoordigers, SORT_REGULAR );
+$vertegenwoordigers = EMEVzw\Config::get_legal_representatives();
 
 // Bouw de vertegenwoordiger-string op: "Naam, wettelijke hoedanigheid (interne functie)"
 $vertegenwoordiger_str = '';

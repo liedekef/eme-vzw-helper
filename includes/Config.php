@@ -117,6 +117,19 @@ class Config {
         ) );
     }
 
+    /**
+     * Actieve bestuurders met functie secretaris/voorzitter
+     */
+    public static function get_legal_representatives(): array {
+        global $wpdb;
+        return $wpdb->get_results(
+            "SELECT * FROM `{$wpdb->prefix}emevzw_board`
+             WHERE is_active = 1
+             AND function_title IN ('voorzitter','president','chair','secretaris','secretary')
+             ORDER BY last_name"
+        );
+    }
+
     public static function save( array $data ): int|\WP_Error {
         if ( ! empty( $_POST['delete_on_uninstall'] ) ) {
             update_option( 'emevzw_helper_delete_on_uninstall', sanitize_key( $_POST['delete_on_uninstall'] ) );
