@@ -48,9 +48,11 @@ $court_address  = $config->court_address ?? '';
                     </li>
                     <li>
                         <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Staat van het vermogen', 'eme-vzw-helper' ); ?></span>
+                        <span class="vzw-howto-copies"><?php esc_html_e( 'Indien je EME Boekhouder gebruikt, gebruik de PDF versie van de volgende link: ', 'eme-vzw-helper' ); ?><a href="<?= esc_url( admin_url( 'admin.php?page=emeaccounting-patrimony' ) ) ?>"><?php esc_html_e( 'Staat van het vermogen', 'eme-vzw-helper' ); ?></a></span>
                     </li>
                     <li>
                         <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></span>
+                        <span class="vzw-howto-copies"><?php esc_html_e( 'Indien je EME Boekhouder gebruikt, gebruik de PDF versie van de volgende link: ', 'eme-vzw-helper' ); ?><a href="<?= esc_url( admin_url( 'admin.php?page=emeaccounting-reports' ) ) ?>"><?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></a></span>
                     </li>
                     <?php if ( $has_board ): ?>
                     <li>
