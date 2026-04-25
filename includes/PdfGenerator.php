@@ -98,7 +98,7 @@ class PdfGenerator {
     // Formulier II
     public function add_luik_a_f2(): self             { return $this->add_template_page( 'formulier2', 1 ); }
     public function add_luik_c_f2(): self             { return $this->add_template_page( 'formulier2', 2 ); }
-    public function add_luik_c_f2_cont(): self        { return $this->add_template_page( 'formulier2', 3 ); }
+    //public function add_luik_c_f2_cont(): self        { return $this->add_template_page( 'formulier2', 3 ); }
 
     /* ======================================================================
      *  VELD & TEKST HELPERS (MET PAGINERING)
@@ -425,7 +425,8 @@ class PdfGenerator {
         // ── PAGINA 2 & HERVERVAL: LUIK C (Max 5 per blad) ──
         $chunks = array_chunk( $board_changes, 5 );
         foreach ( $chunks as $idx => $chunk ) {
-            $idx === 0 ? $this->add_luik_c_f2() : $this->add_luik_c_f2_cont();
+            //$idx === 0 ? $this->add_luik_c_f2() : $this->add_luik_c_f2_cont();
+            $this->add_luik_c_f2();
 
             $y_start = 135.5;
             $y_step  = 6.5;
