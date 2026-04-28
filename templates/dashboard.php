@@ -47,7 +47,63 @@ if ( $config ) {
             'urgent' => $diff->days <= 30,
         ];
     }
+
+    // Patrimoniumtaks: vaste deadline 31 maart van het lopende kalenderjaar
+    $patrimony_year   = (int) $today->format( 'Y' );
+    $patrimony_date   = new DateTime( $patrimony_year . '-03-31' );
+    if ( $patrimony_date < $today ) {
+        // Deadline dit jaar is voorbij → toon deadline volgend jaar
+        $patrimony_date = new DateTime( ( $patrimony_year + 1 ) . '-03-31' );
+    }
+    $diff = $today->diff( $patrimony_date );
+    $deadlines[] = [
+        'label'  => __( 'Aangifte patrimoniumtaks VZW (31 maart)', 'eme-vzw-helper' ),
+        'date'   => $patrimony_date->format( 'Y-m-d' ),
+        'days'   => $patrimony_date >= $today ? $diff->days : -1,
+        'urgent' => $patrimony_date < $today || $diff->days <= 30,
+        'info'   => __( 'Als uw vereniging niet meer dan 50.000 euro aan belastbare bezittingen heeft, betaalt u geen taks en hoeft u geen aangifte in te dienen. Sommige verenigingen worden door de wet vrijgesteld van de taks.', 'eme-vzw-helper' ),
+    ];
+
+    // Rechtspersonenbelasting (RPB): via Biztax, deadline 6 maanden na afsluiting boekjaar
+    $rpb_deadline = clone $fy_end;
+    $rpb_deadline->modify( '+6 months' );
+    $diff_rpb = $today->diff( $rpb_deadline );
+    $deadlines[] = [
+        'label'  => sprintf( __( 'Aangifte rechtspersonenbelasting boekjaar %d (via Biztax)', 'eme-vzw-helper' ), $year ),
+        'date'   => $rpb_deadline->format( 'Y-m-d' ),
+        'days'   => $rpb_deadline >= $today ? $diff_rpb->days : -1,
+        'urgent' => $rpb_deadline < $today || $diff_rpb->days <= 30,
+        'link'   => 'https://biztax.be/',
+        'link_label' => __( 'Biztax openen', 'eme-vzw-helper' ),
+    ];
+
+    // BTW-deadlines: enkel als de VZW BTW-plichtig is
+    if ( ! empty( $config->vat_liable ) ) {
+        // Kwartaalaangiften: Q1 t.e.m. Q4 — deadline 20e van de maand na het kwartaal
+        $vat_quarters = [
+            [ 'q' => 'Q1', 'deadline' => sprintf( '%d-04-20', (int) $today->format( 'Y' ) ) ],
+            [ 'q' => 'Q2', 'deadline' => sprintf( '%d-07-20', (int) $today->format( 'Y' ) ) ],
+            [ 'q' => 'Q3', 'deadline' => sprintf( '%d-10-20', (int) $today->format( 'Y' ) ) ],
+            [ 'q' => 'Q4', 'deadline' => sprintf( '%d-01-20', (int) $today->format( 'Y' ) + 1 ) ],
+        ];
+        foreach ( $vat_quarters as $vq ) {
+            $vat_date = new DateTime( $vq['deadline'] );
+            if ( $vat_date >= $today ) {
+                $diff_vat = $today->diff( $vat_date );
+                $deadlines[] = [
+                    'label'  => sprintf( __( 'BTW-aangifte %s (kwartaal)', 'eme-vzw-helper' ), $vq['q'] ),
+                    'date'   => $vat_date->format( 'Y-m-d' ),
+                    'days'   => $diff_vat->days,
+                    'urgent' => $diff_vat->days <= 14,
+                ];
+                break; // Toon enkel de eerstvolgende BTW-deadline
+            }
+        }
+    }
 }
+
+// Sorteer deadlines op datum (vroegste eerst)
+usort( $deadlines, fn( $a, $b ) => strcmp( $a['date'], $b['date'] ) );
 
 $pct    = $score['score_pct'];
 $radius = 48;
@@ -146,11 +202,19 @@ $g_yr   = $score['by_group']['current_year'];
         ? '<strong>' . esc_html__( 'Verlopen!', 'eme-vzw-helper' ) . '</strong>'
         : sprintf( esc_html__( 'nog %d dagen', 'eme-vzw-helper' ), $dl['days'] );
 ?>
-<li class="<?= esc_attr( $cls ) ?>">
+<li class="<?= esc_attr( $cls ) ?>" style="flex-wrap:wrap;row-gap:4px">
     <span class="vzw-deadline-icon"><?= $icon ?></span>
-    <span style="flex:1"><strong><?= esc_html( $dl['label'] ) ?></strong></span>
+    <span style="flex:1">
+        <strong><?= esc_html( $dl['label'] ) ?></strong>
+        <?php if ( ! empty( $dl['link'] ) ): ?>
+            &nbsp;<a href="<?= esc_url( $dl['link'] ) ?>" target="_blank" class="button button-small" style="font-size:11px;padding:0 6px;height:20px;line-height:20px"><?= esc_html( $dl['link_label'] ?? $dl['link'] ) ?></a>
+        <?php endif; ?>
+    </span>
     <span><?= esc_html( date_i18n( 'd/m/Y', strtotime( $dl['date'] ) ) ) ?></span>
     <span><?= $label ?></span>
+    <?php if ( ! empty( $dl['info'] ) ): ?>
+    <span style="flex-basis:100%;padding-left:28px;font-size:12px;color:#646970;font-style:italic"><?= esc_html( $dl['info'] ) ?></span>
+    <?php endif; ?>
 </li>
 <?php endforeach; ?>
 </ul>

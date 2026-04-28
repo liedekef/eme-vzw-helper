@@ -84,6 +84,7 @@ class Config {
             'ubo_last_confirmed' => null,
             'board_mandate_end'=> null,
             'notification_email' => '',
+            'vat_liable'         => 0,
         ];
         return (object) wp_parse_args( get_option( self::OPTION_NAME, [] ), $defaults );
     }
@@ -163,6 +164,7 @@ class Config {
             'ubo_last_confirmed'   => ! empty( $data['ubo_last_confirmed'] ) ? eme_sanitize_request( $data['ubo_last_confirmed'] ) : null,
             'board_mandate_end'    => ! empty( $data['board_mandate_end'] ) ? eme_sanitize_request( $data['board_mandate_end'] ) : null,
             'notification_email'   => eme_sanitize_email( $data['notification_email'] ?? '' ),
+            'vat_liable'           => (int) (bool) ( $data['vat_liable'] ?? 0 ),
         ];
 
         update_option( self::OPTION_NAME, $row );

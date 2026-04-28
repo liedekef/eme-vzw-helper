@@ -64,6 +64,16 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 </div>
 
 <div class="vzw-row">
+    <div class="vzw-field">
+        <label>
+            <input type="checkbox" name="vat_liable" value="1" <?= checked( 1, (int) ( $config->vat_liable ?? 0 ), false ) ?>>
+            <?php esc_html_e( 'De vereniging is BTW-plichtig', 'eme-vzw-helper' ); ?>
+        </label>
+        <span class="description"><?php esc_html_e( 'Vink aan als de VZW onderworpen is aan de BTW-aangifte. Hierdoor verschijnen BTW-deadlines in het dashboard.', 'eme-vzw-helper' ); ?></span>
+    </div>
+</div>
+
+<div class="vzw-row">
     <div class="vzw-field" style="flex:2">
         <label>
             <?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?>

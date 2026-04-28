@@ -82,11 +82,13 @@ class Checklist {
                 'sub_questions' => [],
             ],
             'no_vat' => [
-                'label'         => __( 'De vereniging is niet BTW-plichtig.', 'eme-vzw-helper' ),
+                'label'         => __( 'De BTW-status van de vereniging is gekend en correct ingesteld.', 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'general',
-                'help'          => __( 'Indien toch BTW-plichtig, aparte aangifte vereist.', 'eme-vzw-helper' ),
-                'sub_questions' => [],
+                'help'          => __( 'Geef in de Instellingen aan of de VZW BTW-plichtig is. Indien BTW-plichtig, zijn periodieke BTW-aangiften verplicht.', 'eme-vzw-helper' ),
+                'sub_questions' => [
+                    [ 'label' => __( 'Is de BTW-status (plichtig / niet-plichtig) correct ingesteld in de plugin?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
+                ],
             ],
             'enterprise_number_correct' => [
                 'label'         => __( 'Het ondernemingsnummer van de vereniging is correct.', 'eme-vzw-helper' ),
