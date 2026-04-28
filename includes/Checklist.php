@@ -309,7 +309,7 @@ class Checklist {
             ],
             'patrimonium_tax' => [
                 'label'         => __( "Is de aangifte Patrimoniumtaks op VZW's correct ingediend?", 'eme-vzw-helper' ),
-                'weight'        => 0,
+                'weight'        => 3,
                 'group'         => 'current_year',
                 'help'          => __( 'Jaarlijkse aangifte vóór 31 maart via MyMinFin.', 'eme-vzw-helper' ),
                 'sub_questions' => [
@@ -319,7 +319,7 @@ class Checklist {
             ],
             'legal_entity_tax' => [
                 'label'         => __( 'Is de aangifte Rechtspersonenbelasting correct ingediend?', 'eme-vzw-helper' ),
-                'weight'        => 0,
+                'weight'        => 3,
                 'group'         => 'current_year',
                 'help'          => __( 'Via Tax-on-Web. Deadline: uiterlijk 6 maanden na afsluiting boekjaar.', 'eme-vzw-helper' ),
                 'sub_questions' => [
