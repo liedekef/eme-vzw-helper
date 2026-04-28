@@ -64,16 +64,36 @@ if ( $config ) {
         'info'   => __( 'Als uw vereniging niet meer dan 50.000 euro aan belastbare bezittingen heeft, betaalt u geen taks en hoeft u geen aangifte in te dienen. Sommige verenigingen worden door de wet vrijgesteld van de taks.', 'eme-vzw-helper' ),
     ];
 
-    // Rechtspersonenbelasting (RPB): via Biztax, deadline 6 maanden na afsluiting boekjaar
-    $rpb_deadline = clone $fy_end;
-    $rpb_deadline->modify( '+6 months' );
+    // Rechtspersonenbelasting (RPB): gebaseerd op rpb_last_confirmed, net als UBO.
+    // Als de laatste aangifte bekend is, is de volgende deadline 6 maanden na het einde
+    // van het eerstvolgende boekjaar ná die bevestiging.
+    // Indien niet ingevuld: toon 30 juni van het huidige jaar als standaard deadline.
+    if ( $config->rpb_last_confirmed ) {
+        $rpb_confirmed = new DateTime( $config->rpb_last_confirmed );
+        // Bepaal het boekjaareinde dat volgt op de bevestigingsdatum
+        $fy_end_this = new DateTime(
+            $rpb_confirmed->format( 'Y' ) . '-'
+            . str_pad( $config->fiscal_year_end_mm, 2, '0', STR_PAD_LEFT ) . '-'
+            . str_pad( $config->fiscal_year_end_dd, 2, '0', STR_PAD_LEFT )
+        );
+        // Als de bevestiging ná het boekjaareinde van dat jaar valt, neem volgend jaar
+        $next_fy_end  = $rpb_confirmed > $fy_end_this
+            ? ( clone $fy_end_this )->modify( '+1 year' )
+            : clone $fy_end_this;
+        $rpb_year     = (int) $next_fy_end->format( 'Y' );
+        $rpb_deadline = ( clone $next_fy_end )->modify( '+6 months' );
+    } else {
+        // Geen bevestiging ingevuld: standaard deadline = 30 juni dit jaar
+        $rpb_year     = (int) $today->format( 'Y' );
+        $rpb_deadline = new DateTime( $rpb_year . '-06-30' );
+    }
     $diff_rpb = $today->diff( $rpb_deadline );
     $deadlines[] = [
-        'label'  => sprintf( __( 'Aangifte rechtspersonenbelasting boekjaar %d (via Biztax)', 'eme-vzw-helper' ), $year ),
-        'date'   => $rpb_deadline->format( 'Y-m-d' ),
-        'days'   => $rpb_deadline >= $today ? $diff_rpb->days : -1,
-        'urgent' => $rpb_deadline < $today || $diff_rpb->days <= 30,
-        'link'   => 'https://biztax.be/',
+        'label'      => sprintf( __( 'Aangifte rechtspersonenbelasting boekjaar %d (via Biztax)', 'eme-vzw-helper' ), $rpb_year ),
+        'date'       => $rpb_deadline->format( 'Y-m-d' ),
+        'days'       => $rpb_deadline >= $today ? $diff_rpb->days : -1,
+        'urgent'     => $rpb_deadline < $today || $diff_rpb->days <= 30,
+        'link'       => 'https://biztax.be/',
         'link_label' => __( 'Biztax openen', 'eme-vzw-helper' ),
     ];
 
