@@ -54,22 +54,22 @@ $status_labels = [
                     <input type="date" name="submitted_date" value="<?= esc_attr( $pub->submitted_date ?? '' ) ?>">
                 </div>
                 <div class="vzw-field">
-                    <label><?php esc_html_e( 'Gepubliceerd in BS op', 'eme-vzw-helper' ); ?></label>
+                    <label><?php esc_html_e( 'Gepubliceerd in Belgisch Staatsblad op', 'eme-vzw-helper' ); ?></label>
                     <input type="date" name="published_date" value="<?= esc_attr( $pub->published_date ?? '' ) ?>">
                 </div>
             </div>
 
             <div class="vzw-row">
                 <div class="vzw-field">
-                    <label><?php esc_html_e( 'BS betaaldatum', 'eme-vzw-helper' ); ?></label>
+                    <label><?php esc_html_e( 'Belgisch Staatsblad betaaldatum', 'eme-vzw-helper' ); ?></label>
                     <input type="date" name="bs_payment_date" value="<?= esc_attr( $pub->bs_payment_date ?? '' ) ?>">
                 </div>
                 <div class="vzw-field">
-                    <label><?php esc_html_e( 'BS betaalbedrag (€)', 'eme-vzw-helper' ); ?></label>
+                    <label><?php esc_html_e( 'Belgisch Staatsblad bedrag betaald (€)', 'eme-vzw-helper' ); ?></label>
                     <input type="number" name="bs_payment_amount" step="0.01" min="0" value="<?= esc_attr( $pub->bs_payment_amount ?? '' ) ?>">
                 </div>
                 <div class="vzw-field">
-                    <label><?php esc_html_e( 'BS betalingsreferentie', 'eme-vzw-helper' ); ?></label>
+                    <label><?php esc_html_e( 'Belgisch Staatsblad betalingsreferentie', 'eme-vzw-helper' ); ?></label>
                     <input type="text" name="bs_payment_ref" value="<?= esc_attr( $pub->bs_payment_ref ?? '' ) ?>">
                 </div>
             </div>
