@@ -157,7 +157,7 @@ $status_labels = [
 
             <!-- STATUTENWIJZIGINGEN (ENKEL VELD) -->
             <h3 style="margin-top:20px"><?php esc_html_e( 'Statutenwijzigingen', 'eme-vzw-helper' ); ?></h3>
-            <p class="description"><?php esc_html_e( 'Vul hier de volledige wettelijke tekst in die in het Staatsblad moet verschijnen (laat leeg indien geen wijziging).', 'eme-vzw-helper' ); ?></p>
+            <p class="description"><?php esc_html_e( 'Vul hier de volledige statuten in (niet enkel de wijzigingen) die mee in het Staatsblad zullen verschijnen (laat leeg indien geen wijziging). Geef apart ook nog de statuten mee als document bij de neerlegging, ter onderbouwing van de beslissing van de AV.', 'eme-vzw-helper' ); ?></p>
             <textarea name="statute_text" rows="8" style="width:100%;font-family:monospace"><?= esc_textarea( $pub->statute_text ?? '' ) ?></textarea>
 
             <p style="margin-top:16px">
