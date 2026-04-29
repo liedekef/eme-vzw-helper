@@ -94,11 +94,13 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
             if ( is_array( $decoded ) ) $saved_subs = $decoded;
         }
     ?>
-    <div class="vzw-check-item status-<?= esc_attr( $current_status ) ?>" data-key="<?= esc_attr( $key ) ?>">
+    <div class="vzw-check-item status-<?= esc_attr( $current_status ) ?>" data-key="<?= esc_attr( $key ) ?>"<?= !empty($item['sub_questions']) ? ' data-has-subs="1"' : '' ?>>
         <div class="vzw-check-label">
             <?= esc_html( $item['label'] ) ?>
-            <?php if ( $item['weight'] > 0 ): ?>
-            <span class="weight-badge"><?= (int) $item['weight'] ?>pt</span>
+            <?php
+            $eff_weight = EMEVzw\Checklist::effective_weight( $item );
+            if ( $eff_weight > 0 ): ?>
+            <span class="weight-badge"><?= $eff_weight ?>pt</span>
             <?php else: ?>
             <span class="weight-badge" title="<?php esc_attr_e( 'Informatief – telt niet mee in score', 'eme-vzw-helper' ); ?>">–</span>
             <?php endif; ?>

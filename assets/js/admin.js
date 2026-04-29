@@ -87,6 +87,43 @@
      * CHECKLIST
      * ════════════════════════════════════════════════════════════════ */
 
+    /* ════════════════════════════════════════════════════════════════
+     * CHECKLIST — hover opens details, required on status-yes
+     * ════════════════════════════════════════════════════════════════ */
+
+    /**
+     * Open/close the <details> element inside a check-item on mouseenter,
+     * but only if the item has sub-questions (data-has-subs="1").
+     */
+    /*
+    document.addEventListener('mouseover', function(e) {
+        if (!e.target || typeof e.target.closest !== 'function') return;
+        const $item = e.target.closest('.vzw-check-item[data-has-subs="1"]');
+        if (!$item) return;
+
+        // Only trigger when entering the main vzw-check-item from outside
+        const $currentTarget = e.currentTarget;
+        const $relatedTarget = e.relatedTarget;
+        if ($relatedTarget && $item.contains($relatedTarget)) return;
+
+        const $details = $item.querySelector('details');
+        if ($details) $details.open = true;
+    }, true);
+
+    document.addEventListener('mouseout', function(e) {
+        if (!e.target || typeof e.target.closest !== 'function') return;
+        const $item = e.target.closest('.vzw-check-item[data-has-subs="1"]');
+        if (!$item) return;
+
+        // Only close when leaving the main vzw-check-item to outside
+        const $relatedTarget = e.relatedTarget;
+        if ($relatedTarget && $item.contains($relatedTarget)) return;
+
+        const $details = $item.querySelector('details');
+        if ($details) $details.open = false;
+    }, true);
+    */
+
     // Status button click → save via AJAX, update UI score
     function handleStatusBtn(btn) {
         const $item = btn.closest('.vzw-check-item');
@@ -103,6 +140,7 @@
             b.classList.remove('active-yes', 'active-no', 'active-na', 'active-pending');
         });
         btn.classList.add(`active-${status}`);
+        syncSubRequired($item);
 
         ajax('eme_vzw_save_check', {
             fiscal_year: year,

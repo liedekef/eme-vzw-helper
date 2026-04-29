@@ -152,7 +152,7 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
     <div class="vzw-field">
         <label><?php esc_html_e( 'RPB – datum laatste aangifte', 'eme-vzw-helper' ); ?></label>
         <input type="date" name="rpb_last_confirmed" value="<?= esc_attr( $config->rpb_last_confirmed ?? '' ) ?>">
-        <span class="description"><?php esc_html_e( 'Datum waarop de aangifte rechtspersonenbelasting werd ingediend. De volgende deadline wordt automatisch berekend (6 maanden na afsluiting volgend boekjaar).', 'eme-vzw-helper' ); ?></span>
+        <span class="description"><?php esc_html_e( 'Datum waarop de aangifte rechtspersonenbelasting werd ingediend. De volgende deadline wordt automatisch berekend (6 maanden na afsluiting vorig boekjaar).', 'eme-vzw-helper' ); ?></span>
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>

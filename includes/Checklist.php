@@ -316,7 +316,7 @@ class Checklist {
                 'label'         => __( 'Is de aangifte Rechtspersonenbelasting correct ingediend?', 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => __( 'Verplicht voor alle VZW\'s, zelfs micro-VZW\'s. Via Biztax. Deadline: uiterlijk 6 maanden na afsluiting boekjaar.', 'eme-vzw-helper' ),
+                'help'          => __( 'Verplicht voor alle VZW\'s, zelfs micro-VZW\'s. Via Biztax. Deadline: uiterlijk 6 maanden na afsluiting boekjaar, maar meestal maar mogelijk vanaf mei.', 'eme-vzw-helper' ),
                 'sub_questions' => [
                     [ 'label' => __( 'Is de aangifte tijdig ingediend?', 'eme-vzw-helper' ),           'type' => 'yesno' ],
                     [ 'label' => __( 'Is de eventuele belasting betaald?', 'eme-vzw-helper' ),         'type' => 'yesno' ],
@@ -324,6 +324,19 @@ class Checklist {
                 ],
             ],
         ];
+    }
+
+    /* ------------------------------------------------------------------
+     * HELPERS
+     * ------------------------------------------------------------------ */
+
+    /**
+     * Effective weight of a checklist item:
+     * base weight + 1 for each sub-question defined.
+     */
+    public static function effective_weight( array $item ): int {
+        $subs = $item['sub_questions'] ?? [];
+        return (int) $item['weight'] + count( $subs );
     }
 
     /* ------------------------------------------------------------------
@@ -346,7 +359,7 @@ class Checklist {
         $max_questions = count($definitions);
         $no_answer     = 0;
         foreach ( $definitions as $key => $item ) {
-            $weight = $item['weight'];
+            $weight = self::effective_weight( $item );
             $status = $answers[ $key ]['status'] ?? 'pending';
             $group  = $item['group'];
 
