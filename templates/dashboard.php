@@ -19,6 +19,7 @@ if ( $config ) {
             'label'  => __( 'Einde bestuursmandaat', 'eme-vzw-helper' ),
             'date'   => $config->board_mandate_end,
             'days'   => $end >= $today ? $diff->days : -1,
+            'warn'   => $end >= $today && $diff->days <= 90,
             'urgent' => $end < $today || $diff->days <= 30,
         ];
     }
@@ -31,6 +32,7 @@ if ( $config ) {
             'label'  => __( 'Jaarlijkse UBO-bevestiging', 'eme-vzw-helper' ),
             'date'   => $next->format( 'Y-m-d' ),
             'days'   => $next >= $today ? $diff->days : -1,
+            'warn'   => $next >= $today && $diff->days <= 90,
             'urgent' => $next < $today || $diff->days <= 30,
         ];
     }
@@ -44,6 +46,7 @@ if ( $config ) {
             'label'  => sprintf( __( 'Deadline Algemene Vergadering %d', 'eme-vzw-helper' ), $year+1 ),
             'date'   => $av_deadline->format( 'Y-m-d' ),
             'days'   => $diff->days,
+            'warn'   => $diff->days <= 90,
             'urgent' => $diff->days <= 30,
         ];
     }
@@ -60,6 +63,7 @@ if ( $config ) {
         'label'  => __( 'Aangifte patrimoniumtaks VZW (31 maart)', 'eme-vzw-helper' ),
         'date'   => $patrimony_date->format( 'Y-m-d' ),
         'days'   => $patrimony_date >= $today ? $diff->days : -1,
+        'warn'   => $patrimony_date >= $today && $diff->days <= 90,
         'urgent' => $patrimony_date < $today || $diff->days <= 30,
         'info'   => __( 'Als uw vereniging niet meer dan 50.000 euro aan belastbare bezittingen heeft, betaalt u geen taks en hoeft u geen aangifte in te dienen. Sommige verenigingen worden door de wet vrijgesteld van de taks.', 'eme-vzw-helper' ),
     ];
@@ -92,8 +96,9 @@ if ( $config ) {
         'label'      => sprintf( __( 'Aangifte rechtspersonenbelasting boekjaar %d (via Biztax)', 'eme-vzw-helper' ), $rpb_year ),
         'date'       => $rpb_deadline->format( 'Y-m-d' ),
         'days'       => $rpb_deadline >= $today ? $diff_rpb->days : -1,
+        'warn'       => $rpb_deadline >= $today && $diff_rpb->days <= 90,
         'urgent'     => $rpb_deadline < $today || $diff_rpb->days <= 30,
-        'link'       => 'https://biztax.be/',
+        'link'       => 'https://financien.belgium.be/nl/E-services/biztax/',
         'link_label' => __( 'Biztax openen', 'eme-vzw-helper' ),
     ];
 
@@ -114,6 +119,7 @@ if ( $config ) {
                     'label'  => sprintf( __( 'BTW-aangifte %s (kwartaal)', 'eme-vzw-helper' ), $vq['q'] ),
                     'date'   => $vat_date->format( 'Y-m-d' ),
                     'days'   => $diff_vat->days,
+                    'warn'   => $diff_vat->days <= 30,
                     'urgent' => $diff_vat->days <= 14,
                 ];
                 break; // Toon enkel de eerstvolgende BTW-deadline
@@ -217,7 +223,7 @@ $g_yr   = $score['by_group']['current_year'];
 <ul class="vzw-deadline-list">
 <?php foreach ( $deadlines as $dl ):
     $icon  = $dl['urgent'] ? '⚠️' : '📅';
-    $cls   = $dl['urgent'] ? 'vzw-deadline-urgent' : 'vzw-deadline-warn';
+    $cls   = $dl['urgent'] ? 'vzw-deadline-urgent' : ( $dl['warn'] ? 'vzw-deadline-warn' : 'vzw-deadline-ok' );
     $label = $dl['days'] < 0
         ? '<strong>' . esc_html__( 'Verlopen!', 'eme-vzw-helper' ) . '</strong>'
         : sprintf( esc_html__( 'nog %d dagen', 'eme-vzw-helper' ), $dl['days'] );
