@@ -170,16 +170,6 @@ class Checklist {
                     [ 'label' => __( 'Zijn de notulen getekend?', 'eme-vzw-helper' ),                                                           'type' => 'yesno' ],
                 ],
             ],
-            'statutes_published_bs' => [
-                'label'         => __( 'De laatste algemene statuten zijn correct verschenen in het Belgisch Staatsblad.', 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'current_year',
-                'help'          => __( 'Publicatie verplicht binnen 30 dagen na goedkeuring door AV.', 'eme-vzw-helper' ),
-                'sub_questions' => [
-                    [ 'label' => __( 'Datum van de meest recente publicatie?', 'eme-vzw-helper' ),                      'type' => 'date' ],
-                    [ 'label' => __( 'Is de publicatie binnen de termijn van 30 dagen gebeurd?', 'eme-vzw-helper' ),    'type' => 'yesno' ],
-                ],
-            ],
             'current_year_dates_correct' => [
                 'label'         => __( 'Het huidige boekjaar start en eindigt op de correcte data.', 'eme-vzw-helper' ),
                 'weight'        => 1,
@@ -286,26 +276,31 @@ class Checklist {
                 'help'          => '',
                 'sub_questions' => [],
             ],
-            'no_form1_2_needed' => [
-                'label'         => __( 'De Formulieren 1 en 2 moeten niet worden opgemaakt omdat er geen bestuurswissel was.', 'eme-vzw-helper' ),
+            'form1_2_needed' => [
+                'label'         => __( 'De Formulieren 1 en 2 zijn opgemaakt omdat er een bestuurswissel en/of statutenwijziging was.', 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => __( 'Zet op "N.v.t." als er wél een bestuurswissel was.', 'eme-vzw-helper' ),
+                'help'          => __( 'Zet op "N.v.t." indien niet toepasselijk.', 'eme-vzw-helper' ),
                 'sub_questions' => [],
             ],
-            'ubo_no_update_needed' => [
-                'label'         => __( "De 'uiteindelijk begunstigden' moeten niet aangepast worden omdat er geen bestuurswissel was.", 'eme-vzw-helper' ),
+            'statute_change_bs' => [
+                'label'         => __( 'Zijn de bestuurswissels en/of statutenwijzigingen gepubliceerd in het Belgisch Staatsblad.', 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => '',
-                'sub_questions' => [],
+                'help'          => __( 'Publicatie verplicht binnen 30 dagen na goedkeuring door AV. Zet op "N.v.t." indien niet toepasselijk.', 'eme-vzw-helper' ),
+                'sub_questions' => [
+                    [ 'label' => __( 'Datum van publicatie?', 'eme-vzw-helper' ), 'type' => 'date' ],
+                    [ 'label' => __( 'Is de publicatie binnen de termijn van 30 dagen gebeurd?', 'eme-vzw-helper' ),    'type' => 'yesno' ],
+                ],
             ],
-            'no_statute_change_bs' => [
-                'label'         => __( 'Er moet geen statutenwijziging gepubliceerd worden in het Belgisch Staatsblad.', 'eme-vzw-helper' ),
+            'ubo_update_needed' => [
+                'label'         => __( "Het UBO register (Uiteindelijk Begunstigden Onderneming) is aangepast omdat er een bestuurswissel was.", 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => '',
-                'sub_questions' => [],
+                'help'          => __( 'Zet op "N.v.t." indien niet toepasselijk.', 'eme-vzw-helper' ),
+                'sub_questions' => [
+                    [ 'label' => __( 'Is de deadline aangepast in de instellingen?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
+                ],
             ],
             'patrimonium_tax' => [
                 'label'         => __( "Is de aangifte Patrimoniumtaks op VZW's correct ingediend?", 'eme-vzw-helper' ),
@@ -321,10 +316,11 @@ class Checklist {
                 'label'         => __( 'Is de aangifte Rechtspersonenbelasting correct ingediend?', 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => __( 'Via Tax-on-Web. Deadline: uiterlijk 6 maanden na afsluiting boekjaar.', 'eme-vzw-helper' ),
+                'help'          => __( 'Verplicht voor alle VZW\'s, zelfs micro-VZW\'s. Via Biztax. Deadline: uiterlijk 6 maanden na afsluiting boekjaar.', 'eme-vzw-helper' ),
                 'sub_questions' => [
                     [ 'label' => __( 'Is de aangifte tijdig ingediend?', 'eme-vzw-helper' ),           'type' => 'yesno' ],
                     [ 'label' => __( 'Is de eventuele belasting betaald?', 'eme-vzw-helper' ),         'type' => 'yesno' ],
+                    [ 'label' => __( 'Is de deadline aangepast in de instellingen?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
                 ],
             ],
         ];
