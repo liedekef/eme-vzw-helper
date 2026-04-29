@@ -71,7 +71,7 @@ $court_address  = $config->court_address ?? '';
                     <?php if ( $has_statutes ): ?>
                     <li>
                         <span class="vzw-howto-doc">📜 <?php esc_html_e( 'Gecoördineerde statuten', 'eme-vzw-helper' ); ?></span>
-                        <span class="vzw-howto-copies"><?php esc_html_e( 'Volledige statutentekst met alle wijzigingen verwerkt (via VZW-Helper → Statuten).', 'eme-vzw-helper' ); ?></span>
+                        <span class="vzw-howto-copies"><?php esc_html_e( 'Volledige statutentekst met alle wijzigingen verwerkt.', 'eme-vzw-helper' ); ?></span>
                     </li>
                     <?php endif; ?>
                 </ul>
