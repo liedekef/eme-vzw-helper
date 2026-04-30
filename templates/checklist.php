@@ -5,6 +5,7 @@ $year        = isset( $_GET['year'] ) ? (int) $_GET['year'] : (int) gmdate( 'Y' 
 $definitions = EMEVzw\Checklist::get_definitions();
 $answers     = EMEVzw\Checklist::get_answers( $year );
 $score       = EMEVzw\Checklist::get_score( $year );
+$config      = EMEVzw\Config::get();
 
 $groups = [
     'general'      => __( 'Algemeen na te kijken', 'eme-vzw-helper' ),
@@ -115,9 +116,16 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
                 </summary>
                 <ul id="subs-<?= esc_attr( $key ) ?>" class="vzw-check-subs" style="list-style:none;margin:6px 0 0 0;padding:0">
                     <?php foreach ( $item['sub_questions'] as $sq_idx => $sq ):
-                        $sq_label = is_array( $sq ) ? $sq['label'] : $sq;
-                        $sq_type  = is_array( $sq ) ? ( $sq['type'] ?? 'text' ) : 'text';
-                        $sq_val   = $saved_subs[ $sq_idx ] ?? '';
+                        $sq_label      = is_array( $sq ) ? $sq['label'] : $sq;
+                        $sq_type       = is_array( $sq ) ? ( $sq['type'] ?? 'text' ) : 'text';
+                        $sq_val        = $saved_subs[ $sq_idx ] ?? '';
+                        // Gebruik config-default als het veld leeg is en er een config-sleutel ingesteld is
+                        if ( $sq_val === '' && ! empty( $sq['default_from_config'] ) ) {
+                            $cfg_key = $sq['default_from_config'];
+                            $sq_val  = $config->$cfg_key ?? '';
+                        }
+                        $has_config_default     = ! empty( $sq['default_from_config'] );
+                        $updates_config_if_newer = ! empty( $sq['update_config_if_newer'] );
                     ?>
                     <li style="margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-subidx="<?= (int) $sq_idx ?>">
                         <span style="font-size:12px;color:#444;flex:1;min-width:200px"><?= esc_html( $sq_label ) ?></span>
@@ -132,7 +140,10 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
                                 <input type="radio" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" name="sub_<?= $key . '_' . (int) $sq_idx ?>" value="nvt" <?= $sq_val === 'nvt' ? 'checked' : '' ?>> N.v.t.
                             </label>
                         <?php elseif ( $sq_type === 'date' ): ?>
-                            <input type="date" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" value="<?= esc_attr( $sq_val ) ?>" style="font-size:12px;padding:2px 4px">
+                            <input type="date" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" value="<?= esc_attr( $sq_val ) ?>" style="font-size:12px;padding:2px 4px"<?= $has_config_default ? ' data-config-key="' . esc_attr( $sq['default_from_config'] ) . '"' : '' ?><?= $updates_config_if_newer ? ' data-update-config="1"' : '' ?>>
+                            <?php if ( $updates_config_if_newer ): ?>
+                            <span title="<?php esc_attr_e( 'Wordt automatisch opgeslagen in de instellingen als de datum nieuwer is.', 'eme-vzw-helper' ); ?>" style="font-size:11px;color:#646970;cursor:help">↺ config</span>
+                            <?php endif; ?>
                         <?php elseif ( $sq_type === 'number' ): ?>
                             <input type="number" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" value="<?= esc_attr( $sq_val ) ?>" min="0" style="font-size:12px;padding:2px 4px;width:80px">
                         <?php else: ?>
