@@ -124,7 +124,12 @@ class Checklist {
                 'group'         => 'current_year',
                 'help'          => __( 'De einddatum van het mandaat is in de statuten bepaald.', 'eme-vzw-helper' ),
                 'sub_questions' => [
-                    [ 'label' => __( 'Tot wanneer loopt het mandaat van het huidige bestuur?', 'eme-vzw-helper' ),            'type' => 'date' ],
+                    [
+                        'label'                  => __( 'Tot wanneer loopt het mandaat van het huidige bestuur?', 'eme-vzw-helper' ),
+                        'type'                   => 'date',
+                        'default_from_config'    => 'board_mandate_end',
+                        'update_config_if_newer' => true,
+                    ],
                     [ 'label' => __( 'Is het mandaat nog niet verlopen?', 'eme-vzw-helper' ),                                 'type' => 'yesno' ],
                 ],
             ],
@@ -147,16 +152,6 @@ class Checklist {
                 'sub_questions' => [
                     [ 'label' => __( 'Stemt de KBO-samenstelling overeen met de werkelijkheid?', 'eme-vzw-helper' ),          'type' => 'yesno' ],
                     [ 'label' => __( 'Zijn ontslagen bestuurders verwijderd uit de KBO?', 'eme-vzw-helper' ),                 'type' => 'yesno' ],
-                ],
-            ],
-            'ubo_registered' => [
-                'label'         => __( "De 'uiteindelijk begunstigden' van de VZW werden geregistreerd in het UBO-register.", 'eme-vzw-helper' ),
-                'weight'        => 3,
-                'group'         => 'current_year',
-                'help'          => __( 'Verplicht via MyMinFin of Isabel. Jaarlijkse bevestiging vereist.', 'eme-vzw-helper' ),
-                'sub_questions' => [
-                    [ 'label' => __( 'Wanneer werd het UBO-register voor het laatste bijgewerkt?', 'eme-vzw-helper' ),        'type' => 'date' ],
-                    [ 'label' => __( 'Is de jaarlijkse bevestiging al gedaan dit jaar?', 'eme-vzw-helper' ),                  'type' => 'yesno' ],
                 ],
             ],
             'statutes_approved_av' => [
@@ -293,13 +288,19 @@ class Checklist {
                     [ 'label' => __( 'Is de publicatie binnen de termijn van 30 dagen gebeurd?', 'eme-vzw-helper' ),    'type' => 'yesno' ],
                 ],
             ],
-            'ubo_update_needed' => [
-                'label'         => __( "Het UBO register (Uiteindelijk Begunstigden Onderneming) is aangepast omdat er een bestuurswissel was.", 'eme-vzw-helper' ),
+            'ubo_registered' => [
+                'label'         => __( "De 'uiteindelijk begunstigden' van de VZW werden aangepast of bevestigd in het UBO-register.", 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => __( 'Zet op "N.v.t." indien niet toepasselijk.', 'eme-vzw-helper' ),
+                'help'          => __( 'Verplicht via MyMinFin of Isabel. Jaarlijkse bevestiging vereist.', 'eme-vzw-helper' ),
                 'sub_questions' => [
-                    [ 'label' => __( 'Is de deadline aangepast in de instellingen?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
+                    [
+                        'label'                  => __( 'Wanneer werd het UBO-register voor het laatste bijgewerkt?', 'eme-vzw-helper' ),
+                        'type'                   => 'date',
+                        'default_from_config'    => 'ubo_last_confirmed',
+                        'update_config_if_newer' => true,
+                    ],
+                    [ 'label' => __( 'Is de jaarlijkse bevestiging al gedaan dit jaar?', 'eme-vzw-helper' ),                  'type' => 'yesno' ],
                 ],
             ],
             'patrimonium_tax' => [
@@ -321,6 +322,12 @@ class Checklist {
                     [ 'label' => __( 'Is de aangifte tijdig ingediend?', 'eme-vzw-helper' ),           'type' => 'yesno' ],
                     [ 'label' => __( 'Is de eventuele belasting betaald?', 'eme-vzw-helper' ),         'type' => 'yesno' ],
                     [ 'label' => __( 'Is de deadline aangepast in de instellingen?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
+                    [
+                        'label'                  => __( 'Datum van de laatste indiening RPB?', 'eme-vzw-helper' ),
+                        'type'                   => 'date',
+                        'default_from_config'    => 'rpb_last_confirmed',
+                        'update_config_if_newer' => true,
+                    ],
                 ],
             ],
         ];
@@ -473,6 +480,38 @@ class Checklist {
         }
 
         do_action( 'eme_vzw_check_saved', $check_key, $status, $fiscal_year );
+
+        // ── CONFIG TERUGSCHRIJVEN ───────────────────────────────────────
+        // Als een sub-question 'update_config_if_newer' heeft en de
+        // ingevulde datum nieuwer is dan de huidige config-waarde,
+        // dan wordt de config bijgewerkt.
+        if ( ! empty( $sub_answers ) ) {
+            $decoded = json_decode( $sub_answers, true );
+            if ( is_array( $decoded ) ) {
+                $subs          = $item['sub_questions'] ?? [];
+                $config        = \EMEVzw\Config::get();
+                $config_update = [];
+                foreach ( $subs as $idx => $sq ) {
+                    if ( ! is_array( $sq ) ) continue;
+                    if ( empty( $sq['update_config_if_newer'] ) ) continue;
+                    $config_key = $sq['default_from_config'] ?? '';
+                    if ( ! $config_key ) continue;
+                    $new_val = $decoded[ $idx ] ?? '';
+                    if ( ! $new_val ) continue;
+                    $current_val = $config->$config_key ?? null;
+                    // Update als er nog geen waarde is, of als de nieuwe datum recenter is
+                    if ( ! $current_val || strtotime( $new_val ) > strtotime( $current_val ) ) {
+                        $config_update[ $config_key ] = $new_val;
+                    }
+                }
+                if ( $config_update ) {
+                    // Merge met bestaande config en sla op
+                    $existing_config = (array) $config;
+                    \EMEVzw\Config::save( array_merge( $existing_config, $config_update ) );
+                }
+            }
+        }
+
         return true;
     }
 
