@@ -128,6 +128,9 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
                             <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
                                 <input type="radio" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" name="sub_<?= $key . '_' . (int) $sq_idx ?>" value="nee" <?= $sq_val === 'nee' ? 'checked' : '' ?>> Nee
                             </label>
+                            <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
+                                <input type="radio" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" name="sub_<?= $key . '_' . (int) $sq_idx ?>" value="nvt" <?= $sq_val === 'nvt' ? 'checked' : '' ?>> N.v.t.
+                            </label>
                         <?php elseif ( $sq_type === 'date' ): ?>
                             <input type="date" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" value="<?= esc_attr( $sq_val ) ?>" style="font-size:12px;padding:2px 4px">
                         <?php elseif ( $sq_type === 'number' ): ?>
