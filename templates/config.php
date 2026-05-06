@@ -152,7 +152,7 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
     <div class="vzw-field">
         <label><?php esc_html_e( 'RPB – datum laatste aangifte', 'eme-vzw-helper' ); ?></label>
         <input type="date" name="rpb_last_confirmed" value="<?= esc_attr( $config->rpb_last_confirmed ?? '' ) ?>">
-        <span class="description"><?php esc_html_e( 'Datum waarop de aangifte rechtspersonenbelasting werd ingediend. De volgende deadline wordt automatisch berekend (6 maanden na afsluiting vorig boekjaar).', 'eme-vzw-helper' ); ?></span>
+        <span class="description"><?php printf(__( 'Datum waarop de aangifte rechtspersonenbelasting werd ingediend. De volgende deadline wordt automatisch berekend op het einde van 7 maanden na afsluiting vorig boekjaar. Deze termijn kan afwijken, zie %s', 'eme-vzw-helper' ), "<a href='https://financien.belgium.be/nl/E-services/biztax/indieningstermijnen-aangiften'>".__('Indieningstermijnen aangiften','eme-vzw-helper')."</a>"); ?></span>
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>
@@ -178,18 +178,6 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
 
 </div>
 
-<div class="vzw-form-box" style="background:#f9f9ff">
-<h2><?php esc_html_e( 'Nuttige links', 'eme-vzw-helper' ); ?></h2>
-<ul style="margin:0;padding-left:20px;font-size:13px;line-height:1.8">
-    <li><a href="https://kbo.economie.fgov.be/" target="_blank"><?php esc_html_e( 'Kruispuntbank van Ondernemingen (KBO)', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://justitie.belgium.be/nl/zoek_een_rechtbank_of_parket" target="_blank"><?php esc_html_e( 'Zoek een ondernemingsrechtbank in je buurt', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://www.ejustice.just.fgov.be/cgi_tsv_pub/page.pl?language=nl&type=formu" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad - Richtlijnen publicatieformulieren', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://www.ejustice.just.fgov.be/cgi_tsv_pub/page.pl?language=nl&type=p" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad – publicatiekosten', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://financien.belgium.be/nl/E-services/Ubo-register" target="_blank"><?php esc_html_e( 'UBO-register uitleg', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://www.minfin.fgov.be/ubo/" target="_blank"><?php esc_html_e( 'Toegang tot UBO-register', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://financien.belgium.be/nl/vzws/aangifte/patrimoniumtaks" target="_blank"><?php esc_html_e( 'Patrimoniumtaks – FOD Financiën', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://financien.belgium.be/nl/E-services/biztax/" target="_blank"><?php esc_html_e( 'Biztax – Rechtspersonenbelasting', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://justban.just.fgov.be/" target="_blank"><?php esc_html_e( 'Centraal Register van Bestuursverboden', 'eme-vzw-helper' ); ?></a></li>
-</ul>
-</div>
+<?php require(EME_VZW_DIR . 'templates/usefull_links.php'); ?>
 
+</div>

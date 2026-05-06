@@ -317,11 +317,10 @@ class Checklist {
                 'label'         => __( 'Is de aangifte Rechtspersonenbelasting correct ingediend?', 'eme-vzw-helper' ),
                 'weight'        => 3,
                 'group'         => 'current_year',
-                'help'          => __( 'Verplicht voor alle VZW\'s, zelfs micro-VZW\'s. Via Biztax. Deadline: uiterlijk 6 maanden na afsluiting boekjaar, maar meestal maar mogelijk vanaf mei.', 'eme-vzw-helper' ),
+                'help'          => __( 'Verplicht voor alle VZW\'s, zelfs micro-VZW\'s. Via Biztax. Zie dashboard.', 'eme-vzw-helper' ),
                 'sub_questions' => [
                     [ 'label' => __( 'Is de aangifte tijdig ingediend?', 'eme-vzw-helper' ),           'type' => 'yesno' ],
                     [ 'label' => __( 'Is de eventuele belasting betaald?', 'eme-vzw-helper' ),         'type' => 'yesno' ],
-                    [ 'label' => __( 'Is de deadline aangepast in de instellingen?', 'eme-vzw-helper' ), 'type' => 'yesno' ],
                     [
                         'label'                  => __( 'Datum van de laatste indiening RPB?', 'eme-vzw-helper' ),
                         'type'                   => 'date',

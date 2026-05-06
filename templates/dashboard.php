@@ -69,9 +69,9 @@ if ( $config ) {
     ];
 
     // Rechtspersonenbelasting (RPB): gebaseerd op rpb_last_confirmed, net als UBO.
-    // Als de laatste aangifte bekend is, is de volgende deadline 6 maanden na het einde
+    // Als de laatste aangifte bekend is, is de volgende deadline 7 maanden na het einde
     // van het eerstvolgende boekjaar ná die bevestiging.
-    // Indien niet ingevuld: toon 30 juni van het huidige jaar als standaard deadline.
+    // Indien niet ingevuld: toon 31 juli van het huidige jaar als standaard deadline.
     if ( $config->rpb_last_confirmed ) {
         $rpb_confirmed = new DateTime( $config->rpb_last_confirmed );
         // Bepaal het boekjaareinde dat volgt op de bevestigingsdatum
@@ -85,11 +85,11 @@ if ( $config ) {
             ? ( clone $fy_end_this )->modify( '+1 year' )
             : clone $fy_end_this;
         $rpb_year     = (int) $next_fy_end->format( 'Y' );
-        $rpb_deadline = ( clone $next_fy_end )->modify( '+6 months' );
+        $rpb_deadline = ( clone $next_fy_end )->modify( '+7 months' );
     } else {
         // Geen bevestiging ingevuld: standaard deadline = 30 juni dit jaar
         $rpb_year     = (int) $today->format( 'Y' );
-        $rpb_deadline = new DateTime( $rpb_year . '-06-30' );
+        $rpb_deadline = new DateTime( $rpb_year . '-07-31' );
     }
     $diff_rpb = $today->diff( $rpb_deadline );
     $deadlines[] = [
@@ -272,4 +272,7 @@ foreach ( array_slice( $pubs, 0, 5 ) as $pub ):
 <?php endif; ?>
 
 <?php endif; ?>
+
+<div style="margin-top:20px">
+<?php require(EME_VZW_DIR . 'templates/usefull_links.php'); ?>
 </div>
