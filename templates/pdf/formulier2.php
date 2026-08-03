@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 /**
  * Template: Formulier II – Luiken A en C
  * KBO-update voor bestuurswijziging
@@ -45,29 +46,29 @@ hr{border:none;border-top:1px solid #000;margin:6pt 0}
     <p><strong>Punt 1 – Identificatiegegevens:</strong></p>
     <div class="field-row">
         <div class="field-label">Ondernemingsnummer:</div>
-        <div class="field-value"><?= $vzw_number ?></div>
+        <div class="field-value"><?php echo esc_html( $vzw_number ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Naam / Benaming:</div>
-        <div class="field-value"><?= $vzw_name ?></div>
+        <div class="field-value"><?php echo esc_html( $vzw_name ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Rechtsvorm:</div>
-        <div class="field-value"><?= $vzw_form ?></div>
+        <div class="field-value"><?php echo esc_html( $vzw_form ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Adres zetel:</div>
-        <div class="field-value"><?= $street ?></div>
+        <div class="field-value"><?php echo esc_html( $street ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Postcode + Gemeente:</div>
-        <div class="field-value"><?= $city ?></div>
+        <div class="field-value"><?php echo esc_html( $city ); ?></div>
     </div>
 
     <p style="margin-top:4pt"><strong>Punt 2a – Datum van de akte:</strong></p>
     <div class="field-row">
         <div class="field-label">Datum:</div>
-        <div class="field-value"><?= $av_date ?></div>
+        <div class="field-value"><?php echo esc_html( $av_date ); ?></div>
     </div>
 
     <!-- LUIK C -->
@@ -90,11 +91,11 @@ hr{border:none;border-top:1px solid #000;margin:6pt 0}
         <?php foreach ( $board_changes as $m ): ?>
         <?php if ( $m->change_type === 'H' ) continue; // Herbenoemingen niet in Formulier II ?>
         <tr>
-            <td style="text-align:center;font-weight:bold"><?= esc_html( $m->change_type ) ?></td>
-            <td><?= esc_html( $m->national_id ) ?></td>
-            <td><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></td>
-            <td><?= esc_html( $m->role ) ?></td>
-            <td><?= $av_date ?></td>
+            <td style="text-align:center;font-weight:bold"><?php echo esc_html( $m->change_type ); ?></td>
+            <td><?php echo esc_html( $m->national_id ); ?></td>
+            <td><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></td>
+            <td><?php echo esc_html( $m->role ); ?></td>
+            <td><?php echo esc_html( $av_date ); ?></td>
         </tr>
         <?php endforeach; ?>
         <?php
@@ -122,7 +123,7 @@ hr{border:none;border-top:1px solid #000;margin:6pt 0}
     <p style="margin-top:6pt"><strong>Punt 3 – Handtekening:</strong></p>
     <div class="field-row">
         <div class="field-label">Datum:</div>
-        <div class="field-value"><?= $today ?></div>
+        <div class="field-value"><?php echo esc_html( $today ); ?></div>
         <div class="field-label" style="flex:0 0 30mm;text-align:right">Plaats:</div>
         <div class="field-value"></div>
     </div>
@@ -141,7 +142,7 @@ hr{border:none;border-top:1px solid #000;margin:6pt 0}
 
     <hr>
     <p class="note-text">
-        ✦ Griffie: <?= $court ?><br>
+        ✦ Griffie: <?php echo esc_html( $court ); ?><br>
         ✦ Te behandelen samen met Formulier I, betalingsbewijs en notulen.<br>
         ✦ Termijn: in te dienen binnen 30 dagen na de beslissing.
     </p>

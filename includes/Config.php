@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.DB.DirectDatabaseQuery.DirectQuery WordPress.DB.DirectDatabaseQuery.NoCaching
 namespace EMEVzw;
 
 defined( 'ABSPATH' ) || exit;
@@ -235,7 +236,7 @@ class Config {
         $wpdb->update(
             $wpdb->prefix . 'emevzw_board',
             [ 'is_active' => 0 ],
-            [ 'id' => (int) ( $_POST['id'] ?? 0 ) ]
+            [ 'id' => (int) eme_sanitize_request( $_POST['id'] ?? 0 ) ] //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         );
         wp_send_json_success();
     }
@@ -245,7 +246,7 @@ class Config {
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
         global $wpdb;
         // Hard delete: enkel toegestaan als de bestuurder reeds inactief is
-        $id = (int) ( $_POST['id'] ?? 0 );
+        $id = (int) eme_sanitize_request( $_POST['id'] ?? 0 ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         $member = $wpdb->get_row( $wpdb->prepare(
             "SELECT is_active FROM `{$wpdb->prefix}emevzw_board` WHERE id = %d", $id
         ) );

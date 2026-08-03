@@ -1,3 +1,6 @@
+<?php
+defined( 'ABSPATH' ) || exit;
+?>
 <div class="vzw-form-box" style="background:#f9f9ff">
 <h2><?php esc_html_e( 'Nuttige links', 'eme-vzw-helper' ); ?></h2>
 <ul style="margin:0;padding-left:20px;font-size:13px;line-height:1.8">

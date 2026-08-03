@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 defined( 'ABSPATH' ) || exit;
 $edit_id      = isset( $_GET['edit'] ) ? (int) $_GET['edit'] : 0;
 $pub          = $edit_id ? EMEVzw\Publications::get( $edit_id ) : null;
@@ -25,24 +26,24 @@ $status_labels = [
     </p>
 
     <div class="vzw-form-box">
-        <h2><?= $pub ? esc_html__( 'Publicatie bewerken', 'eme-vzw-helper' ) : esc_html__( 'Nieuwe publicatie aanmaken', 'eme-vzw-helper' ) ?></h2>
+        <h2><?php echo $pub ? esc_html__( 'Publicatie bewerken', 'eme-vzw-helper' ) : esc_html__( 'Nieuwe publicatie aanmaken', 'eme-vzw-helper' ); ?></h2>
         <form id="vzw-pub-form">
-            <input type="hidden" name="pub_id" value="<?= $pub ? (int) $pub->id : '' ?>">
+            <input type="hidden" name="pub_id" value="<?php echo $pub ? (int) $pub->id : ''; ?>">
 
             <div class="vzw-row">
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Datum Algemene Vergadering', 'eme-vzw-helper' ); ?> *</label>
-                    <input type="date" name="av_date" required value="<?= esc_attr( $pub->av_date ?? '' ) ?>">
+                    <input type="date" name="av_date" required value="<?php echo esc_attr( $pub->av_date ?? '' ); ?>">
                 </div>
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Locatie AV', 'eme-vzw-helper' ); ?></label>
-                    <input type="text" name="av_location" value="<?= esc_attr( $pub->av_location ?? '' ) ?>" placeholder="bv. Zetel vereniging, Gemeentehuis, ...">
+                    <input type="text" name="av_location" value="<?php echo esc_attr( $pub->av_location ?? '' ); ?>" placeholder="bv. Zetel vereniging, Gemeentehuis, ...">
                 </div>
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Status', 'eme-vzw-helper' ); ?></label>
                     <select name="pub_status">
                         <?php foreach ( $status_labels as $v => $l ): ?>
-                        <option value="<?= esc_attr( $v ) ?>" <?= selected( $pub->status ?? 'draft', $v, false ) ?>><?= esc_html( $l ) ?></option>
+                        <option value="<?php echo esc_attr( $v ); ?>" <?php echo selected( $pub->status ?? 'draft', $v, false ); ?>><?php echo esc_html( $l ); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -51,32 +52,32 @@ $status_labels = [
             <div class="vzw-row">
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Neergelegd op', 'eme-vzw-helper' ); ?></label>
-                    <input type="date" name="submitted_date" value="<?= esc_attr( $pub->submitted_date ?? '' ) ?>">
+                    <input type="date" name="submitted_date" value="<?php echo esc_attr( $pub->submitted_date ?? '' ); ?>">
                 </div>
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Gepubliceerd in Belgisch Staatsblad op', 'eme-vzw-helper' ); ?></label>
-                    <input type="date" name="published_date" value="<?= esc_attr( $pub->published_date ?? '' ) ?>">
+                    <input type="date" name="published_date" value="<?php echo esc_attr( $pub->published_date ?? '' ); ?>">
                 </div>
             </div>
 
             <div class="vzw-row">
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Belgisch Staatsblad betaaldatum', 'eme-vzw-helper' ); ?></label>
-                    <input type="date" name="bs_payment_date" value="<?= esc_attr( $pub->bs_payment_date ?? '' ) ?>">
+                    <input type="date" name="bs_payment_date" value="<?php echo esc_attr( $pub->bs_payment_date ?? '' ); ?>">
                 </div>
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Belgisch Staatsblad bedrag betaald (€)', 'eme-vzw-helper' ); ?></label>
-                    <input type="number" name="bs_payment_amount" step="0.01" min="0" value="<?= esc_attr( $pub->bs_payment_amount ?? '' ) ?>">
+                    <input type="number" name="bs_payment_amount" step="0.01" min="0" value="<?php echo esc_attr( $pub->bs_payment_amount ?? '' ); ?>">
                 </div>
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Belgisch Staatsblad betalingsreferentie', 'eme-vzw-helper' ); ?></label>
-                    <input type="text" name="bs_payment_ref" value="<?= esc_attr( $pub->bs_payment_ref ?? '' ) ?>">
+                    <input type="text" name="bs_payment_ref" value="<?php echo esc_attr( $pub->bs_payment_ref ?? '' ); ?>">
                 </div>
             </div>
 
             <div class="vzw-field" style="margin-bottom:12px">
                 <label><?php esc_html_e( 'Notities', 'eme-vzw-helper' ); ?></label>
-                <textarea name="notes"><?= esc_textarea( $pub->notes ?? '' ) ?></textarea>
+                <textarea name="notes"><?php echo esc_textarea( $pub->notes ?? '' ); ?></textarea>
             </div>
 
             <!-- BESTUURSWIJZIGINGEN -->
@@ -90,16 +91,16 @@ $status_labels = [
                             <option value="">— Kies —</option>
                             <optgroup label="<?php esc_attr_e( 'Actief', 'eme-vzw-helper' ); ?>">
                             <?php foreach ( $board_members_active as $m ): ?>
-                            <option value="<?= (int) $m->id ?>" <?= selected( $m->id, $bc->board_id ?? 0, false ) ?>>
-                                <?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?>
+                            <option value="<?php echo (int) $m->id; ?>" <?php echo selected( $m->id, $bc->board_id ?? 0, false ); ?>>
+                                <?php echo esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ); ?>
                             </option>
                             <?php endforeach; ?>
                             </optgroup>
                             <?php if ( $board_members_inactive ): ?>
                             <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>">
                             <?php foreach ( $board_members_inactive as $m ): ?>
-                            <option value="<?= (int) $m->id ?>" <?= selected( $m->id, $bc->board_id ?? 0, false ) ?>>
-                                <?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?>
+                            <option value="<?php echo (int) $m->id; ?>" <?php echo selected( $m->id, $bc->board_id ?? 0, false ); ?>>
+                                <?php echo esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ); ?>
                             </option>
                             <?php endforeach; ?>
                             </optgroup>
@@ -109,13 +110,13 @@ $status_labels = [
                     <div class="vzw-field" style="max-width:100px">
                         <label><?php esc_html_e( 'Type', 'eme-vzw-helper' ); ?></label>
                         <select class="bc-change-type">
-                            <option value="B" <?= selected( $bc->change_type ?? 'B', 'B', false ) ?>>Benoeming</option>
-                            <option value="E" <?= selected( $bc->change_type ?? '', 'E', false ) ?>>Ontslag</option>
+                            <option value="B" <?php echo selected( $bc->change_type ?? 'B', 'B', false ); ?>>Benoeming</option>
+                            <option value="E" <?php echo selected( $bc->change_type ?? '', 'E', false ); ?>>Ontslag</option>
                         </select>
                     </div>
                     <div class="vzw-field" style="max-width:160px">
                         <label><?php esc_html_e( 'Datum ingang', 'eme-vzw-helper' ); ?></label>
-                        <input type="date" class="bc-effective-date" value="<?= esc_attr( $bc->effective_date ?? '' ) ?>">
+                        <input type="date" class="bc-effective-date" value="<?php echo esc_attr( $bc->effective_date ?? '' ); ?>">
                     </div>
                     <div style="padding-top:22px"><button type="button" class="button button-small vzw-remove-row">✕</button></div>
                 </div>
@@ -129,13 +130,13 @@ $status_labels = [
                         <option value=""><?php esc_html_e( '— Kies —', 'eme-vzw-helper' ); ?></option>
                         <optgroup label="<?php esc_attr_e( 'Actief', 'eme-vzw-helper' ); ?>">
                         <?php foreach ( $board_members_active as $m ): ?>
-                        <option value="<?= (int) $m->id ?>"><?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?></option>
+                        <option value="<?php echo (int) $m->id; ?>"><?php echo esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ); ?></option>
                         <?php endforeach; ?>
                         </optgroup>
                         <?php if ( $board_members_inactive ): ?>
                         <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>">
                         <?php foreach ( $board_members_inactive as $m ): ?>
-                        <option value="<?= (int) $m->id ?>"><?= esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ) ?></option>
+                        <option value="<?php echo (int) $m->id; ?>"><?php echo esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ); ?></option>
                         <?php endforeach; ?>
                         </optgroup>
                         <?php endif; ?>
@@ -158,28 +159,28 @@ $status_labels = [
             <!-- STATUTENWIJZIGINGEN (ENKEL VELD) -->
             <h3 style="margin-top:20px"><?php esc_html_e( 'Statutenwijzigingen', 'eme-vzw-helper' ); ?></h3>
             <p class="description"><?php esc_html_e( 'Vul hier de volledige statuten in (niet enkel de wijzigingen) die mee in het Staatsblad zullen verschijnen (laat leeg indien geen wijziging). Geef apart ook nog de statuten mee als document bij de neerlegging, ter onderbouwing van de beslissing van de AV.', 'eme-vzw-helper' ); ?></p>
-            <textarea name="statute_text" rows="8" style="width:100%;font-family:monospace"><?= esc_textarea( $pub->statute_text ?? '' ) ?></textarea>
+            <textarea name="statute_text" rows="8" style="width:100%;font-family:monospace"><?php echo esc_textarea( $pub->statute_text ?? '' ); ?></textarea>
 
             <p style="margin-top:16px">
                 <button type="submit" class="button button-primary submit-btn"><?php esc_html_e( 'Opslaan', 'eme-vzw-helper' ); ?></button>
                 <?php if ( $pub ): ?>
-                <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ) ?>" class="button"><?php esc_html_e( 'Annuleer', 'eme-vzw-helper' ); ?></a>
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ); ?>" class="button"><?php esc_html_e( 'Annuleer', 'eme-vzw-helper' ); ?></a>
                 <?php endif; ?>
             </p>
         </form>
 
         <!-- DOC BUTTONS -->
-        <div id="vzw-doc-buttons" style="<?= $pub ? '' : 'display:none' ?>;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f1">
+        <div id="vzw-doc-buttons" style="<?php echo $pub ? '' : 'display:none'; ?>;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f1">
             <h3 style="margin:0 0 10px"><?php esc_html_e( 'Documenten genereren', 'eme-vzw-helper' ); ?></h3>
             <div class="doc-btns" style="display:flex;gap:8px;flex-wrap:wrap">
                 <?php if ($pub && ($board_changes || !empty($pub->statute_text))): ?>
-                <button type="button" class="button vzw-gen-doc" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📄 Maak Formulieren I & II aan</button>
+                <button type="button" class="button vzw-gen-doc" data-pub-id="<?php echo $pub ? (int) $pub->id : ''; ?>">📄 Maak Formulieren I & II aan</button>
                 <?php endif; ?>
                 <?php if ($pub && $board_changes): ?>
-                <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>">📋 Verklaring op eer bestuursverbod</button>
+                <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?php echo $pub ? (int) $pub->id : ''; ?>">📋 Verklaring op eer bestuursverbod</button>
                 <?php endif; ?>
                 <?php if ($pub): ?>
-                <button type="button" class="button vzw-howto-send" data-pub-id="<?= $pub ? (int) $pub->id : '' ?>" title="<?php esc_attr_e( 'Hoe deze publicatie neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe deze publicatie neerleggen?</button>
+                <button type="button" class="button vzw-howto-send" data-pub-id="<?php echo $pub ? (int) $pub->id : ''; ?>" title="<?php esc_attr_e( 'Hoe deze publicatie neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe deze publicatie neerleggen?</button>
                 <?php endif; ?>
             </div>
         </div>
@@ -198,19 +199,19 @@ $status_labels = [
 		$statute_changes = !empty($p->statute_text);
 	?>
             <tr>
-                <td><?= (int) $p->id ?></td>
-                <td><?= esc_html( date_i18n( 'd/m/Y', strtotime( $p->av_date ) ) ) ?></td>
-                <td><span class="status-badge status-<?= esc_attr( $p->status ) ?>"><?= esc_html( $status_labels[ $p->status ] ?? $p->status ) ?></span></td>
+                <td><?php echo (int) $p->id; ?></td>
+                <td><?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $p->av_date ) ) ); ?></td>
+                <td><span class="status-badge status-<?php echo esc_attr( $p->status ); ?>"><?php echo esc_html( $status_labels[ $p->status ] ?? $p->status ); ?></span></td>
                 <td>
-                    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $p->id ) ) ?>" class="button button-small">Bewerk</a>
+                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $p->id ) ); ?>" class="button button-small">Bewerk</a>
 		    <?php if ($board_changes || $statute_changes): ?>
-                    <button type="button" class="button vzw-gen-doc" data-pub-id="<?= (int) $p->id ?>">📄 Maak Formulieren I & II aan</button>
+                    <button type="button" class="button vzw-gen-doc" data-pub-id="<?php echo (int) $p->id; ?>">📄 Maak Formulieren I & II aan</button>
                	    <?php endif; ?>
 		    <?php if ($board_changes): ?>
-                    <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?= $p ? (int) $p->id : '' ?>">📋 Verklaring op eer bestuursverbod</button>
+                    <button type="button" class="button vzw-gen-bestuursverbod" data-pub-id="<?php echo $p ? (int) $p->id : ''; ?>">📋 Verklaring op eer bestuursverbod</button>
                	    <?php endif; ?>
-                    <button type="button" class="button vzw-howto-send" data-pub-id="<?= (int) $p->id ?>" title="<?php esc_attr_e( 'Hoe deze publicatie neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe deze publicatie neerleggen?</button>
-                    <button type="button" class="button button-small vzw-delete-pub" data-id="<?= (int) $p->id ?>">✕</button>
+                    <button type="button" class="button vzw-howto-send" data-pub-id="<?php echo (int) $p->id; ?>" title="<?php esc_attr_e( 'Hoe deze publicatie neerleggen bij de griffie?', 'eme-vzw-helper' ); ?>">ℹ️ Hoe deze publicatie neerleggen?</button>
+                    <button type="button" class="button button-small vzw-delete-pub" data-id="<?php echo (int) $p->id; ?>">✕</button>
                 </td>
             </tr>
         <?php endforeach; ?>

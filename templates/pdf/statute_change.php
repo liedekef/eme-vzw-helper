@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 /**
  * Template: Uittreksel Statutenwijziging
  * Variables: $pub, $config, $statute_changes
@@ -30,21 +31,21 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
 
 <div class="stat-page">
     <div class="stat-header">
-        <div class="stat-title"><?= $vzw_form ?> <?= $vzw_name ?></div>
+        <div class="stat-title"><?php echo esc_html( $vzw_form ); ?> <?php echo esc_html( $vzw_name ); ?></div>
         <div style="font-size:9.5pt">
-            Ondernemingsnummer: <?= $vzw_number ?><br>
-            <?= $street ?>, <?= $city ?>
+            Ondernemingsnummer: <?php echo esc_html( $vzw_number ); ?><br>
+            <?php echo esc_html( $street ); ?>, <?php echo esc_html( $city ); ?>
         </div>
     </div>
 
     <p style="text-align:center;font-weight:bold;font-size:12pt">
         UITTREKSEL – STATUTENWIJZIGING<br>
-        Goedgekeurd door de Buitengewone Algemene Vergadering van <?= $av_date ?>
+        Goedgekeurd door de Buitengewone Algemene Vergadering van <?php echo esc_html( $av_date ); ?>
     </p>
 
     <p>
-        Op <?= $av_date ?> heeft de Buitengewone Algemene Vergadering van <?= $vzw_form ?> <?= $vzw_name ?>,
-        met maatschappelijke zetel te <?= $street ?>, <?= $city ?>,
+        Op <?php echo esc_html( $av_date ); ?> heeft de Buitengewone Algemene Vergadering van <?php echo esc_html( $vzw_form ); ?> <?php echo esc_html( $vzw_name ); ?>,
+        met maatschappelijke zetel te <?php echo esc_html( $street ); ?>, <?php echo esc_html( $city ); ?>,
         de volgende wijzigingen aan de statuten goedgekeurd, met de vereiste 4/5 meerderheid:
     </p>
 
@@ -55,20 +56,20 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
     <?php foreach ( $statute_changes as $i => $sc ): ?>
     <div class="article-block">
         <div class="article-number">
-            Artikel <?= esc_html( $sc->article_number ) ?><?= $sc->article_title ? ' – ' . esc_html( $sc->article_title ) : '' ?>
+            Artikel <?php echo esc_html( $sc->article_number ); ?><?php echo $sc->article_title ? ' – ' . esc_html( $sc->article_title ) : ''; ?>
         </div>
 
         <?php if ( ! empty( $sc->old_text ) ): ?>
         <div class="text-label">Oude tekst:</div>
-        <div class="old-text"><?= nl2br( esc_html( $sc->old_text ) ) ?></div>
+        <div class="old-text"><?php echo nl2br( esc_html( $sc->old_text ) ); ?></div>
         <?php endif; ?>
 
         <div class="text-label">Nieuwe tekst:</div>
-        <div class="new-text"><?= nl2br( esc_html( $sc->new_text ) ) ?></div>
+        <div class="new-text"><?php echo nl2br( esc_html( $sc->new_text ) ); ?></div>
 
         <?php if ( ! empty( $sc->change_reason ) ): ?>
         <p class="note-text" style="margin-top:3pt">
-            Reden van wijziging: <?= esc_html( $sc->change_reason ) ?>
+            Reden van wijziging: <?php echo esc_html( $sc->change_reason ); ?>
         </p>
         <?php endif; ?>
     </div>
@@ -78,7 +79,7 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
         De resterende artikelen van de statuten blijven ongewijzigd.
     </p>
     <p>
-        Opgemaakt te <?= esc_html( $config->city ?? '' ) ?>, op <?= $today ?>.
+        Opgemaakt te <?php echo esc_html( $config->city ?? '' ); ?>, op <?php echo esc_html( $today ); ?>.
     </p>
 
     <div class="signature-block">
@@ -92,7 +93,7 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
 
     <hr style="margin-top:20pt">
     <p class="note-text">
-        ✦ Dit uittreksel dient in te worden neergelegd bij de griffie van <?= esc_html( $config->court ?? 'de bevoegde Ondernemingsrechtbank' ) ?>
+        ✦ Dit uittreksel dient in te worden neergelegd bij de griffie van <?php echo esc_html( $config->court ?? 'de bevoegde Ondernemingsrechtbank' ); ?>
         samen met Formulier I en II, het betalingsbewijs voor het Belgisch Staatsblad en de nodige bijlagen.<br>
         ✦ Termijn: 30 dagen na goedkeuring door de BV-AV.<br>
         ✦ Bij statutenwijziging zijn volledige statuten in bijlage vereist.

@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.DB.DirectDatabaseQuery.DirectQuery WordPress.DB.DirectDatabaseQuery.NoCaching
 namespace EMEVzw;
 
 defined( 'ABSPATH' ) || exit;
@@ -448,9 +449,9 @@ class Checklist {
         $is_general  = ( $item['group'] === 'general' );
         $store_year  = $is_general ? null : $fiscal_year;
 
-        $existing = $wpdb->get_var( $wpdb->prepare(
+        $existing = $wpdb->get_var( $wpdb->prepare( //phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
             "SELECT id FROM `{$wpdb->prefix}emevzw_checks`
-             WHERE fiscal_year " . ( $is_general ? 'IS NULL' : '= %d' ) . " AND check_key = %s",
+             WHERE fiscal_year " . ( $is_general ? 'IS NULL' : '= %d' ) . " AND check_key = %s", // //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             ...( $is_general ? [ $check_key ] : [ $fiscal_year, $check_key ] )
         ) );
 
@@ -523,15 +524,15 @@ class Checklist {
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
 
         $result = self::save_check(
-            (int)   ( $_POST['fiscal_year']  ?? gmdate( 'Y' ) ),
+            (int) eme_sanitize_request( $_POST['fiscal_year'] ?? gmdate( 'Y' ) ), //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
             sanitize_key( $_POST['check_key']  ?? '' ),
             sanitize_key( $_POST['status']     ?? 'pending' ),
-            eme_sanitize_request( $_POST['sub_answers'] ?? '' ),
-            eme_sanitize_request( $_POST['notes']       ?? '' )
+            eme_sanitize_request( $_POST['sub_answers'] ?? '' ), //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+            eme_sanitize_request( $_POST['notes']       ?? '' ) //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         );
 
         if ( $result ) {
-            $score = self::get_score( (int) ( $_POST['fiscal_year'] ?? gmdate( 'Y' ) ) );
+            $score = self::get_score( (int) eme_sanitize_request( $_POST['fiscal_year'] ?? gmdate( 'Y' ) ) ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
             wp_send_json_success( [ 'score' => $score ] );
         } else {
             wp_send_json_error( __( 'Ongeldige check-sleutel of status.', 'eme-vzw-helper' ) );

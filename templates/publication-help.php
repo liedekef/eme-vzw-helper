@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 /**
  * template: hulp bij neerleggen
  * Variabelen: $pub_id (publicatie), $config (vzw config), $changes (array van bestuurswijzigingen)
@@ -48,11 +49,11 @@ $court_address  = $config->court_address ?? '';
                     </li>
                     <li>
                         <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Staat van het vermogen', 'eme-vzw-helper' ); ?></span>
-                        <span class="vzw-howto-copies"><?php esc_html_e( 'Indien je EME Boekhouder gebruikt, gebruik de PDF versie van de volgende link: ', 'eme-vzw-helper' ); ?><a href="<?= esc_url( admin_url( 'admin.php?page=emeaccounting-patrimony' ) ) ?>"><?php esc_html_e( 'Staat van het vermogen', 'eme-vzw-helper' ); ?></a></span>
+                        <span class="vzw-howto-copies"><?php esc_html_e( 'Indien je EME Boekhouder gebruikt, gebruik de PDF versie van de volgende link: ', 'eme-vzw-helper' ); ?><a href="<?php echo esc_url( admin_url( 'admin.php?page=emeaccounting-patrimony' ) ); ?>"><?php esc_html_e( 'Staat van het vermogen', 'eme-vzw-helper' ); ?></a></span>
                     </li>
                     <li>
                         <span class="vzw-howto-doc">📝 <?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></span>
-                        <span class="vzw-howto-copies"><?php esc_html_e( 'Indien je EME Boekhouder gebruikt, gebruik de PDF versie van de volgende link: ', 'eme-vzw-helper' ); ?><a href="<?= esc_url( admin_url( 'admin.php?page=emeaccounting-reports' ) ) ?>"><?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></a></span>
+                        <span class="vzw-howto-copies"><?php esc_html_e( 'Indien je EME Boekhouder gebruikt, gebruik de PDF versie van de volgende link: ', 'eme-vzw-helper' ); ?><a href="<?php echo esc_url( admin_url( 'admin.php?page=emeaccounting-reports' ) ); ?>"><?php esc_html_e( 'Staat van Ontvangsten en Uitgaven', 'eme-vzw-helper' ); ?></a></span>
                     </li>
                     <?php if ( $has_board ): ?>
                     <li>
@@ -111,7 +112,7 @@ $court_address  = $config->court_address ?? '';
                 <table class="vzw-howto-bank">
                     <tr><td><?php esc_html_e( 'Bedrag', 'eme-vzw-helper' ); ?></td>
                         <td><?php if ( ! empty( $pub->bs_payment_amount ) && (float) $pub->bs_payment_amount > 0 ): ?>
-                                <strong>€ <?= number_format( (float) $pub->bs_payment_amount, 2, ',', '.' ) ?></strong>
+                                <strong>€ <?php echo number_format( (float) $pub->bs_payment_amount, 2, ',', '.' ); ?></strong>
                                 <span class="vzw-howto-meta"><?php esc_html_e( '(opgeslagen bij deze publicatie)', 'eme-vzw-helper' ); ?></span>
                             <?php else: ?>
                                 <strong>€ 166,25</strong>
@@ -122,7 +123,7 @@ $court_address  = $config->court_address ?? '';
                     <tr><td>BIC</td><td><code>PCHQBEBB</code></td></tr>
                     <tr><td><?php esc_html_e( 'Op naam van', 'eme-vzw-helper' ); ?></td><td><?php esc_html_e( 'Belgisch Staatsblad, Antwerpsesteenweg 53, 1000 Brussel', 'eme-vzw-helper' ); ?></td></tr>
                     <tr><td><?php esc_html_e( 'Mededeling', 'eme-vzw-helper' ); ?></td>
-                        <td><code>"Ondernemingsnummer <?= esc_html( $vzw_nr ) ?>"</code></td></tr>
+                        <td><code>"Ondernemingsnummer <?php echo esc_html( $vzw_nr ); ?>"</code></td></tr>
                 </table>
                 <?php else: ?>
                     <p class="vzw-howto-note">✅ <?php esc_html_e( 'Geen betaling nodig, geen wijzigingen.', 'eme-vzw-helper' ); ?></p>
@@ -154,12 +155,12 @@ $court_address  = $config->court_address ?? '';
                 </ul>
                 <?php if ( $court_address ): ?>
                 <p style="margin-top:8px"><?php esc_html_e( 'Stuur op naar:', 'eme-vzw-helper' ); ?><br>
-                    <strong><?= esc_html( $court_name ) ?></strong><br>
-                    <?= nl2br( esc_html( $court_address ) ) ?>
+                    <strong><?php echo esc_html( $court_name ); ?></strong><br>
+                    <?php echo nl2br( esc_html( $court_address ) ); ?>
                 </p>
                 <?php else: ?>
                 <p style="margin-top:8px"><?php esc_html_e( 'Vul het griffieadres in bij', 'eme-vzw-helper' ); ?>
-                    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-config' ) ) ?>"><?php esc_html_e( 'Instellingen', 'eme-vzw-helper' ); ?></a>
+                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=emevzwhelper-config' ) ); ?>"><?php esc_html_e( 'Instellingen', 'eme-vzw-helper' ); ?></a>
                     <?php esc_html_e( 'om het hier te tonen.', 'eme-vzw-helper' ); ?>
                 </p>
                 <?php endif; ?>

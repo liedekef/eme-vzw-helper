@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 /**
  * Template: Uittreksel uit de notulen van de Algemene Vergadering
  * Variables: $pub, $config, $board_changes
@@ -28,22 +29,22 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
 
 <div class="extract-page">
     <div class="extract-header">
-        <div class="extract-title"><?= $vzw_form ?> <?= $vzw_name ?></div>
+        <div class="extract-title"><?php echo esc_html( $vzw_form ); ?> <?php echo esc_html( $vzw_name ); ?></div>
         <div class="extract-subtitle">
-            Ondernemingsnummer: <?= $vzw_number ?><br>
-            <?= $street ?>, <?= $city ?>
+            Ondernemingsnummer: <?php echo esc_html( $vzw_number ); ?><br>
+            <?php echo esc_html( $street ); ?>, <?php echo esc_html( $city ); ?>
         </div>
     </div>
 
     <div class="extract-body">
         <p style="text-align:center;font-weight:bold;font-size:12pt">
             UITTREKSEL UIT DE NOTULEN VAN DE ALGEMENE VERGADERING<br>
-            van <?= $av_date ?>
+            van <?php echo esc_html( $av_date ); ?>
         </p>
 
         <p>
-            Op <?= $av_date ?> vergaderde de Algemene Vergadering van <?= $vzw_form ?> <?= $vzw_name ?>,
-            met maatschappelijke zetel te <?= $street ?>, <?= $city ?>.
+            Op <?php echo esc_html( $av_date ); ?> vergaderde de Algemene Vergadering van <?php echo esc_html( $vzw_form ); ?> <?php echo esc_html( $vzw_name ); ?>,
+            met maatschappelijke zetel te <?php echo esc_html( $street ); ?>, <?php echo esc_html( $city ); ?>.
         </p>
 
         <?php
@@ -56,15 +57,15 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
         <p><strong>BENOEMING BESTUURDER(S)</strong></p>
         <p>
             De Algemene Vergadering heeft, met de vereiste meerderheid van stemmen,
-            volgende persoon/personen benoemd als bestuurder, met ingang van <?= $av_date ?>:
+            volgende persoon/personen benoemd als bestuurder, met ingang van <?php echo esc_html( $av_date ); ?>:
         </p>
         <ul class="board-list">
             <?php foreach ( $benoemingen as $m ): ?>
             <li>
-                – <strong><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></strong>,
-                wonende te <?= esc_html( trim( $m->street . ' ' . $m->house_number ) ) ?>,
-                <?= esc_html( $m->postal_code . ' ' . $m->city ) ?>,
-                in de hoedanigheid van <?= esc_html( $m->role ) ?>.
+                – <strong><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></strong>,
+                wonende te <?php echo esc_html( trim( $m->street . ' ' . $m->house_number ) ); ?>,
+                <?php echo esc_html( $m->postal_code . ' ' . $m->city ); ?>,
+                in de hoedanigheid van <?php echo esc_html( $m->role ); ?>.
             </li>
             <?php endforeach; ?>
         </ul>
@@ -74,15 +75,15 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
         <p><strong>HERBENOEMING BESTUURDER(S)</strong></p>
         <p>
             De Algemene Vergadering heeft, met de vereiste meerderheid van stemmen,
-            het mandaat verlengd van volgende bestuurder(s), met ingang van <?= $av_date ?>:
+            het mandaat verlengd van volgende bestuurder(s), met ingang van <?php echo esc_html( $av_date ); ?>:
         </p>
         <ul class="board-list">
             <?php foreach ( $herben as $m ): ?>
             <li>
-                – <strong><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></strong>,
-                wonende te <?= esc_html( trim( $m->street . ' ' . $m->house_number ) ) ?>,
-                <?= esc_html( $m->postal_code . ' ' . $m->city ) ?>,
-                in de hoedanigheid van <?= esc_html( $m->role ) ?>.
+                – <strong><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></strong>,
+                wonende te <?php echo esc_html( trim( $m->street . ' ' . $m->house_number ) ); ?>,
+                <?php echo esc_html( $m->postal_code . ' ' . $m->city ); ?>,
+                in de hoedanigheid van <?php echo esc_html( $m->role ); ?>.
             </li>
             <?php endforeach; ?>
         </ul>
@@ -92,22 +93,22 @@ $today      = esc_html( date_i18n( 'd F Y' ) );
         <p><strong>ONTSLAG BESTUURDER(S)</strong></p>
         <p>
             De Algemene Vergadering heeft kennisgenomen van het ontslag van / heeft ontslag verleend aan
-            volgende bestuurder(s), met ingang van <?= $av_date ?>:
+            volgende bestuurder(s), met ingang van <?php echo esc_html( $av_date ); ?>:
         </p>
         <ul class="board-list">
             <?php foreach ( $ontslagen as $m ): ?>
             <li>
-                – <strong><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></strong>,
-                wonende te <?= esc_html( trim( $m->street . ' ' . $m->house_number ) ) ?>,
-                <?= esc_html( $m->postal_code . ' ' . $m->city ) ?>,
-                in de hoedanigheid van <?= esc_html( $m->role ) ?>.
+                – <strong><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></strong>,
+                wonende te <?php echo esc_html( trim( $m->street . ' ' . $m->house_number ) ); ?>,
+                <?php echo esc_html( $m->postal_code . ' ' . $m->city ); ?>,
+                in de hoedanigheid van <?php echo esc_html( $m->role ); ?>.
             </li>
             <?php endforeach; ?>
         </ul>
         <?php endif; ?>
 
         <p>
-            Opgemaakt te <?= esc_html( $config->city ?? '' ) ?>, op <?= $today ?>.
+            Opgemaakt te <?php echo esc_html( $config->city ?? '' ); ?>, op <?php echo esc_html( $today ); ?>.
         </p>
     </div>
 

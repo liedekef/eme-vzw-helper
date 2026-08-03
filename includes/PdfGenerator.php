@@ -501,7 +501,7 @@ class PdfGenerator {
         if ( ! file_exists( $dompdf_autoload ) ) {
             // Fallback: stuur HTML direct naar browser (print-naar-PDF via browser)
             header( 'Content-Type: text/html; charset=UTF-8' );
-            echo $full_html;
+            echo $full_html; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             exit;
         }
 
@@ -517,7 +517,7 @@ class PdfGenerator {
         $pdf->setPaper( 'A4', 'portrait' );
         $pdf->render();
 
-        $filename = 'Verklaring_Bestuursverbod_' . date( 'Ymd' ) . '.pdf';
+        $filename = 'Verklaring_Bestuursverbod_' . date( 'Ymd' ) . '.pdf'; //phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 
         $attachment = ( $dest === 'D' ) ? true : false;
         $pdf->stream( sanitize_file_name( $filename ), [ 'Attachment' => $attachment ] );

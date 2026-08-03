@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 defined( 'ABSPATH' ) || exit;
 
 $year        = isset( $_GET['year'] ) ? (int) $_GET['year'] : (int) gmdate( 'Y' );
@@ -9,7 +10,8 @@ $config      = EMEVzw\Config::get();
 
 $groups = [
     'general'      => __( 'Algemeen na te kijken', 'eme-vzw-helper' ),
-    'current_year' => sprintf( __( 'Dit boekjaar nog na te kijken (%d)', 'eme-vzw-helper' ), $year ),
+    'current_year' => sprintf( // translators: %d is the current fiscal year.
+        __( 'Dit boekjaar nog na te kijken (%d)', 'eme-vzw-helper' ), $year ),
 ];
 
 $status_labels = [
@@ -30,7 +32,7 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
     <?php esc_html_e( 'Compliance Checklist', 'eme-vzw-helper' ); ?>
     <select id="vzw-fiscal-year" style="margin-left:12px;">
         <?php foreach ( range( (int) gmdate( 'Y' ), (int) gmdate( 'Y' ) - 10 ) as $y ): ?>
-        <option value="<?= $y ?>" <?= selected( $y, $year, false ) ?>><?= $y ?></option>
+        <option value="<?php echo esc_attr( $y ); ?>" <?php echo selected( $y, $year, false ); ?>><?php echo esc_html( $y ); ?></option>
         <?php endforeach; ?>
     </select>
 </h1>
@@ -42,20 +44,20 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
             <circle cx="40" cy="40" r="32" fill="none" stroke="#f0f0f1" stroke-width="8"/>
             <circle id="score-ring-progress" cx="40" cy="40" r="32"
                     fill="none"
-                    stroke="<?= esc_attr( $color ) ?>"
+                    stroke="<?php echo esc_attr( $color ); ?>"
                     stroke-width="8"
                     stroke-linecap="round"
-                    stroke-dasharray="<?= round( 2 * M_PI * 32, 2 ) ?>"
-                    stroke-dashoffset="<?= round( 2 * M_PI * 32 * ( 1 - $pct / 100 ), 2 ) ?>"
+                    stroke-dasharray="<?php echo esc_attr( round( 2 * M_PI * 32, 2 ) ); ?>"
+                    stroke-dashoffset="<?php echo esc_attr( round( 2 * M_PI * 32 * ( 1 - $pct / 100 ), 2 ) ); ?>"
                     style="transform:rotate(-90deg);transform-origin:center"/>
         </svg>
         <div class="score-text" style="font-size:16px">
-            <span id="score-pct-text"><?= number_format( $pct, 1, ',', '' ) ?>%</span>
+            <span id="score-pct-text"><?php echo number_format( $pct, 1, ',', '' ); ?>%</span>
             <small><?php esc_html_e( 'OK', 'eme-vzw-helper' ); ?></small>
         </div>
     </div>
     <div>
-        <strong><span id="earned-points-text"><?= (int) $score['earned_points'] ?></span> / <?= (int) $score['max_points'] ?> <?php esc_html_e( 'punten', 'eme-vzw-helper' ); ?></strong>
+        <strong><span id="earned-points-text"><?php echo (int) $score['earned_points']; ?></span> / <?php echo (int) $score['max_points']; ?> <?php esc_html_e( 'punten', 'eme-vzw-helper' ); ?></strong>
         <br>
         <?php
         $todo = 0;
@@ -63,7 +65,7 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
             if ( ( $answers[ $key ]['status'] ?? 'pending' ) === 'pending' ) $todo++;
         }
         esc_html_e( 'Aantal openstaande vragen: ', 'eme-vzw-helper' );
-        printf( '<span id="no_answer">%d</span>', $todo );
+        echo '<span id="no_answer">' . esc_html( (string) $todo ) . '</span>';
         ?>
     </div>
     <div style="flex:1"></div>
@@ -80,8 +82,8 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
 ?>
 <div class="vzw-checklist-group">
     <div class="vzw-checklist-group-header">
-        <span><?= esc_html( $group_label ) ?></span>
-        <span style="font-size:12px;font-weight:400" id="group-<?= esc_attr($group_key) ?>-score"><?= $g_pct ?>% &nbsp;(<?= (int) $g_score['earned'] ?>/<?= (int) $g_score['max'] ?> pt)</span>
+        <span><?php echo esc_html( $group_label ); ?></span>
+        <span style="font-size:12px;font-weight:400" id="group-<?php echo esc_attr($group_key); ?>-score"><?php echo esc_html( $g_pct ); ?>% &nbsp;(<?php echo (int) $g_score['earned']; ?>/<?php echo (int) $g_score['max']; ?> pt)</span>
     </div>
 
     <?php foreach ( $items_in_group as $key => $item ):
@@ -95,26 +97,27 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
             if ( is_array( $decoded ) ) $saved_subs = $decoded;
         }
     ?>
-    <div class="vzw-check-item status-<?= esc_attr( $current_status ) ?>" data-key="<?= esc_attr( $key ) ?>"<?= !empty($item['sub_questions']) ? ' data-has-subs="1"' : '' ?>>
+    <div class="vzw-check-item status-<?php echo esc_attr( $current_status ); ?>" data-key="<?php echo esc_attr( $key ); ?>"<?php echo !empty($item['sub_questions']) ? ' data-has-subs="1"' : ''; ?>>
         <div class="vzw-check-label">
-            <?= esc_html( $item['label'] ) ?>
+            <?php echo esc_html( $item['label'] ); ?>
             <?php
             $eff_weight = EMEVzw\Checklist::effective_weight( $item );
             if ( $eff_weight > 0 ): ?>
-            <span class="weight-badge"><?= $eff_weight ?>pt</span>
+            <span class="weight-badge"><?php echo esc_html( $eff_weight ); ?>pt</span>
             <?php else: ?>
             <span class="weight-badge" title="<?php esc_attr_e( 'Informatief – telt niet mee in score', 'eme-vzw-helper' ); ?>">–</span>
             <?php endif; ?>
 
             <?php if ( $item['help'] ): ?>
-            <div class="help-text"><?= esc_html( $item['help'] ) ?></div>
+            <div class="help-text"><?php echo esc_html( $item['help'] ); ?></div>
             <?php endif; ?>
 
             <?php if ( !empty($item['sub_questions']) ): ?>
             <details>
-                <summary><?php printf( esc_html( _n( '%d subvraag', '%d subvragen', count( $item['sub_questions'] ), 'eme-vzw-helper' ) ), count( $item['sub_questions'] ) ); ?>
+                <summary><?php printf( // translators: %d is the number of sub-questions.
+                    esc_html( _n( '%d subvraag', '%d subvragen', count( $item['sub_questions'] ), 'eme-vzw-helper' ) ), count( $item['sub_questions'] ) ); ?>
                 </summary>
-                <ul id="subs-<?= esc_attr( $key ) ?>" class="vzw-check-subs" style="list-style:none;margin:6px 0 0 0;padding:0">
+                <ul id="subs-<?php echo esc_attr( $key ); ?>" class="vzw-check-subs" style="list-style:none;margin:6px 0 0 0;padding:0">
                     <?php foreach ( $item['sub_questions'] as $sq_idx => $sq ):
                         $sq_label      = is_array( $sq ) ? $sq['label'] : $sq;
                         $sq_type       = is_array( $sq ) ? ( $sq['type'] ?? 'text' ) : 'text';
@@ -127,27 +130,27 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
                         $has_config_default     = ! empty( $sq['default_from_config'] );
                         $updates_config_if_newer = ! empty( $sq['update_config_if_newer'] );
                     ?>
-                    <li style="margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-subidx="<?= (int) $sq_idx ?>">
-                        <span style="font-size:12px;color:#444;flex:1;min-width:200px"><?= esc_html( $sq_label ) ?></span>
+                    <li style="margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-subidx="<?php echo (int) $sq_idx; ?>">
+                        <span style="font-size:12px;color:#444;flex:1;min-width:200px"><?php echo esc_html( $sq_label ); ?></span>
                         <?php if ( $sq_type === 'yesno' ): ?>
                             <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
-                                <input type="radio" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" name="sub_<?= $key . '_' . (int) $sq_idx ?>" value="ja" <?= $sq_val === 'ja' ? 'checked' : '' ?>> Ja
+                                <input type="radio" class="vzw-sub-input" data-subidx="<?php echo (int) $sq_idx; ?>" name="sub_<?php echo esc_attr( $key . '_' . (int) $sq_idx ); ?>" value="ja" <?php echo $sq_val === 'ja' ? 'checked' : ''; ?>> Ja
                             </label>
                             <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
-                                <input type="radio" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" name="sub_<?= $key . '_' . (int) $sq_idx ?>" value="nee" <?= $sq_val === 'nee' ? 'checked' : '' ?>> Nee
+                                <input type="radio" class="vzw-sub-input" data-subidx="<?php echo (int) $sq_idx; ?>" name="sub_<?php echo esc_attr( $key . '_' . (int) $sq_idx ); ?>" value="nee" <?php echo $sq_val === 'nee' ? 'checked' : ''; ?>> Nee
                             </label>
                             <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
-                                <input type="radio" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" name="sub_<?= $key . '_' . (int) $sq_idx ?>" value="nvt" <?= $sq_val === 'nvt' ? 'checked' : '' ?>> N.v.t.
+                                <input type="radio" class="vzw-sub-input" data-subidx="<?php echo (int) $sq_idx; ?>" name="sub_<?php echo esc_attr( $key . '_' . (int) $sq_idx ); ?>" value="nvt" <?php echo $sq_val === 'nvt' ? 'checked' : ''; ?>> N.v.t.
                             </label>
                         <?php elseif ( $sq_type === 'date' ): ?>
-                            <input type="date" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" value="<?= esc_attr( $sq_val ) ?>" style="font-size:12px;padding:2px 4px"<?= $has_config_default ? ' data-config-key="' . esc_attr( $sq['default_from_config'] ) . '"' : '' ?><?= $updates_config_if_newer ? ' data-update-config="1"' : '' ?>>
+                            <input type="date" class="vzw-sub-input" data-subidx="<?php echo (int) $sq_idx; ?>" value="<?php echo esc_attr( $sq_val ); ?>" style="font-size:12px;padding:2px 4px"<?php echo $has_config_default ? ' data-config-key="' . esc_attr( $sq['default_from_config'] ) . '"' : ''; ?><?php echo $updates_config_if_newer ? ' data-update-config="1"' : ''; ?>>
                             <?php if ( $updates_config_if_newer ): ?>
                             <span title="<?php esc_attr_e( 'Wordt automatisch opgeslagen in de instellingen als de datum nieuwer is.', 'eme-vzw-helper' ); ?>" style="font-size:11px;color:#646970;cursor:help">↺ config</span>
                             <?php endif; ?>
                         <?php elseif ( $sq_type === 'number' ): ?>
-                            <input type="number" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" value="<?= esc_attr( $sq_val ) ?>" min="0" style="font-size:12px;padding:2px 4px;width:80px">
+                            <input type="number" class="vzw-sub-input" data-subidx="<?php echo (int) $sq_idx; ?>" value="<?php echo esc_attr( $sq_val ); ?>" min="0" style="font-size:12px;padding:2px 4px;width:80px">
                         <?php else: ?>
-                            <input type="text" class="vzw-sub-input" data-subidx="<?= (int) $sq_idx ?>" value="<?= esc_attr( $sq_val ) ?>" style="font-size:12px;padding:2px 4px;width:200px">
+                            <input type="text" class="vzw-sub-input" data-subidx="<?php echo (int) $sq_idx; ?>" value="<?php echo esc_attr( $sq_val ); ?>" style="font-size:12px;padding:2px 4px;width:200px">
                         <?php endif; ?>
                     </li>
                     <?php endforeach; ?>
@@ -159,13 +162,13 @@ $color  = $pct >= 80 ? '#00a32a' : ( $pct >= 50 ? '#dba617' : '#d63638' );
         <div class="vzw-check-actions">
             <input type="text" class="vzw-check-note-input"
                    placeholder="<?php esc_attr_e( 'Notitie…', 'eme-vzw-helper' ); ?>"
-                   value="<?= esc_attr( $saved_note ) ?>"
+                   value="<?php echo esc_attr( $saved_note ); ?>"
                    style="width:140px">
             <?php foreach ( $status_labels as $status_val => $status_label ): ?>
             <button type="button"
-                    class="vzw-status-btn <?= $current_status === $status_val ? 'active-' . esc_attr( $status_val ) : '' ?>"
-                    data-status="<?= esc_attr( $status_val ) ?>">
-                <?= esc_html( $status_label ) ?>
+                    class="vzw-status-btn <?php echo $current_status === $status_val ? 'active-' . esc_attr( $status_val ) : ''; ?>"
+                    data-status="<?php echo esc_attr( $status_val ); ?>">
+                <?php echo esc_html( $status_label ); ?>
             </button>
             <?php endforeach; ?>
         </div>

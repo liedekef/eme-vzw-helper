@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.DB.DirectDatabaseQuery.DirectQuery WordPress.DB.DirectDatabaseQuery.NoCaching WordPress.DB.DirectDatabaseQuery.SchemaChange
 namespace EMEVzw;
 
 defined( 'ABSPATH' ) || exit;
@@ -25,22 +26,9 @@ class Installer {
         global $wpdb;
         $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
 
-        // v6: role → legal_capacity (wettelijke hoedanigheid) + function_title (interne functie)
-        if ( $current_version < 6 ) {
-            $table = $wpdb->prefix . 'emevzw_board';
-            $cols  = $wpdb->get_col( "DESC `{$table}`", 0 );
-
-            // Hernoem 'role' naar 'legal_capacity' indien nog niet gedaan
-            if ( in_array( 'role', $cols, true ) && ! in_array( 'legal_capacity', $cols, true ) ) {
-                $wpdb->query( "ALTER TABLE `{$table}` CHANGE `role` `legal_capacity` VARCHAR(80) NOT NULL DEFAULT 'bestuurder'" );
-            }
-
-            // Voeg 'function_title' toe indien niet aanwezig
-            $cols = $wpdb->get_col( "DESC `{$table}`", 0 ); // opnieuw ophalen na rename
-            if ( ! in_array( 'function_title', $cols, true ) ) {
-                $wpdb->query( "ALTER TABLE `{$table}` ADD COLUMN `function_title` VARCHAR(80) NOT NULL DEFAULT '' AFTER `legal_capacity`" );
-            }
-        }
+        //if ( $current_version < 6 ) {
+            // for future needs concerning table migrations
+        //}
     }
 
     public static function deactivate(): void {
@@ -97,7 +85,7 @@ class Installer {
             updated_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY idx_active (is_active)
-        ) $charset;" );
+        ) $charset;" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         // ── Checklist answers (per fiscal year) ──────────────────────────
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_checks (
@@ -112,7 +100,7 @@ class Installer {
             PRIMARY KEY (id),
             UNIQUE KEY uniq_check (fiscal_year, check_key),
             KEY idx_year (fiscal_year)
-        ) $charset;" );
+        ) $charset;" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         // ── Publication log (formulier 1, 2, statutenwijziging) ──────────
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_publications (
@@ -135,7 +123,7 @@ class Installer {
             updated_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY idx_status (status)
-        ) $charset;" );
+        ) $charset;" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         // ── Publication board members (who changed in this publication) ──
         $wpdb->query( "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}emevzw_pub_board (
@@ -146,7 +134,7 @@ class Installer {
             effective_date  DATE                     DEFAULT NULL,
             PRIMARY KEY (id),
             KEY idx_pub (publication_id)
-        ) $charset;" );
+        ) $charset;" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         // change_type: B = Benoeming, E = Einde/ontslag
     }
 

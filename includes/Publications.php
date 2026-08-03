@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.DB.DirectDatabaseQuery.DirectQuery WordPress.DB.DirectDatabaseQuery.NoCaching
 namespace EMEVzw;
 
 defined( 'ABSPATH' ) || exit;
@@ -126,7 +127,7 @@ class Publications {
         check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
         global $wpdb;
-        $id = (int) ( $_POST['id'] ?? 0 );
+        $id = (int) eme_sanitize_request( $_POST['id'] ?? 0 ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         $wpdb->delete( $wpdb->prefix . 'emevzw_pub_board',        [ 'publication_id' => $id ], [ '%d' ] );
         $wpdb->delete( $wpdb->prefix . 'emevzw_statute_changes',  [ 'publication_id' => $id ], [ '%d' ] );
         $wpdb->delete( $wpdb->prefix . 'emevzw_publications',     [ 'id' => $id ], [ '%d' ] );
@@ -140,7 +141,7 @@ class Publications {
         check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
 
-        $pub_id = (int) ( $_POST['pub_id'] ?? 0 );
+        $pub_id = (int) eme_sanitize_request( $_POST['pub_id'] ?? 0 ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         ob_start();
         include EME_VZW_DIR . 'templates/publication-help.php';
         $data = ob_get_clean();
@@ -154,7 +155,7 @@ class Publications {
         check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
 
-        $pub_id = (int) ( $_GET['pub_id'] ?? 0 );
+        $pub_id = (int) eme_sanitize_request( $_GET['pub_id'] ?? 0 ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         $debug  = isset( $_GET['debug'] );
 
         if ( $pub_id <= 0 ) {
@@ -166,9 +167,9 @@ class Publications {
             exit;
         } catch ( \Throwable $e ) {
             if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                error_log( 'EME VZW PDF Error: ' . $e->getMessage() );
+                error_log( 'EME VZW PDF Error: ' . $e->getMessage() ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
             }
-            wp_die( esc_html__( 'Fout bij genereren formulier: ' . $e->getMessage(), 'eme-vzw-helper' ) );
+            wp_die( esc_html__( 'Fout bij genereren formulier: ', 'eme-vzw-helper' ) . esc_html( $e->getMessage() ) );
         }
     }
 
@@ -179,7 +180,7 @@ class Publications {
         check_ajax_referer( 'eme_vzw_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error();
 
-        $pub_id = (int) ( $_GET['pub_id'] ?? 0 );
+        $pub_id = (int) eme_sanitize_request( $_GET['pub_id'] ?? 0 ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         if ( $pub_id <= 0 ) {
             wp_die( esc_html__( 'Ongeldige publicatie-ID.', 'eme-vzw-helper' ), 400 );
         }
@@ -189,9 +190,9 @@ class Publications {
             exit;
         } catch ( \Throwable $e ) {
             if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                error_log( 'EME VZW Bestuursverbod PDF Error: ' . $e->getMessage() );
+                error_log( 'EME VZW Bestuursverbod PDF Error: ' . $e->getMessage() ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
             }
-            wp_die( esc_html__( 'Fout bij genereren verklaring: ' . $e->getMessage(), 'eme-vzw-helper' ) );
+            wp_die( esc_html__( 'Fout bij genereren verklaring: ', 'eme-vzw-helper' ) . esc_html( $e->getMessage() ) );
         }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 defined( 'ABSPATH' ) || exit;
 $config = EMEVzw\Config::get();
 $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninstall');
@@ -13,60 +14,60 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
         <label><?php esc_html_e( 'Naam VZW', 'eme-vzw-helper' ); ?> *</label>
-        <input type="text" name="vzw_name" required value="<?= esc_attr( $config->vzw_name ?? '' ) ?>">
+        <input type="text" name="vzw_name" required value="<?php echo esc_attr( $config->vzw_name ?? '' ); ?>">
     </div>
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Afkorting naam', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="vzw_shortname" value="<?= esc_attr( $config->vzw_shortname ?? '' ) ?>">
+        <input type="text" name="vzw_shortname" value="<?php echo esc_attr( $config->vzw_shortname ?? '' ); ?>">
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'Ondernemingsnummer', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="vzw_number" value="<?= esc_attr( $config->vzw_number ?? '' ) ?>" placeholder="0000.000.000">
+        <input type="text" name="vzw_number" value="<?php echo esc_attr( $config->vzw_number ?? '' ); ?>" placeholder="0000.000.000">
     </div>
     <div class="vzw-field" style="max-width:100px">
         <label><?php esc_html_e( 'Rechtsvorm', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="vzw_legal_form" value="<?= esc_attr( $config->vzw_legal_form ?? 'VZW' ) ?>">
+        <input type="text" name="vzw_legal_form" value="<?php echo esc_attr( $config->vzw_legal_form ?? 'VZW' ); ?>">
     </div>
 </div>
 
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
         <label><?php esc_html_e( 'Straat', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="street" value="<?= esc_attr( $config->street ?? '' ) ?>">
+        <input type="text" name="street" value="<?php echo esc_attr( $config->street ?? '' ); ?>">
     </div>
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Nr.', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="house_number" value="<?= esc_attr( $config->house_number ?? '' ) ?>">
+        <input type="text" name="house_number" value="<?php echo esc_attr( $config->house_number ?? '' ); ?>">
     </div>
     <div class="vzw-field" style="max-width:50px">
         <label><?php esc_html_e( 'Bus', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="house_bus" value="<?= esc_attr( $config->house_bus ?? '' ) ?>">
+        <input type="text" name="house_bus" value="<?php echo esc_attr( $config->house_bus ?? '' ); ?>">
     </div>
     <div class="vzw-field" style="max-width:70px">
         <label><?php esc_html_e( 'Postcode', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="postal_code" value="<?= esc_attr( $config->postal_code ?? '' ) ?>">
+        <input type="text" name="postal_code" value="<?php echo esc_attr( $config->postal_code ?? '' ); ?>">
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'Gemeente', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="city" value="<?= esc_attr( $config->city ?? '' ) ?>">
+        <input type="text" name="city" value="<?php echo esc_attr( $config->city ?? '' ); ?>">
     </div>
 </div>
 
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
         <label><?php esc_html_e( 'Website', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="website" value="<?= esc_attr( $config->website ?? '' ) ?>">
+        <input type="text" name="website" value="<?php echo esc_attr( $config->website ?? '' ); ?>">
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail', 'eme-vzw-helper' ); ?></label>
-        <input type="email" name="email" value="<?= esc_attr( $config->email ?? '' ) ?>">
+        <input type="email" name="email" value="<?php echo esc_attr( $config->email ?? '' ); ?>">
     </div>
 </div>
 
 <div class="vzw-row">
     <div class="vzw-field">
         <label>
-            <input type="checkbox" name="vat_liable" value="1" <?= checked( 1, (int) ( $config->vat_liable ?? 0 ), false ) ?>>
+            <input type="checkbox" name="vat_liable" value="1" <?php echo checked( 1, (int) ( $config->vat_liable ?? 0 ), false ); ?>>
             <?php esc_html_e( 'De vereniging is BTW-plichtig', 'eme-vzw-helper' ); ?>
         </label>
         <span class="description"><?php esc_html_e( 'Vink aan als de VZW onderworpen is aan de BTW-aangifte. Hierdoor verschijnen BTW-deadlines in het dashboard.', 'eme-vzw-helper' ); ?></span>
@@ -79,12 +80,12 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
             <?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?>
             <button type="button" class="vzw-help-btn" data-id="vzw-help-rpr">?</button>
         </label>
-        <input type="text" name="court" value="<?= esc_attr( $config->court ?? '' ) ?>" placeholder="Ondernemingsrechtbank">
+        <input type="text" name="court" value="<?php echo esc_attr( $config->court ?? '' ); ?>" placeholder="Ondernemingsrechtbank">
         <p class="description"><?php esc_html_e( 'Voorbeeld: "RPR Antwerpen, afdeling Mechelen". Klik op het help-icoontje voor de correcte vereiste vermelding.', 'eme-vzw-helper' ); ?></p>
     </div>
     <div class="vzw-field" style="flex:2">
         <label><?php esc_html_e( 'Adres rechtbank', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="court_address" value="<?= esc_attr( $config->court_address ?? '' ) ?>" placeholder="Straat, postcode, stad">
+        <input type="text" name="court_address" value="<?php echo esc_attr( $config->court_address ?? '' ); ?>" placeholder="Straat, postcode, stad">
     </div>
 </div>
 <dialog id="vzw-help-rpr" class="vzw-help-dialog">
@@ -114,25 +115,25 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
 <div class="vzw-row">
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Start dag', 'eme-vzw-helper' ); ?></label>
-        <input type="number" name="fiscal_year_start_dd" value="<?= (int) ( $config->fiscal_year_start_dd ?? 1 ) ?>" min="1" max="31">
+        <input type="number" name="fiscal_year_start_dd" value="<?php echo (int) ( $config->fiscal_year_start_dd ?? 1 ); ?>" min="1" max="31">
     </div>
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Start maand', 'eme-vzw-helper' ); ?></label>
-        <input type="number" name="fiscal_year_start_mm" value="<?= (int) ( $config->fiscal_year_start_mm ?? 1 ) ?>" min="1" max="12">
+        <input type="number" name="fiscal_year_start_mm" value="<?php echo (int) ( $config->fiscal_year_start_mm ?? 1 ); ?>" min="1" max="12">
     </div>
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Einde dag', 'eme-vzw-helper' ); ?></label>
-        <input type="number" name="fiscal_year_end_dd" value="<?= (int) ( $config->fiscal_year_end_dd ?? 31 ) ?>" min="1" max="31">
+        <input type="number" name="fiscal_year_end_dd" value="<?php echo (int) ( $config->fiscal_year_end_dd ?? 31 ); ?>" min="1" max="31">
     </div>
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Einde maand', 'eme-vzw-helper' ); ?></label>
-        <input type="number" name="fiscal_year_end_mm" value="<?= (int) ( $config->fiscal_year_end_mm ?? 12 ) ?>" min="1" max="12">
+        <input type="number" name="fiscal_year_end_mm" value="<?php echo (int) ( $config->fiscal_year_end_mm ?? 12 ); ?>" min="1" max="12">
     </div>
 </div>
 <div class="vzw-row">
     <div class="vzw-field" style="max-width:80px">
         <label><?php esc_html_e( 'Valuta', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="currency" value="<?= esc_attr( $config->currency ) ?>" maxlength="3" style="width:60px">
+        <input type="text" name="currency" value="<?php echo esc_attr( $config->currency ); ?>" maxlength="3" style="width:60px">
         <p class="description"><?php esc_html_e( 'ISO-valutacode, bv. EUR', 'eme-vzw-helper' ); ?></p>
     </div>
 </div>
@@ -141,22 +142,26 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
 <div class="vzw-row">
     <div class="vzw-field">
         <label><?php esc_html_e( 'Einde bestuursmandaat', 'eme-vzw-helper' ); ?></label>
-        <input type="date" name="board_mandate_end" value="<?= esc_attr( $config->board_mandate_end ?? '' ) ?>">
+        <input type="date" name="board_mandate_end" value="<?php echo esc_attr( $config->board_mandate_end ?? '' ); ?>">
         <span class="description"><?php esc_html_e( 'Datum waarop het huidig bestuur zijn mandaat verliest. Herinnering 30 dagen op voorhand.', 'eme-vzw-helper' ); ?></span>
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'UBO-register laatste bevestiging', 'eme-vzw-helper' ); ?></label>
-        <input type="date" name="ubo_last_confirmed" value="<?= esc_attr( $config->ubo_last_confirmed ?? '' ) ?>">
+        <input type="date" name="ubo_last_confirmed" value="<?php echo esc_attr( $config->ubo_last_confirmed ?? '' ); ?>">
         <span class="description"><?php esc_html_e( 'Jaarlijkse bevestiging vereist. Herinnering bij > 11 maanden.', 'eme-vzw-helper' ); ?></span>
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'RPB – datum laatste aangifte', 'eme-vzw-helper' ); ?></label>
-        <input type="date" name="rpb_last_confirmed" value="<?= esc_attr( $config->rpb_last_confirmed ?? '' ) ?>">
-        <span class="description"><?php printf(__( 'Datum waarop de aangifte rechtspersonenbelasting werd ingediend. De volgende deadline wordt automatisch berekend op het einde van 7 maanden na afsluiting vorig boekjaar. Deze termijn kan afwijken, zie %s', 'eme-vzw-helper' ), "<a href='https://financien.belgium.be/nl/E-services/biztax/indieningstermijnen-aangiften'>".__('Indieningstermijnen aangiften','eme-vzw-helper')."</a>"); ?></span>
+        <input type="date" name="rpb_last_confirmed" value="<?php echo esc_attr( $config->rpb_last_confirmed ?? '' ); ?>">
+        <span class="description"><?php printf( //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            // translators: %s is the link to the official filing deadlines page.
+            esc_html__( 'Datum waarop de aangifte rechtspersonenbelasting werd ingediend. De volgende deadline wordt automatisch berekend op het einde van 7 maanden na afsluiting vorig boekjaar. Deze termijn kan afwijken, zie %s', 'eme-vzw-helper' ),
+            "<a href='https://financien.belgium.be/nl/E-services/biztax/indieningstermijnen-aangiften'>" . esc_html__( 'Indieningstermijnen aangiften', 'eme-vzw-helper' ) . "</a>"
+        ); ?></span>
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'E-mail voor herinneringen', 'eme-vzw-helper' ); ?></label>
-        <input type="email" name="notification_email" value="<?= esc_attr( $config->notification_email ?? '' ) ?>">
+        <input type="email" name="notification_email" value="<?php echo esc_attr( $config->notification_email ?? '' ); ?>">
         <span class="description"><?php esc_html_e( 'Herinneringen worden max 1 keer per week verstuurd.', 'eme-vzw-helper' ); ?></span>
     </div>
 </div>
@@ -166,8 +171,8 @@ Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld 
     <h2 style="color:#d63638"><?php esc_html_e( 'Gevaarzone', 'eme-vzw-helper' ); ?></h2>
     <label><?php esc_html_e( 'Data verwijderen bij deactivatie', 'eme-vzw-helper' ); ?></label>
         <select name="delete_on_uninstall">
-            <option value="no"  <?= selected( 'no',  $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Nee – data bewaren (aanbevolen)', 'eme-vzw-helper' ); ?></option>
-            <option value="yes" <?= selected( 'yes', $emevzw_helper_delete_on_uninstall, false ) ?>><?php esc_html_e( 'Ja – ALLE data verwijderen bij uninstall', 'eme-vzw-helper' ); ?></option>
+            <option value="no"  <?php echo selected( 'no',  $emevzw_helper_delete_on_uninstall, false ); ?>><?php esc_html_e( 'Nee – data bewaren (aanbevolen)', 'eme-vzw-helper' ); ?></option>
+            <option value="yes" <?php echo selected( 'yes', $emevzw_helper_delete_on_uninstall, false ); ?>><?php esc_html_e( 'Ja – ALLE data verwijderen bij uninstall', 'eme-vzw-helper' ); ?></option>
         </select>
         <p class="description" style="color:#d63638"><?php esc_html_e( 'LET OP: "Ja" verwijdert permanent alle instellingen en tabellen!', 'eme-vzw-helper' ); ?></p>
     </div>

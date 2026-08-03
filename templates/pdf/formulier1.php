@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 /**
  * Template: Formulier I – Aanvraag tot bekendmaking in de Bijlagen bij het Belgisch Staatsblad
  *
@@ -177,27 +178,27 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
 
     <div class="field-row">
         <div class="field-label">Ondernemingsnummer:</div>
-        <div class="field-value"><?= $vzw_number ?></div>
+        <div class="field-value"><?php echo esc_html( $vzw_number ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Naam / Benaming:</div>
-        <div class="field-value"><?= $vzw_name ?></div>
+        <div class="field-value"><?php echo esc_html( $vzw_name ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Rechtsvorm:</div>
-        <div class="field-value"><?= $vzw_form ?></div>
+        <div class="field-value"><?php echo esc_html( $vzw_form ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Adres zetel:</div>
-        <div class="field-value"><?= $street ?></div>
+        <div class="field-value"><?php echo esc_html( $street ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Postcode + Gemeente:</div>
-        <div class="field-value"><?= $city ?></div>
+        <div class="field-value"><?php echo esc_html( $city ); ?></div>
     </div>
     <div class="field-row">
         <div class="field-label">Bevoegde rechtbank:</div>
-        <div class="field-value"><?= $court ?></div>
+        <div class="field-value"><?php echo esc_html( $court ); ?></div>
     </div>
 
     <!-- LUIK B -->
@@ -206,19 +207,19 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
 
     <div class="field-row">
         <div class="field-label">Datum van de akte/vergadering:</div>
-        <div class="field-value"><?= $av_date ?></div>
+        <div class="field-value"><?php echo esc_html( $av_date ); ?></div>
     </div>
 
     <div class="field-row">
         <div class="field-label">Onderwerp van de akte:</div>
-        <div class="field-value"><?= esc_html( $subject_text ) ?></div>
+        <div class="field-value"><?php echo esc_html( $subject_text ); ?></div>
     </div>
 
     <p class="important" style="margin-top:6pt">Inhoud van het uittreksel:</p>
 
     <?php if ( $benoemingen ): ?>
     <p class="important">Benoeming bestuurder(s):</p>
-    <p>Werden benoemd als bestuurder, met ingang van <?= $av_date ?>:</p>
+    <p>Werden benoemd als bestuurder, met ingang van <?php echo esc_html( $av_date ); ?>:</p>
     <table class="board-table">
         <tr>
             <th style="width:10mm">RR-nr.</th>
@@ -229,11 +230,11 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
         </tr>
         <?php foreach ( $benoemingen as $m ): ?>
         <tr>
-            <td><?= esc_html( $m->national_id ) ?></td>
-            <td><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></td>
-            <td><?= esc_html( trim( $m->street . ' ' . $m->house_number . ', ' . $m->postal_code . ' ' . $m->city ) ) ?></td>
-            <td><?= esc_html( $m->role ) ?></td>
-            <td><?= $av_date ?></td>
+            <td><?php echo esc_html( $m->national_id ); ?></td>
+            <td><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></td>
+            <td><?php echo esc_html( trim( $m->street . ' ' . $m->house_number . ', ' . $m->postal_code . ' ' . $m->city ) ); ?></td>
+            <td><?php echo esc_html( $m->role ); ?></td>
+            <td><?php echo esc_html( $av_date ); ?></td>
         </tr>
         <?php endforeach; ?>
     </table>
@@ -241,7 +242,7 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
 
     <?php if ( $herben ): ?>
     <p class="important" style="margin-top:4pt">Herbenoeming bestuurder(s):</p>
-    <p>Werden herbenoemd als bestuurder, met ingang van <?= $av_date ?>:</p>
+    <p>Werden herbenoemd als bestuurder, met ingang van <?php echo esc_html( $av_date ); ?>:</p>
     <table class="board-table">
         <tr>
             <th style="width:10mm">RR-nr.</th>
@@ -252,11 +253,11 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
         </tr>
         <?php foreach ( $herben as $m ): ?>
         <tr>
-            <td><?= esc_html( $m->national_id ) ?></td>
-            <td><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></td>
-            <td><?= esc_html( trim( $m->street . ' ' . $m->house_number . ', ' . $m->postal_code . ' ' . $m->city ) ) ?></td>
-            <td><?= esc_html( $m->role ) ?></td>
-            <td><?= $av_date ?></td>
+            <td><?php echo esc_html( $m->national_id ); ?></td>
+            <td><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></td>
+            <td><?php echo esc_html( trim( $m->street . ' ' . $m->house_number . ', ' . $m->postal_code . ' ' . $m->city ) ); ?></td>
+            <td><?php echo esc_html( $m->role ); ?></td>
+            <td><?php echo esc_html( $av_date ); ?></td>
         </tr>
         <?php endforeach; ?>
     </table>
@@ -264,7 +265,7 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
 
     <?php if ( $ontslagen ): ?>
     <p class="important" style="margin-top:4pt">Ontslag bestuurder(s):</p>
-    <p>Beëindigden hun mandaat als bestuurder, met ingang van <?= $av_date ?>:</p>
+    <p>Beëindigden hun mandaat als bestuurder, met ingang van <?php echo esc_html( $av_date ); ?>:</p>
     <table class="board-table">
         <tr>
             <th style="width:10mm">RR-nr.</th>
@@ -275,11 +276,11 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
         </tr>
         <?php foreach ( $ontslagen as $m ): ?>
         <tr>
-            <td><?= esc_html( $m->national_id ) ?></td>
-            <td><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></td>
-            <td><?= esc_html( trim( $m->street . ' ' . $m->house_number . ', ' . $m->postal_code . ' ' . $m->city ) ) ?></td>
-            <td><?= esc_html( $m->role ) ?></td>
-            <td><?= $av_date ?></td>
+            <td><?php echo esc_html( $m->national_id ); ?></td>
+            <td><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></td>
+            <td><?php echo esc_html( trim( $m->street . ' ' . $m->house_number . ', ' . $m->postal_code . ' ' . $m->city ) ); ?></td>
+            <td><?php echo esc_html( $m->role ); ?></td>
+            <td><?php echo esc_html( $av_date ); ?></td>
         </tr>
         <?php endforeach; ?>
     </table>
@@ -297,8 +298,8 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
         ?>
         <div class="field-row" style="margin-bottom:2pt">
             <div class="field-label" style="flex:0 0 70mm">
-                <?= esc_html( $m->last_name . ' ' . $m->first_name ) ?>
-                <span class="note-text">(<?= esc_html( $m->role ) ?>)</span>
+                <?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?>
+                <span class="note-text">(<?php echo esc_html( $m->role ); ?>)</span>
             </div>
         </div>
         <?php endforeach; ?>
@@ -317,7 +318,7 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
 
     <div class="field-row" style="margin-top:8pt">
         <div class="field-label">Datum:</div>
-        <div class="field-value"><?= $today ?></div>
+        <div class="field-value"><?php echo esc_html( $today ); ?></div>
         <div class="field-label" style="flex:0 0 30mm;text-align:right">Plaats:</div>
         <div class="field-value"></div>
     </div>
@@ -325,8 +326,8 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
     <?php foreach ( $active_board as $m ): ?>
     <div style="margin-top:10pt">
         <p style="margin:0">
-            <strong><?= esc_html( $m->last_name . ' ' . $m->first_name ) ?></strong>
-            – <?= esc_html( $m->role ) ?>
+            <strong><?php echo esc_html( $m->last_name . ' ' . $m->first_name ); ?></strong>
+            – <?php echo esc_html( $m->role ); ?>
         </p>
         <div class="signature-area">
             <p class="note-text" style="margin:0">Handtekening:</p>
@@ -340,7 +341,7 @@ hr { border: none; border-top: 1px solid #000; margin: 6pt 0; }
         (2) originele getekende notulen AV, (3) kopie ID kaart(en) betrokken bestuurder(s),
         (4) verklaring op eer bestuursverbod (wet 4 mei 2023).<br>
         ✦ Tarieven: zie https://www.ejustice.just.fgov.be – jaarlijks geïndexeerd.<br>
-        ✦ Rekeningnummer Belgisch Staatsblad: BE 48 6792 0055 0227 – vermelding: ondernemingsnummer <?= $vzw_number ?>.
+        ✦ Rekeningnummer Belgisch Staatsblad: BE 48 6792 0055 0227 – vermelding: ondernemingsnummer <?php echo esc_html( $vzw_number ); ?>.
     </p>
 
 </div>

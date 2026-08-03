@@ -11,8 +11,8 @@ class Assets {
     public static function enqueue( string $hook ): void {
         if ( strpos( $hook, 'emevzwhelper' ) === false ) return;
         $config = Config::get();
-        wp_enqueue_script( 'emeaccounting-select', EME_PLUGIN_URL . 'js/snapselect/snapselect.min.js', [], EME_VERSION );
-        wp_enqueue_style('emeaccounting-select-css', EME_PLUGIN_URL . 'js/snapselect/snapselect.min.css' );
+        wp_enqueue_script( 'emeaccounting-select', EME_PLUGIN_URL . 'js/snapselect/snapselect.min.js', [], EME_VERSION, true );
+        wp_enqueue_style( 'emeaccounting-select-css', EME_PLUGIN_URL . 'js/snapselect/snapselect.min.css', [], EME_VERSION );
         wp_enqueue_style( 'eme-vzw-helper', EME_VZW_URL . 'assets/css/admin.css', [], EME_VZW_VERSION );
         wp_enqueue_script( 'eme-vzw-helper', EME_VZW_URL . 'assets/js/admin.js', [ ], EME_VZW_VERSION, true );
         wp_localize_script( 'eme-vzw-helper', 'emeVzw', [

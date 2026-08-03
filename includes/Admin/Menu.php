@@ -10,8 +10,8 @@ class Menu {
 
     public static function register(): void {
         add_menu_page(
-            __( 'EME VZW Helper', 'emevzwhelper' ),
-            __( 'EME VZW Helper', 'emevzwhelper' ),
+            __( 'EME VZW Helper', 'eme-vzw-helper' ),
+            __( 'EME VZW Helper', 'eme-vzw-helper' ),
             'manage_options',
             'emevzwhelper',
             [ __CLASS__, 'page_dashboard' ],
@@ -33,7 +33,7 @@ class Menu {
     private static function tpl( string $name, array $vars = [] ): void {
         extract( $vars, EXTR_SKIP ); // phpcs:ignore
         $f = EME_VZW_DIR . 'templates/' . $name . '.php';
-        file_exists( $f ) ? include $f : print "<div class='wrap'><p>Template {$name} niet gevonden.</p></div>";
+        file_exists( $f ) ? include $f : print "<div class='wrap'><p>Template " . esc_html( $name ) . " niet gevonden.</p></div>"; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public static function page_dashboard():   void { self::tpl( 'dashboard' ); }

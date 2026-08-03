@@ -26,7 +26,8 @@ class Notifications {
             if ( $end >= $today && $diff->days <= 30 ) {
                 if ( empty( $sent_log['board_mandate'] ) || $sent_log['board_mandate'] < $week_ago ) {
                     $warnings['board_mandate'] = sprintf(
-                        __( 'Bestuursmandaat loopt af op %s (nog %d dagen).', 'eme-vzw-helper' ),
+                        // translators: %1$s is the end date of the mandate, %2$d the number of days left.
+                        __( 'Bestuursmandaat loopt af op %1$s (nog %2$d dagen).', 'eme-vzw-helper' ),
                         date_i18n( 'd/m/Y', strtotime( $config->board_mandate_end ) ),
                         $diff->days
                     );
@@ -60,6 +61,7 @@ class Notifications {
 
         wp_mail(
             $config->notification_email,
+            // translators: %s is the name of the VZW.
             sprintf( __( '[%s] VZW Compliance – Actie vereist', 'eme-vzw-helper' ), $config->vzw_name ),
             implode( "\n\n", $warnings ) . "\n\n" . admin_url( 'admin.php?page=emevzwhelper' )
         );

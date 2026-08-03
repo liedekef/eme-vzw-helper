@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 defined( 'ABSPATH' ) || exit;
 
 $config = EMEVzw\Config::get();
@@ -43,7 +44,8 @@ if ( $config ) {
     if ( $av_deadline > $today ) {
         $diff = $today->diff( $av_deadline );
         $deadlines[] = [
-            'label'  => sprintf( __( 'Deadline Algemene Vergadering %d', 'eme-vzw-helper' ), $year+1 ),
+            'label'  => sprintf( // translators: %d is the year of the general assembly.
+                __( 'Deadline Algemene Vergadering %d', 'eme-vzw-helper' ), $year+1 ),
             'date'   => $av_deadline->format( 'Y-m-d' ),
             'days'   => $diff->days,
             'warn'   => $diff->days <= 90,
@@ -93,7 +95,8 @@ if ( $config ) {
     }
     $diff_rpb = $today->diff( $rpb_deadline );
     $deadlines[] = [
-        'label'      => sprintf( __( 'Aangifte rechtspersonenbelasting boekjaar %d (via Biztax)', 'eme-vzw-helper' ), $rpb_year ),
+        'label'      => sprintf( // translators: %d is the fiscal year of the return.
+            __( 'Aangifte rechtspersonenbelasting boekjaar %d (via Biztax)', 'eme-vzw-helper' ), $rpb_year ),
         'date'       => $rpb_deadline->format( 'Y-m-d' ),
         'days'       => $rpb_deadline >= $today ? $diff_rpb->days : -1,
         'warn'       => $rpb_deadline >= $today && $diff_rpb->days <= 90,
@@ -116,7 +119,8 @@ if ( $config ) {
             if ( $vat_date >= $today ) {
                 $diff_vat = $today->diff( $vat_date );
                 $deadlines[] = [
-                    'label'  => sprintf( __( 'BTW-aangifte %s (kwartaal)', 'eme-vzw-helper' ), $vq['q'] ),
+                    'label'  => sprintf( // translators: %s is the quarter (Q1-Q4).
+                        __( 'BTW-aangifte %s (kwartaal)', 'eme-vzw-helper' ), $vq['q'] ),
                     'date'   => $vat_date->format( 'Y-m-d' ),
                     'days'   => $diff_vat->days,
                     'warn'   => $diff_vat->days <= 30,
@@ -145,6 +149,7 @@ $g_yr   = $score['by_group']['current_year'];
 <?php if ( ! $config ): ?>
 <div class="notice notice-warning">
     <p><?php printf(
+        // translators: %s is the link to the VZW settings page.
         esc_html__( 'Stel eerst de VZW-gegevens in via %s.', 'eme-vzw-helper' ),
         '<a href="' . esc_url( admin_url( 'admin.php?page=emevzwhelper-config' ) ) . '">'
             . esc_html__( 'Instellingen VZW', 'eme-vzw-helper' ) . '</a>'
@@ -156,39 +161,39 @@ $g_yr   = $score['by_group']['current_year'];
 <div class="vzw-summary">
     <div class="vzw-score-ring">
         <svg width="120" height="120" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="<?= $radius ?>"
+            <circle cx="60" cy="60" r="<?php echo esc_attr( $radius ); ?>"
                     fill="none" stroke="#f0f0f1" stroke-width="10"/>
-            <circle id="score-ring-progress" cx="60" cy="60" r="<?= $radius ?>"
+            <circle id="score-ring-progress" cx="60" cy="60" r="<?php echo esc_attr( $radius ); ?>"
                     fill="none"
-                    stroke="<?= esc_attr( $color ) ?>"
+                    stroke="<?php echo esc_attr( $color ); ?>"
                     stroke-width="10"
                     stroke-linecap="round"
-                    stroke-dasharray="<?= round( $circ, 2 ) ?>"
-                    stroke-dashoffset="<?= round( $offset, 2 ) ?>"/>
+                    stroke-dasharray="<?php echo esc_attr( round( $circ, 2 ) ); ?>"
+                    stroke-dashoffset="<?php echo esc_attr( round( $offset, 2 ) ); ?>"/>
         </svg>
         <div class="score-text">
-            <span id="score-pct-text"><?= number_format( $pct, 1, ',', '' ) ?>%</span>
+            <span id="score-pct-text"><?php echo number_format( $pct, 1, ',', '' ); ?>%</span>
             <small><?php esc_html_e( 'compliant', 'eme-vzw-helper' ); ?></small>
         </div>
     </div>
     <div class="vzw-summary-info">
-        <h2><?= esc_html( $config->vzw_name ) ?> <small style="font-size:13px;font-weight:400;color:#646970"><?= esc_html( $config->vzw_number ) ?></small></h2>
-        <p><?= esc_html( trim( $config->street . ' ' . $config->house_number . ', ' . $config->postal_code . ' ' . $config->city ) ) ?></p>
+        <h2><?php echo esc_html( $config->vzw_name ); ?> <small style="font-size:13px;font-weight:400;color:#646970"><?php echo esc_html( $config->vzw_number ); ?></small></h2>
+        <p><?php echo esc_html( trim( $config->street . ' ' . $config->house_number . ', ' . $config->postal_code . ' ' . $config->city ) ); ?></p>
         <div class="vzw-group-scores">
             <div class="vzw-group-score">
-                <strong id="group-general-score"><?= $g_gen['max'] > 0 ? number_format( $g_gen['earned'] / $g_gen['max'] * 100, 1, ',', '' ) : '–' ?>%</strong>
+                <strong id="group-general-score"><?php echo $g_gen['max'] > 0 ? number_format( $g_gen['earned'] / $g_gen['max'] * 100, 1, ',', '' ) : '–'; ?>%</strong>
                 <?php esc_html_e( 'Algemeen', 'eme-vzw-helper' ); ?>
             </div>
             <div class="vzw-group-score">
-                <strong id="group-year-score"><?= $g_yr['max'] > 0 ? number_format( $g_yr['earned'] / $g_yr['max'] * 100, 1, ',', '' ) : '–' ?>%</strong>
-                <?php printf( esc_html__( 'Boekjaar %d', 'eme-vzw-helper' ), $year ); ?>
+                <strong id="group-year-score"><?php echo $g_yr['max'] > 0 ? number_format( $g_yr['earned'] / $g_yr['max'] * 100, 1, ',', '' ) : '–'; ?>%</strong>
+                <?php echo esc_html( sprintf( esc_html__( 'Boekjaar %d', 'eme-vzw-helper' ), $year ) ); // translators: %d is the fiscal year ?>
             </div>
             <div class="vzw-group-score">
-                <strong><?= count( $board ) ?></strong>
+                <strong><?php echo count( $board ); ?></strong>
                 <?php esc_html_e( 'Actieve bestuurders', 'eme-vzw-helper' ); ?>
             </div>
             <div class="vzw-group-score">
-                <strong><?= count( $pubs ) ?></strong>
+                <strong><?php echo count( $pubs ); ?></strong>
                 <?php esc_html_e( 'Publicaties', 'eme-vzw-helper' ); ?>
             </div>
         </div>
@@ -196,7 +201,7 @@ $g_yr   = $score['by_group']['current_year'];
     <div style="flex-shrink:0">
         <select id="vzw-fiscal-year">
             <?php foreach ( range( (int) gmdate( 'Y' ), (int) gmdate( 'Y' ) - 10 ) as $y ): ?>
-            <option value="<?= $y ?>" <?= selected( $y, $year, false ) ?>><?= $y ?></option>
+            <option value="<?php echo esc_attr( $y ); ?>" <?php echo selected( $y, $year, false ); ?>><?php echo esc_html( $y ); ?></option>
             <?php endforeach; ?>
         </select>
     </div>
@@ -204,13 +209,13 @@ $g_yr   = $score['by_group']['current_year'];
 
 <!-- Quick-action buttons -->
 <p>
-    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-checklist&year=' . $year ) ) ?>" class="button button-primary">
+    <a href="<?php echo esc_url( admin_url( 'admin.php?page=emevzwhelper-checklist&year=' . $year ) ); ?>" class="button button-primary">
         <?php esc_html_e( 'Naar checklist', 'eme-vzw-helper' ); ?>
     </a>
-    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ) ?>" class="button">
+    <a href="<?php echo esc_url( admin_url( 'admin.php?page=emevzwhelper-publications' ) ); ?>" class="button">
         <?php esc_html_e( 'Publicaties / Formulieren', 'eme-vzw-helper' ); ?>
     </a>
-    <a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-board' ) ) ?>" class="button">
+    <a href="<?php echo esc_url( admin_url( 'admin.php?page=emevzwhelper-board' ) ); ?>" class="button">
         <?php esc_html_e( 'Bestuur beheren', 'eme-vzw-helper' ); ?>
     </a>
 </p>
@@ -226,20 +231,21 @@ $g_yr   = $score['by_group']['current_year'];
     $cls   = $dl['urgent'] ? 'vzw-deadline-urgent' : ( $dl['warn'] ? 'vzw-deadline-warn' : 'vzw-deadline-ok' );
     $label = $dl['days'] < 0
         ? '<strong>' . esc_html__( 'Verlopen!', 'eme-vzw-helper' ) . '</strong>'
-        : sprintf( esc_html__( 'nog %d dagen', 'eme-vzw-helper' ), $dl['days'] );
+        : sprintf( // translators: %d is the number of days left until the deadline.
+            esc_html__( 'nog %d dagen', 'eme-vzw-helper' ), $dl['days'] );
 ?>
-<li class="<?= esc_attr( $cls ) ?>" style="flex-wrap:wrap;row-gap:4px">
-    <span class="vzw-deadline-icon"><?= $icon ?></span>
+<li class="<?php echo esc_attr( $cls ); ?>" style="flex-wrap:wrap;row-gap:4px">
+    <span class="vzw-deadline-icon"><?php echo esc_html( $icon ); ?></span>
     <span style="flex:1">
-        <strong><?= esc_html( $dl['label'] ) ?></strong>
+        <strong><?php echo esc_html( $dl['label'] ); ?></strong>
         <?php if ( ! empty( $dl['link'] ) ): ?>
-            &nbsp;<a href="<?= esc_url( $dl['link'] ) ?>" target="_blank" class="button button-small" style="font-size:11px;padding:0 6px;height:20px;line-height:20px"><?= esc_html( $dl['link_label'] ?? $dl['link'] ) ?></a>
+            &nbsp;<a href="<?php echo esc_url( $dl['link'] ); ?>" target="_blank" class="button button-small" style="font-size:11px;padding:0 6px;height:20px;line-height:20px"><?php echo esc_html( $dl['link_label'] ?? $dl['link'] ); ?></a>
         <?php endif; ?>
     </span>
-    <span><?= esc_html( date_i18n( 'd/m/Y', strtotime( $dl['date'] ) ) ) ?></span>
-    <span><?= $label ?></span>
+    <span><?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $dl['date'] ) ) ); ?></span>
+    <span><?php echo esc_html( $label ); ?></span>
     <?php if ( ! empty( $dl['info'] ) ): ?>
-    <span style="flex-basis:100%;padding-left:28px;font-size:12px;color:#646970;font-style:italic"><?= esc_html( $dl['info'] ) ?></span>
+    <span style="flex-basis:100%;padding-left:28px;font-size:12px;color:#646970;font-style:italic"><?php echo esc_html( $dl['info'] ); ?></span>
     <?php endif; ?>
 </li>
 <?php endforeach; ?>
@@ -262,9 +268,9 @@ $status_labels= [ 'draft' => __( 'Concept', 'eme-vzw-helper' ), 'submitted' => _
 foreach ( array_slice( $pubs, 0, 5 ) as $pub ):
 ?>
 <tr>
-    <td><?= esc_html( date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) ) ?></td>
-    <td><span class="status-badge status-<?= esc_attr( $pub->status ) ?>"><?= esc_html( $status_labels[ $pub->status ] ?? $pub->status ) ?></span></td>
-    <td><a href="<?= esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $pub->id ) ) ?>" class="button button-small"><?php esc_html_e( 'Bekijk', 'eme-vzw-helper' ); ?></a></td>
+    <td><?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) ); ?></td>
+    <td><span class="status-badge status-<?php echo esc_attr( $pub->status ); ?>"><?php echo esc_html( $status_labels[ $pub->status ] ?? $pub->status ); ?></span></td>
+    <td><a href="<?php echo esc_url( admin_url( 'admin.php?page=emevzwhelper-publications&edit=' . $pub->id ) ); ?>" class="button button-small"><?php esc_html_e( 'Bekijk', 'eme-vzw-helper' ); ?></a></td>
 </tr>
 <?php endforeach; ?>
 </tbody>

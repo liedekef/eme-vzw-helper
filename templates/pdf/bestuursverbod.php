@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 /**
  * PDF template: Bijzondere Verklaring Bestuursverbod (wet 4 mei 2023)
  * Variabelen: $pub (publicatie), $config (vzw config), $changes (array van bestuurswijzigingen)
@@ -115,27 +116,27 @@ $format_hoedanigheid = function( object $c ): string {
         <table>
             <tr>
                 <td class="label">Naam :</td>
-                <td class="value"><?= $vzw_name ?></td>
+                <td class="value"><?php echo esc_html( $vzw_name ); ?></td>
             </tr>
             <tr>
                 <td class="label">Rechtsvorm :</td>
-                <td class="value"><?= $vzw_form ?></td>
+                <td class="value"><?php echo esc_html( $vzw_form ); ?></td>
             </tr>
             <tr>
                 <td class="label">Ondernemingsnr :</td>
-                <td class="value"><?= $vzw_number ?></td>
+                <td class="value"><?php echo esc_html( $vzw_number ); ?></td>
             </tr>
             <tr>
                 <td class="label">Zetel :</td>
-                <td class="value"><?= $street ?>, <?= $postal ?></td>
+                <td class="value"><?php echo esc_html( $street ); ?>, <?php echo esc_html( $postal ); ?></td>
             </tr>
             <tr>
                 <td class="label">RPR :</td>
-                <td class="value"><?= $rpr ?></td>
+                <td class="value"><?php echo esc_html( $rpr ); ?></td>
             </tr>
             <tr>
                 <td class="label">Vertegenwoordigd door<span class="footnote-ref">(1)</span> :</td>
-                <td class="value"><?= $vertegenwoordiger_str ?></td>
+                <td class="value"><?php echo esc_html( $vertegenwoordiger_str ); ?></td>
             </tr>
         </table>
     </div>
@@ -160,12 +161,12 @@ $format_hoedanigheid = function( object $c ): string {
                 <?php foreach ( $changes as $c ): ?>
                 <tr>
                     <td>
-                        <?= esc_html( $c->last_name . ' ' . $c->first_name ) ?>
+                        <?php echo esc_html( $c->last_name . ' ' . $c->first_name ); ?>
                         <?php if ( ! empty( $c->national_id ) ): ?>
-                            – <?= esc_html( $c->national_id ) ?>
+                            – <?php echo esc_html( $c->national_id ); ?>
                         <?php endif; ?>
                     </td>
-                    <td><?= $format_hoedanigheid( $c ) ?></td>
+                    <td><?php echo esc_html( $format_hoedanigheid( $c ) ); ?></td>
                 </tr>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -201,9 +202,9 @@ $format_hoedanigheid = function( object $c ): string {
     <!-- DATUM & HANDTEKENING -->
     <p class="declaration-text" style="margin-top:12pt;">
         Aldus opgemaakt en getekend te
-        <span class="field"><?= $city ?></span>
+        <span class="field"><?php echo esc_html( $city ); ?></span>
         &nbsp;&nbsp;op&nbsp;&nbsp;
-        <span class="field"><?= $today ?></span>
+        <span class="field"><?php echo esc_html( $today ); ?></span>
     </p>
 
     <!-- HANDTEKENINGEN -->
@@ -215,8 +216,8 @@ $format_hoedanigheid = function( object $c ): string {
                     <?php foreach ( $vertegenwoordigers_per2 as $v ): ?>
                     <td>
                         <div class="sig-identity">
-                            <?= esc_html( $v->first_name . ' ' . $v->last_name ) ?><br>
-                            <em><?= esc_html( EMEVzw\Config::legal_capacity_label( $v->legal_capacity ?? 'bestuurder' ) ) ?><?= ! empty( $v->function_title ) ? ' · ' . esc_html( EMEVzw\Config::function_title_label( $v->function_title ) ) : '' ?></em>
+                            <?php echo esc_html( $v->first_name . ' ' . $v->last_name ); ?><br>
+                            <em><?php echo esc_html( EMEVzw\Config::legal_capacity_label( $v->legal_capacity ?? 'bestuurder' ) ); ?><?php echo ! empty( $v->function_title ) ? ' · ' . esc_html( EMEVzw\Config::function_title_label( $v->function_title ) ) : ''; ?></em>
                         </div>
                         <div class="sig-label">Handtekening</div>
                         <div class="sig-line"></div>
@@ -243,7 +244,7 @@ $format_hoedanigheid = function( object $c ): string {
     <div class="footer-note">
         <p><span class="footnote-ref">(1)</span> Identiteitsgegevens + hoedanigheid van de extern bevoegde vertegenwoordigers</p>
         <p><span class="footnote-ref">(2)</span>
-            <?= join(', ', array_values($legal_capacities)); ?>
+            <?php echo esc_html( join(', ', array_values($legal_capacities)) ); ?>
         </p>
     </div>
 
