@@ -35,6 +35,8 @@ if ( $config ) {
             'days'   => $next >= $today ? $diff->days : -1,
             'warn'   => $next >= $today && $diff->days <= 90,
             'urgent' => $next < $today || $diff->days <= 30,
+            'link'       => 'https://www.minfin.fgov.be/ubo/',
+            'link_label' => __( 'Toegang tot UBO-register', 'eme-vzw-helper' ),
         ];
     }
     // AV deadline: 6 months after fiscal year end
@@ -68,6 +70,8 @@ if ( $config ) {
         'warn'   => $patrimony_date >= $today && $diff->days <= 90,
         'urgent' => $patrimony_date < $today || $diff->days <= 30,
         'info'   => __( 'Als uw vereniging niet meer dan 50.000 euro aan belastbare bezittingen heeft, betaalt u geen taks en hoeft u geen aangifte in te dienen. Sommige verenigingen worden door de wet vrijgesteld van de taks.', 'eme-vzw-helper' ),
+        'link'       => 'https://financien.belgium.be/nl/vzws/aangifte/patrimoniumtaks',
+        'link_label' => __( 'Patrimoniumtaks aangeven', 'eme-vzw-helper' ),
     ];
 
     // Rechtspersonenbelasting (RPB): gebaseerd op rpb_last_confirmed, net als UBO.
@@ -125,6 +129,8 @@ if ( $config ) {
                     'days'   => $diff_vat->days,
                     'warn'   => $diff_vat->days <= 30,
                     'urgent' => $diff_vat->days <= 14,
+                    'link'       => 'https://intervat.minfin.fgov.be/',
+                    'link_label' => __( 'Intervat openen', 'eme-vzw-helper' ),
                 ];
                 break; // Toon enkel de eerstvolgende BTW-deadline
             }
