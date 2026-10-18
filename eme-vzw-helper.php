@@ -2,6 +2,7 @@
 /**
  * Plugin Name:       EME VZW Helper
  * Plugin URI:        https://github.com/liedekef/eme-vzw-helper
+ * Update URI:        https://github.com/liedekef/eme-vzw-helper
  * Description:       VZW compliance checklist, wettelijke publicaties (Formulier 1 & 2), statutenwijziging en UBO-beheer als uitbreiding op Events Made Easy.
  * Version:           1.0.2
  * Author:            Your Name
@@ -49,3 +50,26 @@ add_action( 'plugins_loaded', 'eme_vzw_helper_init' );
 register_activation_hook( __FILE__, [ 'EMEVzw\\Installer', 'activate' ] );
 register_deactivation_hook( __FILE__, [ 'EMEVzw\\Installer', 'deactivate' ] );
 register_uninstall_hook( __FILE__, [ 'EMEVzw\\Installer', 'uninstall' ] );
+
+/* ------------------------------------------------------------------
+ * Extra links on the plugins overview page
+ * ------------------------------------------------------------------ */
+function eme_vzw_helper_plugin_row_meta( $links, $file ) {
+    if ( strpos( $file, 'eme-vzw-helper.php' ) !== false ) {
+        $new_links = [
+            'donate Paypal'     => '<a href="https://www.paypal.com/donate/?business=SMGDS4GLCYWNG&no_recurring=0&currency_code=EUR">Donate (Paypal)</a>',
+            'Github Sponsoring' => '<a href="https://github.com/sponsors/liedekef">Github sponsoring</a>',
+            'Support'           => '<a href="https://github.com/liedekef/eme-vzw-helper">Support</a>',
+        ];
+        $links = array_merge( $links, $new_links );
+    }
+    return $links;
+}
+add_filter( 'plugin_row_meta', 'eme_vzw_helper_plugin_row_meta', 10, 2 );
+
+// BEGIN NOT FOR WP
+if ( ! class_exists( 'EME_GitHub_Updater' ) ) {
+    require_once __DIR__ . '/includes/class-eme-updater.php';
+    new EME_GitHub_Updater( __FILE__, 'liedekef', 'eme-vzw-helper' );
+}
+// END NOT FOR WP
