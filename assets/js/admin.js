@@ -23,6 +23,48 @@
         });
     });
     /**
+     * Bevestigingsdialog (vervangt window.confirm). Geeft een Promise<boolean>.
+     * Esc, klik naast de dialog of "Annuleren" => false.
+     */
+    function vzwConfirm(message, { title = '', confirmLabel = 'OK', danger = false } = {}) {
+        return new Promise(function(resolve) {
+            const dlg = document.createElement('dialog');
+            dlg.classList.add('vzw-help-dialog', 'vzw-confirm-dialog');
+            if (title) {
+                const h = document.createElement('h4');
+                h.textContent = title;
+                dlg.appendChild(h);
+            }
+            const p = document.createElement('p');
+            p.textContent = message;
+            dlg.appendChild(p);
+
+            const footer = document.createElement('div');
+            footer.className = 'dialog-footer';
+            const cancel = document.createElement('button');
+            cancel.type = 'button';
+            cancel.className = 'vzw-btn-cancel';
+            cancel.textContent = i18n.cancel;
+            const ok = document.createElement('button');
+            ok.type = 'button';
+            ok.textContent = confirmLabel;
+            if (danger) ok.classList.add('vzw-btn-danger');
+            footer.append(cancel, ok);
+            dlg.appendChild(footer);
+
+            let result = false;
+            ok.addEventListener('click', () => { result = true; dlg.close(); });
+            cancel.addEventListener('click', () => dlg.close());
+            dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+            dlg.addEventListener('close', () => { dlg.remove(); resolve(result); });
+
+            document.body.appendChild(dlg);
+            dlg.showModal();
+            cancel.focus(); // veilige default bij destructieve acties
+        });
+    }
+
+    /**
      * Recursieve helper: zet complexe JS-objecten om naar FormData met bracket-keys.
      * Bijv: { board_changes: [{ id: 1 }] } wordt board_changes[0][id]=1
      */
@@ -458,9 +500,10 @@
     }
 
     // Purge board member
-    function handlePurgeBoard(btn) {
-        if (!confirm(i18n.confirm_purge)) return;
+    async function handlePurgeBoard(btn) {
         const $card = btn.closest('.vzw-board-card');
+        const name = $card?.querySelector('h4')?.textContent || '';
+        if (!await vzwConfirm(i18n.confirm_purge, { title: name, confirmLabel: i18n.purge, danger: true })) return;
         ajax('eme_vzw_purge_board_member', { id: btn.dataset.id }, function() {
             if ($card) {
                 $card.style.transition = 'opacity 0.3s';

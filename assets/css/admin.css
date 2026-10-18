@@ -373,3 +373,39 @@ dialog.vzw-howto-dialog h4 {
     font-size: 12px;
 }
 .vzw-howto-meta { color: #646970; font-size: 11px; margin-left: 6px; }
+
+/* ── Optionele formuliersecties ─────────────────────────────────────── */
+.vzw-optional-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed #c3c4c7;
+}
+.vzw-optional-section > h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 4px;
+}
+.vzw-badge-optional {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #646970;
+    background: #f0f0f1;
+    border: 1px solid #dcdcde;
+    border-radius: 10px;
+    padding: 1px 8px;
+}
+
+/* ── Bevestigingsdialog ─────────────────────────────────────────────── */
+.vzw-confirm-dialog { max-width: 420px; }
+.vzw-confirm-dialog .dialog-footer { display: flex; justify-content: flex-end; gap: 8px; }
+.vzw-help-dialog .dialog-footer button.vzw-btn-cancel {
+    background: #f6f7f7;
+    color: #2c3338;
+    border: 1px solid #c3c4c7;
+}
+.vzw-help-dialog .dialog-footer button.vzw-btn-cancel:hover { background: #f0f0f1; }
+.vzw-help-dialog .dialog-footer button.vzw-btn-danger { background: #d63638; }
+.vzw-help-dialog .dialog-footer button.vzw-btn-danger:hover { background: #b32d2e; }

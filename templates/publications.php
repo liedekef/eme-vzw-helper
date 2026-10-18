@@ -81,7 +81,20 @@ $status_labels = [
             </div>
 
             <!-- BESTUURSWIJZIGINGEN -->
-            <h3 style="margin-top:16px"><?php esc_html_e( 'Bestuurswijzigingen (benoeming/ontslag)', 'eme-vzw-helper' ); ?></h3>
+            <div class="vzw-optional-section">
+            <h3><?php esc_html_e( 'Bestuurswijzigingen (benoeming/ontslag)', 'eme-vzw-helper' ); ?> <span class="vzw-badge-optional"><?php esc_html_e( 'Optioneel', 'eme-vzw-helper' ); ?></span></h3>
+            <p class="description">
+                <?php
+                printf(
+                    wp_kses(
+                        /* translators: %s: URL of the Bestuur submenu */
+                        __( 'Duid aan welke bestuurders zijn benoemd/ontslagen. Pas eerst het bestuur aan in het submenu <a href="%s">Bestuur</a>.', 'eme-vzw-helper' ),
+                        [ 'a' => [ 'href' => [] ] ]
+                    ),
+                    esc_url( admin_url( 'admin.php?page=emevzwhelper-board' ) )
+                );
+                ?>
+            </p>
             <div id="vzw-board-changes-list">
                 <?php foreach ( $board_changes as $bc ): ?>
                 <div class="vzw-board-change-row vzw-row" style="background:#f9f9f9;padding:8px;border-radius:4px;margin-bottom:6px">
@@ -154,12 +167,15 @@ $status_labels = [
                 </div>
                 <div style="padding-top:22px"><button type="button" class="button button-small vzw-remove-row">✕</button></div>
             </div>
-            <button type="button" id="btn-add-board-change" class="button" style="margin-bottom:16px">+ Bestuurswijziging toevoegen</button>
+            <button type="button" id="btn-add-board-change" class="button">+ Bestuurswijziging toevoegen</button>
+            </div>
 
             <!-- STATUTENWIJZIGINGEN (ENKEL VELD) -->
-            <h3 style="margin-top:20px"><?php esc_html_e( 'Statutenwijzigingen', 'eme-vzw-helper' ); ?></h3>
+            <div class="vzw-optional-section">
+            <h3><?php esc_html_e( 'Statutenwijzigingen', 'eme-vzw-helper' ); ?> <span class="vzw-badge-optional"><?php esc_html_e( 'Optioneel', 'eme-vzw-helper' ); ?></span></h3>
             <p class="description"><?php esc_html_e( 'Vul hier de volledige statuten in (niet enkel de wijzigingen) die mee in het Staatsblad zullen verschijnen (laat leeg indien geen wijziging). Geef apart ook nog de statuten mee als document bij de neerlegging, ter onderbouwing van de beslissing van de AV.', 'eme-vzw-helper' ); ?></p>
             <textarea name="statute_text" rows="8" style="width:100%;font-family:monospace"><?php echo esc_textarea( $pub->statute_text ?? '' ); ?></textarea>
+            </div>
 
             <p style="margin-top:16px">
                 <button type="submit" class="button button-primary submit-btn"><?php esc_html_e( 'Opslaan', 'eme-vzw-helper' ); ?></button>

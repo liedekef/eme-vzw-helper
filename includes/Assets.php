@@ -23,6 +23,8 @@ class Assets {
                 'confirm_delete'     => __( 'Bestuurder deactiveren? Je kan dit ongedaan maken via "Heractiveer".', 'eme-vzw-helper' ),
                 'confirm_reactivate' => __( 'Bestuurder terug activeren?', 'eme-vzw-helper' ),
                 'confirm_purge'      => __( 'Bestuurder DEFINITIEF verwijderen? Dit kan niet ongedaan worden gemaakt.', 'eme-vzw-helper' ),
+                'purge'              => __( 'Definitief verwijderen', 'eme-vzw-helper' ),
+                'cancel'             => __( 'Annuleren', 'eme-vzw-helper' ),
                 'currency'           => $config->currency,
                 'save'           => __( 'Opslaan', 'eme-vzw-helper' ),
                 'saving'         => __( 'Opslaan…', 'eme-vzw-helper' ),

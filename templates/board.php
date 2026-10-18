@@ -176,7 +176,7 @@ $function_titles  = EMEVzw\Config::function_titles();
             <input type="checkbox" name="no_management_ban" value="1" <?php echo checked( $edit_m->no_management_ban ?? 0, 1 ); ?>>
             <?php esc_html_e( 'Geen bestuursverbod gecontroleerd en bevestigd (wet 4 mei 2023)', 'eme-vzw-helper' ); ?>
         </label>
-        <span class="description"><?php esc_html_e( 'Verplicht bij elke (her)benoeming – controleer via Centraal register van bestuursverboden.', 'eme-vzw-helper' ); ?></span>
+        <span class="description"><?php _e( 'Verplicht bij elke (her)benoeming – controleer via <a target="_blank" href="https://justban.just.fgov.be/">Centraal register van bestuursverboden</a>.', 'eme-vzw-helper' ); ?></span>
     </div>
 </div>
 

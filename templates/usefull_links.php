@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
     <li><a href="https://www.ejustice.just.fgov.be/cgi_tsv_pub/page.pl?language=nl&type=formu" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad - Richtlijnen publicatieformulieren', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://www.ejustice.just.fgov.be/cgi_tsv_pub/page.pl?language=nl&type=p" target="_blank"><?php esc_html_e( 'Belgisch Staatsblad – publicatiekosten', 'eme-vzw-helper' ); ?></a></li>
     <li><a href="https://financien.belgium.be/nl/E-services/Ubo-register" target="_blank"><?php esc_html_e( 'UBO-register uitleg', 'eme-vzw-helper' ); ?></a></li>
-    <li><a href="https://financien.belgium.be/nl/ondernemingen/btw" target="_blank"><?php esc_html_e( 'BTW informatie', 'eme-vzw-helper' ); ?></a>
+    <li><a href="https://financien.belgium.be/nl/ondernemingen/btw" target="_blank"><?php esc_html_e( 'BTW informatie', 'eme-vzw-helper' ); ?></a> en 
     <a href="https://financien.belgium.be/nl/ondernemingen/btw/btw-kalender" target="_blank"><?php esc_html_e( 'BTW kalender', 'eme-vzw-helper' ); ?></a>
     </li>
     <li><a href="https://justban.just.fgov.be/" target="_blank"><?php esc_html_e( 'Centraal Register van Bestuursverboden', 'eme-vzw-helper' ); ?></a></li>
