@@ -12,25 +12,25 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
 <form id="vzw-config-form">
 
 <div class="vzw-row">
-    <div class="vzw-field" style="flex:2">
+    <div class="vzw-field" style="flex:2;min-width:260px">
         <label><?php esc_html_e( 'Naam VZW', 'eme-vzw-helper' ); ?> *</label>
         <input type="text" name="vzw_name" required value="<?php echo esc_attr( $config->vzw_name ?? '' ); ?>">
     </div>
-    <div class="vzw-field" style="max-width:80px">
+    <div class="vzw-field" style="max-width:150px">
         <label><?php esc_html_e( 'Afkorting naam', 'eme-vzw-helper' ); ?></label>
         <input type="text" name="vzw_shortname" value="<?php echo esc_attr( $config->vzw_shortname ?? '' ); ?>">
     </div>
-    <div class="vzw-field">
+    <div class="vzw-field" style="max-width:160px">
         <label><?php esc_html_e( 'Ondernemingsnummer', 'eme-vzw-helper' ); ?></label>
         <input type="text" name="vzw_number" value="<?php echo esc_attr( $config->vzw_number ?? '' ); ?>" placeholder="0000.000.000">
     </div>
-    <div class="vzw-field" style="max-width:100px">
+    <div class="vzw-field" style="max-width:275px">
         <label><?php esc_html_e( 'Rechtsvorm', 'eme-vzw-helper' ); ?></label>
         <input type="text" name="vzw_legal_form" value="<?php echo esc_attr( $config->vzw_legal_form ?? '' ); ?>">
     </div>
-    <div class="vzw-field" style="max-width:100px">
+    <div class="vzw-field" style="max-width:180px">
         <label><?php esc_html_e( 'Rechtsvorm (afkorting)', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="vzw_legal_short_form" value="<?php echo esc_attr( $config->vzw_legal_short_form ); ?>">
+        <input type="text" name="vzw_legal_short_form" value="<?php echo esc_attr( $config->vzw_legal_short_form ?? '' ); ?>">
     </div>
 </div>
 
