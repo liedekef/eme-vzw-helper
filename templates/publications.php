@@ -101,7 +101,6 @@ $status_labels = [
                     <div class="vzw-field">
                         <label><?php esc_html_e( 'Bestuurder', 'eme-vzw-helper' ); ?></label>
                         <select class="bc-board-id">
-                            <option value="">— Kies —</option>
                             <optgroup label="<?php esc_attr_e( 'Actief', 'eme-vzw-helper' ); ?>">
                             <?php foreach ( $board_members_active as $m ): ?>
                             <option value="<?php echo (int) $m->id; ?>" <?php echo selected( $m->id, $bc->board_id ?? 0, false ); ?>>
@@ -110,7 +109,7 @@ $status_labels = [
                             <?php endforeach; ?>
                             </optgroup>
                             <?php if ( $board_members_inactive ): ?>
-                            <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>">
+                            <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>" data-inactive="1">
                             <?php foreach ( $board_members_inactive as $m ): ?>
                             <option value="<?php echo (int) $m->id; ?>" <?php echo selected( $m->id, $bc->board_id ?? 0, false ); ?>>
                                 <?php echo esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ); ?>
@@ -140,14 +139,14 @@ $status_labels = [
                 <div class="vzw-field">
                     <label><?php esc_html_e( 'Bestuurder', 'eme-vzw-helper' ); ?></label>
                     <select class="bc-board-id">
-                        <option value=""><?php esc_html_e( '— Kies —', 'eme-vzw-helper' ); ?></option>
+                        <option value="" disabled selected hidden><?php esc_html_e( 'Kies een bestuurder…', 'eme-vzw-helper' ); ?></option>
                         <optgroup label="<?php esc_attr_e( 'Actief', 'eme-vzw-helper' ); ?>">
                         <?php foreach ( $board_members_active as $m ): ?>
                         <option value="<?php echo (int) $m->id; ?>"><?php echo esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ); ?></option>
                         <?php endforeach; ?>
                         </optgroup>
                         <?php if ( $board_members_inactive ): ?>
-                        <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>">
+                        <optgroup label="<?php esc_attr_e( 'Inactief', 'eme-vzw-helper' ); ?>" data-inactive="1">
                         <?php foreach ( $board_members_inactive as $m ): ?>
                         <option value="<?php echo (int) $m->id; ?>"><?php echo esc_html( $m->last_name . ' ' . $m->first_name . ( $m->function_title ? ' (' . $m->function_title . ')' : ( $m->legal_capacity ? ' (' . $m->legal_capacity . ')' : '' ) ) ); ?></option>
                         <?php endforeach; ?>

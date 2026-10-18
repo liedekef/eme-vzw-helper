@@ -358,6 +358,15 @@
         document.getElementById('vzw-board-changes-list')?.appendChild(clone);
     }
 
+    // Type volgt de status van de gekozen bestuurder: inactief => ontslag, actief => benoeming.
+    // Enkel bij een wijziging door de gebruiker (niet bij het laden), zodat bestaande publicaties intact blijven.
+    document.addEventListener('change', function(e) {
+        if (!e.target.matches('.bc-board-id')) return;
+        const type = e.target.closest('.vzw-board-change-row')?.querySelector('.bc-change-type');
+        if (!type) return;
+        type.value = e.target.selectedOptions[0]?.parentElement.dataset.inactive === '1' ? 'E' : 'B';
+    });
+
     // Remove row
     function handleRemoveRow(btn) {
         const row = btn.closest('.vzw-board-change-row, .vzw-statute-change-row');
