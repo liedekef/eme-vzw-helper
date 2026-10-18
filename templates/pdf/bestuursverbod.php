@@ -3,7 +3,7 @@
 /**
  * PDF template: Bijzondere Verklaring Bestuursverbod (wet 4 mei 2023)
  * Variabelen: $pub (publicatie), $config (vzw config), $changes (array van bestuurswijzigingen)
- * Gerenderd via TCPDF (PdfGenerator) of als HTML-fallback.
+ * Gerenderd via dompdf (PdfGenerator) of als HTML-fallback.
  */
 defined( 'ABSPATH' ) || exit;
 

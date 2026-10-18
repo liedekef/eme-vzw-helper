@@ -1,4 +1,4 @@
-composer require tecnickcom/tcpdf
+# PDF-engine: dompdf, meegeleverd met Events Made Easy (geen composer-afhankelijkheid)
 pdftoppm -png -r 300 formulier1ond_2019_04_26.pdf assets/templates/formulier1_bg
 pdftoppm -png -r 300 formulier2ond_2019_04_26.pdf assets/templates/formulier2_bg
 

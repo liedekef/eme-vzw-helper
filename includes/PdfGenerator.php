@@ -5,8 +5,10 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * EME VZW PDF Generator
- * Genereert officiële Belgische formulieren met TCPDF + exacte PNG-achtergronden.
- * 
+ * Genereert officiële Belgische formulieren met dompdf (meegeleverd met Events Made Easy)
+ * + exacte PNG-achtergronden. Tekst wordt op vaste mm-coördinaten (CSS position:absolute)
+ * bovenop de achtergrond geplaatst; de paginering van Luik B gebeurt hier, niet door dompdf.
+ *
  * Wijzigingen:
  * - Dynamische paginering voor Luik B (bestuurs- + statutenwijzigingen)
  * - add_luik_b_continuation() wordt automatisch herhaald tot alle tekst past
@@ -14,16 +16,23 @@ defined( 'ABSPATH' ) || exit;
  */
 class PdfGenerator {
 
-    private \TCPDF $pdf;
+    /** Globale kalibratie (mm): verschuift alle tekst t.o.v. de achtergrond. */
+    private const X_OFFSET_MM = 0.0;
+    private const Y_OFFSET_MM = 0.0;
+    private const FONT        = 'Helvetica';
+
+    private \Dompdf\Dompdf $dompdf;
     private string $bg_dir;
     private bool   $debug;
     private int    $current_page = 0;
+    /** @var string[] HTML per pagina */
+    private array  $pages = [];
 
     public function __construct( bool $debug = false ) {
         $this->bg_dir = trailingslashit( EME_VZW_DIR ) . 'assets/templates/';
         $this->debug  = $debug;
 
-        $this->load_tcpdf();
+        $this->load_dompdf();
         $this->init_pdf_engine();
     }
 
@@ -31,31 +40,26 @@ class PdfGenerator {
      *  INIT & LOADERS
      * ====================================================================== */
 
-    private function load_tcpdf(): void {
-        if ( class_exists( '\TCPDF' ) ) return;
+    private function load_dompdf(): void {
+        if ( class_exists( '\Dompdf\Dompdf' ) ) return;
 
-        $candidates = [
-            EME_VZW_DIR . 'vendor/tecnickcom/tcpdf/tcpdf.php',
-            WP_PLUGIN_DIR . '/eme-vzw-helper/vendor/tecnickcom/tcpdf/tcpdf.php',
-        ];
-        foreach ( $candidates as $path ) {
-            if ( file_exists( $path ) ) {
-                require_once $path;
-                return;
-            }
+        $autoload = WP_PLUGIN_DIR . '/events-made-easy/includes/dompdf/vendor/autoload.php';
+        if ( ! file_exists( $autoload ) ) {
+            throw new \RuntimeException( 'dompdf niet gevonden (verwacht via Events Made Easy): ' . $autoload );
         }
-        throw new \RuntimeException( 'TCPDF library not found. Run: composer require tecnickcom/tcpdf' );
+        require_once $autoload;
     }
 
     private function init_pdf_engine(): void {
-        $this->pdf = new \TCPDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
-        $this->pdf->SetCreator( 'EME VZW Helper v' . EME_VZW_VERSION );
-        $this->pdf->SetPrintHeader( false );
-        $this->pdf->SetPrintFooter( false );
-        $this->pdf->SetMargins( 0, 0, 0, true );
-        $this->pdf->SetAutoPageBreak( false, 0 );
-        $this->pdf->SetFont( 'helvetica', '', 9 );
-        $this->pdf->SetTextColor( 0, 0, 0 );
+        $options = new \Dompdf\Options();
+        $options->set( 'isHtml5ParserEnabled', true );
+        $options->set( 'isRemoteEnabled', false );
+        $options->set( 'defaultFont', 'Helvetica' );
+        // De achtergrond-PNG's staan in deze plugin, buiten dompdf's standaard chroot.
+        $options->set( 'chroot', untrailingslashit( EME_VZW_DIR ) );
+
+        $this->dompdf = new \Dompdf\Dompdf( $options );
+        $this->dompdf->setPaper( 'A4', 'portrait' );
     }
 
     /* ======================================================================
@@ -67,12 +71,12 @@ class PdfGenerator {
      * Voegt automatisch kalibratierooster toe indien $this->debug = true
      */
     private function add_template_page( string $prefix, int $page_num ): self {
-        $this->pdf->AddPage();
+        $this->pages[]      = '';
         $this->current_page = $page_num;
 
         $bg_file = sprintf( '%s%s_bg-%d.png', $this->bg_dir, $prefix, $page_num );
         $this->render_background( $bg_file );
-        
+
         if ( $this->debug ) {
             $this->add_calibration_grid( 10 );
         }
@@ -81,12 +85,9 @@ class PdfGenerator {
 
     private function render_background( string $file ): void {
         if ( file_exists( $file ) ) {
-            $this->pdf->Image( $file, 0, 0, 210, 297, 'PNG', '', '', true, 300, '', false, false, 0, false, false, false );
+            $this->put( '<img class="bg" src="' . esc_attr( 'file://' . $file ) . '">' );
         } elseif ( $this->debug ) {
-            $this->pdf->SetXY( 10, 10 );
-            $this->pdf->SetTextColor( 200, 0, 0 );
-            $this->pdf->Write( 0, "⚠️ Achtergrond niet gevonden: " . basename( $file ) );
-            $this->pdf->SetTextColor( 0, 0, 0 );
+            $this->put_text( 10, 10, 190, 5, 'Achtergrond niet gevonden: ' . basename( $file ), 9, 'left', false, '#c80000' );
         }
     }
 
@@ -101,12 +102,68 @@ class PdfGenerator {
     public function add_luik_c_f2_cont(): self        { return $this->add_template_page( 'formulier2', 3 ); }
 
     /* ======================================================================
+     *  LAAG-NIVEAU HELPERS
+     * ====================================================================== */
+
+    /** Voeg HTML toe aan de huidige pagina. */
+    private function put( string $html ): void {
+        $this->pages[ array_key_last( $this->pages ) ] .= $html;
+    }
+
+    /** mm → compacte CSS-waarde */
+    private function mm( float $v ): string {
+        return rtrim( rtrim( number_format( $v, 3, '.', '' ), '0' ), '.' ) . 'mm';
+    }
+
+    /** Tekstbreedte in mm (dompdf-fontmetrics, dezelfde als bij het renderen). */
+    private function text_width_mm( string $text, float $font_size ): float {
+        $fm = $this->dompdf->getFontMetrics();
+        return $fm->getTextWidth( $text, $fm->getFont( self::FONT ), $font_size ) * 25.4 / 72;
+    }
+
+    /** Eén tekstvak op vaste positie. Hoogte = lijnhoogte, dus verticaal gecentreerd. */
+    private function put_text( float $x, float $y, float $w, float $h, string $text, float $font_size, string $align = 'left', bool $wrap = false, string $color = '' ): void {
+        $style = sprintf(
+            'left:%s;top:%s;width:%s;height:%s;line-height:%s;font-size:%spt;text-align:%s;%s%s',
+            $this->mm( $x + self::X_OFFSET_MM ), $this->mm( $y + self::Y_OFFSET_MM ),
+            $this->mm( $w ), $this->mm( $h ), $this->mm( $h ),
+            $font_size, $align,
+            $wrap ? '' : 'white-space:nowrap;',
+            $color ? 'color:' . $color . ';' : ''
+        );
+        $content = $wrap ? nl2br( esc_html( $text ) ) : esc_html( $text );
+        $this->put( '<div class="f" style="' . esc_attr( $style ) . '">' . $content . '</div>' );
+    }
+
+    /**
+     * Breek één regel af op de breedte (in mm). Enkel op gewone spaties:
+     * een NBSP blijft bij zijn woord (zie handtekeningregel).
+     */
+    private function wrap_line( string $line, float $width, float $font_size ): array {
+        if ( $line === '' ) return [ '' ];
+
+        $out = [];
+        $cur = '';
+        foreach ( explode( ' ', $line ) as $word ) {
+            $try = $cur === '' ? $word : $cur . ' ' . $word;
+            if ( $cur !== '' && $this->text_width_mm( $try, $font_size ) > $width ) {
+                $out[] = $cur;
+                $cur   = $word;
+            } else {
+                $cur = $try;
+            }
+        }
+        $out[] = $cur;
+        return $out;
+    }
+
+    /* ======================================================================
      *  VELD & TEKST HELPERS (MET PAGINERING)
      * ====================================================================== */
 
     /**
      * Vul een tekstblok met automatische paginering.
-     * Splitst tekst per regel, print, en voegt Luik B vervolg toe indien nodig.
+     * Splitst tekst per regel, breekt af op de breedte, print, en voegt Luik B vervolg toe indien nodig.
      * 
      * @param string $text            Tekst om te printen (\n gescheiden)
      * @param float  $x               X-coördinaat (mm)
@@ -123,73 +180,58 @@ class PdfGenerator {
         $current_y = $y_start;
 
         foreach ( $lines as $line ) {
-            $line = trim( $line );
-            /*
-            if ( $line === '' ) {
-                $current_y += 5; // Kleine spatie voor lege regel
-                continue;
-            }*/
-
-            // Check of regel nog past op huidige pagina
-            if ( $current_y + $line_height_mm > $y_limit ) {
-                $this->add_luik_b_continuation();
-                $current_y = $y_reset;
+            // Elke afgebroken deelregel wordt apart op de limiet gecontroleerd,
+            // zodat ook een lange alinea netjes over pagina's heen loopt.
+            foreach ( $this->wrap_line( trim( $line ), $width, $font_size ) as $part ) {
+                if ( $current_y + $line_height_mm > $y_limit ) {
+                    $this->add_luik_b_continuation();
+                    $current_y = $y_reset;
+                }
+                if ( $part !== '' ) {
+                    $this->put_text( $x, $current_y, $width, $line_height_mm, $part, $font_size );
+                }
+                $current_y += $line_height_mm;
             }
-
-            // Print regel met MultiCell (ondersteunt wrapping)
-            $this->pdf->SetXY( $x, $current_y );
-            $this->pdf->SetFont( 'helvetica', '', $font_size );
-            $this->pdf->MultiCell( $width, $line_height_mm, $line, 0, 'L', false, 1, '', '', true, 0, false, false, 0, 'T' );
-            
-            // Update Y naar positie waar TCPDF is geëindigd
-            $current_y = $this->pdf->GetY();
         }
         return $this;
     }
 
     public function fill_field( float $x, float $y, string $text, float $width = 50, float $font_size = 10, string $align = 'L', bool $multiline = false ): self {
-        $this->pdf->SetFont( 'helvetica', '', $font_size );
-        $this->pdf->SetXY( $x, $y );
-        
-        if ( $multiline ) {
-            $this->pdf->MultiCell( $width, 4, $text, 0, $align, false, 1, '', '', true, 0, true, true, 50, 'T' );
-        } else {
-            $this->pdf->Cell( $width, 5, $text, 0, 0, $align, false, '', 0, false, 'T', 'M' );
-        }
+        $css_align = [ 'L' => 'left', 'C' => 'center', 'R' => 'right', 'J' => 'justify' ][ $align ] ?? 'left';
+        $this->put_text( $x, $y, $width, $multiline ? 4 : 5, $text, $font_size, $css_align, $multiline );
         return $this;
     }
 
     public function fill_checkbox( float $x, float $y, bool $checked = true, float $size = 4 ): self {
-        $this->pdf->SetDrawColor( 0, 0, 0 );
-        $this->pdf->SetLineWidth( 0.2 );
-        //$this->pdf->Rect( $x, $y, $size, $size, 'D' );
         if ( $checked ) {
-            $this->pdf->SetLineWidth( 0.3 );
-            $this->pdf->Line( $x + 0.5, $y + 0.5, $x + $size - 0.5, $y + $size - 0.5 );
-            $this->pdf->Line( $x + 0.5, $y + $size - 0.5, $x + $size - 0.5, $y + 0.5 );
+            // Kruisje van 0,3 mm, 0,5 mm van de rand (zoals voorheen met Line())
+            $a   = 0.5;
+            $b   = $size - 0.5;
+            $svg = sprintf(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="%1$s" height="%1$s" viewBox="0 0 %1$s %1$s"><path d="M%2$s %2$s L%3$s %3$s M%2$s %3$s L%3$s %2$s" stroke="#000" stroke-width="0.3" fill="none"/></svg>',
+                $size, $a, $b
+            );
+            $this->put( sprintf(
+                '<img class="f" style="left:%s;top:%s;width:%s;height:%s" src="data:image/svg+xml;base64,%s">',
+                $this->mm( $x + self::X_OFFSET_MM ), $this->mm( $y + self::Y_OFFSET_MM ),
+                $this->mm( $size ), $this->mm( $size ),
+                base64_encode( $svg )
+            ) );
         }
         return $this;
     }
 
     public function add_calibration_grid( int $step_mm = 10 ): self {
-        $this->pdf->SetDrawColor( 255, 0, 0 );
-        $this->pdf->SetLineWidth( 0.1 );
-        $this->pdf->SetFont( 'helvetica', '', 6 );
-        $this->pdf->SetTextColor( 255, 0, 0 );
-
+        $h = '';
         for ( $x = $step_mm; $x < 210; $x += $step_mm ) {
-            $this->pdf->Line( $x, 0, $x, 297 );
-            $this->pdf->SetXY( $x + 0.5, 1 );
-            $this->pdf->Write( 0, $x );
+            $h .= sprintf( '<div class="g" style="left:%dmm;top:0;height:297mm;border-left:0.1mm solid #f00"></div>', $x );
+            $h .= sprintf( '<div class="gl" style="left:%smm;top:1mm">%d</div>', $x + 0.5, $x );
         }
         for ( $y = $step_mm; $y < 297; $y += $step_mm ) {
-            $this->pdf->Line( 0, $y, 210, $y );
-            $this->pdf->SetXY( 1, $y + 0.5 );
-            $this->pdf->Write( 0, $y );
+            $h .= sprintf( '<div class="g" style="top:%dmm;left:0;width:210mm;border-top:0.1mm solid #f00"></div>', $y );
+            $h .= sprintf( '<div class="gl" style="left:1mm;top:%smm">%d</div>', $y + 0.5, $y );
         }
-        $this->pdf->SetDrawColor( 0, 0, 0 );
-        $this->pdf->SetTextColor( 0, 0, 0 );
-        $this->pdf->SetLineWidth( 0.2 );
+        $this->put( $h );
         return $this;
     }
 
@@ -197,13 +239,33 @@ class PdfGenerator {
      *  OUTPUT
      * ====================================================================== */
 
+    /**
+     * @param string $dest 'I' = inline, 'D' = download, 'S' = PDF als string
+     */
     public function output( string $filename, string $dest = 'I' ): string|bool {
-        // Voeg disclaimer footer toe op de laatste pagina
-        //$this->pdf->SetFont( 'helvetica', 'I', 6 );
-        //$this->pdf->SetTextColor( 100, 100, 100 );
-        //$this->pdf->SetXY( 10, 290 );
-        //$this->pdf->Write( 0, 'Gegenereerd door EME VZW Helper | Controleer altijd vóór indiening bij de griffie.' );
-        return $this->pdf->Output( sanitize_file_name( $filename ), $dest );
+        $css = '@page{size:A4 portrait;margin:0}'
+             . 'html,body{margin:0;padding:0}'
+             . 'body{font-family:\'' . self::FONT . '\',sans-serif;color:#000}'
+             . '.page{position:relative;width:210mm;height:296mm}'
+             . '.bg{position:absolute;left:0;top:0;width:210mm;height:297mm}'
+             . '.f{position:absolute;overflow:visible}'
+             . '.g{position:absolute}'
+             . '.gl{position:absolute;font-size:6pt;color:#f00}';
+
+        $body = '';
+        foreach ( $this->pages as $i => $page ) {
+            $body .= '<div class="page"' . ( $i ? ' style="page-break-before:always"' : '' ) . '>' . $page . '</div>';
+        }
+
+        $this->dompdf->loadHtml( '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><style>' . $css . '</style></head><body>' . $body . '</body></html>' );
+        $this->dompdf->addInfo( 'Creator', 'EME VZW Helper v' . EME_VZW_VERSION );
+        $this->dompdf->render();
+
+        if ( $dest === 'S' ) {
+            return $this->dompdf->output();
+        }
+        $this->dompdf->stream( sanitize_file_name( $filename ), [ 'Attachment' => $dest === 'D' ] );
+        return true;
     }
 
     /* ======================================================================
@@ -218,15 +280,17 @@ class PdfGenerator {
 
         // ── PAGINA 1: LUIK A ──
         $this->add_luik_a();
-        $this->fill_field( 100, 78, $config->vzw_number ?? '', 40 );
-        $this->fill_field( 80, 84, $config->vzw_name ?? '', 80 );
+        $this->fill_field( 100, 77, $config->vzw_number ?? '', 40 );
+        $this->fill_field( 80, 83, $config->vzw_name ?? '', 80 );
         $this->fill_field( 90, 99, $config->vzw_legal_form ?? 'VZW', 30 );
-        $this->fill_field( 80, 109, $config->street ?? '', 60 );
-        $this->fill_field( 150, 109, $config->house_number ?? '', 60 );
-        $this->fill_field( 175, 109, $config->house_bus ?? '', 60 );
+        $this->fill_field( 80, 108.5, $config->street ?? '', 60 );
+        $this->fill_field( 150, 108.5, $config->house_number ?? '', 60 );
+        $this->fill_field( 175, 108.5, $config->house_bus ?? '', 60 );
         $this->fill_field( 85, 114, $config->postal_code ?? '', 30 );
         $this->fill_field( 135, 114, $config->city ?? '', 60 );
         $this->fill_field( 80, 120, $config->country ?? '', 60 );
+        $this->fill_checkbox( 60, 187);
+        $this->fill_field( 90, 233, $config->email ?? '', 80 );
 
         // ── PAGINA 2: LUIK B (START) ──
         $this->add_luik_b();
@@ -442,10 +506,9 @@ class PdfGenerator {
                 //$this->fill_field( 10, $y, $type_char, 8, 10, 'C' );
 
                 $this->fill_field( 30, $y, $c->national_id ?? '', 25 );
-                $this->fill_field( 65, $y, trim( $c->last_name . ' ' . $c->first_name ), 60 );
-                //$this->fill_field( 140, $y, $c->role ?? 'Bestuurder', 40 );
-                $this->fill_field( 140, $y, 'Bestuurder', 40 );
-                $this->fill_field( 177, $y, ! empty( $pub->av_date ) ? date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) : '', 25, 10, 'C' );
+                $this->fill_field( 64, $y, trim( $c->last_name . ' ' . $c->first_name ), 60 );
+                $this->fill_field( 142, $y, ucfirst($c->legal_capacity), 40 );
+                $this->fill_field( 175, $y, ! empty( $pub->av_date ) ? date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) : '', 25, 10, 'C' );
             }
         }
 
@@ -529,7 +592,7 @@ class PdfGenerator {
      * gevolgd door 2 exemplaren van Formulier II, in één enkele PDF-output.
      *
      * @param int    $pub_id  Publicatie-ID
-     * @param string $dest    TCPDF output-bestemming ('I', 'D', 'F', 'S', …)
+     * @param string $dest    Output-bestemming ('I' inline, 'D' download, 'S' string)
      * @param bool   $debug   Kalibratierooster tonen
      */
     public static function generate_form( int $pub_id, string $dest = 'I', bool $debug = false ): string|bool {
