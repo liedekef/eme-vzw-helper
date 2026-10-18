@@ -26,7 +26,11 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
     </div>
     <div class="vzw-field" style="max-width:100px">
         <label><?php esc_html_e( 'Rechtsvorm', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="vzw_legal_form" value="<?php echo esc_attr( $config->vzw_legal_form ?? 'VZW' ); ?>">
+        <input type="text" name="vzw_legal_form" value="<?php echo esc_attr( $config->vzw_legal_form ?? '' ); ?>">
+    </div>
+    <div class="vzw-field" style="max-width:100px">
+        <label><?php esc_html_e( 'Rechtsvorm (afkorting)', 'eme-vzw-helper' ); ?></label>
+        <input type="text" name="vzw_legal_short_form" value="<?php echo esc_attr( $config->vzw_legal_short_form ); ?>">
     </div>
 </div>
 

@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $vzw_name    = esc_html( $config->vzw_name ?? '' );
-$vzw_form    = esc_html( $config->vzw_legal_form ?? 'VZW' );
+$vzw_form    = esc_html( $config->vzw_legal_form );
 $vzw_number  = esc_html( $config->vzw_number ?? '' );
 $street      = esc_html( trim( ( $config->street ?? '' ) . ' ' . ( $config->house_number ?? '' ) ) );
 if ( ! empty( $config->house_bus ) ) {

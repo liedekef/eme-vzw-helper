@@ -282,7 +282,7 @@ class PdfGenerator {
         $this->add_luik_a();
         $this->fill_field( 100, 77, $config->vzw_number ?? '', 40 );
         $this->fill_field( 80, 83, $config->vzw_name ?? '', 80 );
-        $this->fill_field( 90, 99, $config->vzw_legal_form ?? 'VZW', 30 );
+        $this->fill_field( 90, 99, $config->vzw_legal_form, 60 );
         $this->fill_field( 80, 108.5, $config->street ?? '', 60 );
         $this->fill_field( 150, 108.5, $config->house_number ?? '', 60 );
         $this->fill_field( 175, 108.5, $config->house_bus ?? '', 60 );
@@ -299,7 +299,7 @@ class PdfGenerator {
         $this->fill_field( 80, 64, $config->vzw_number ?? '', 40 );
         $this->fill_field( 80, 72, $config->vzw_name ?? '', 80 );
         $this->fill_field( 80, 76, $config->vzw_shortname ?? '', 80 );
-        $this->fill_field( 80, 82, $config->vzw_legal_form ?? 'VZW', 30 );
+        $this->fill_field( 80, 82, $config->vzw_legal_form, 60 );
         $address = ($config->street ?? '') . ' ' . ($config->house_number ?? '') . ' bus ' . ($config->house_bus ?? '')
                  . ', '. ($config->postal_code ?? '') . ' ' . ($config->city ?? '');
         $this->fill_field( 80, 87, $address , 80 );
@@ -318,7 +318,7 @@ class PdfGenerator {
         // 1. Introductietekst met VZW-gegevens en AV-info
         $av_date_formatted = ! empty( $pub->av_date ) ? date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) : '';
         $av_location = ! empty( $pub->av_location ) ? ' te ' . $pub->av_location : '';
-        $legal_form = strtolower( $config->vzw_legal_form ?? 'vzw' );
+        $legal_form = strtolower( $config->vzw_legal_short_form );
 
         $all_text_lines[] = sprintf(
             'De Algemene Vergadering van %s %s, bijeengekomen op %s%s, beraadslagend en beslissend overeenkomstig haar statuten,',
@@ -507,7 +507,7 @@ class PdfGenerator {
 
                 $this->fill_field( 30, $y, $c->national_id ?? '', 25 );
                 $this->fill_field( 64, $y, trim( $c->last_name . ' ' . $c->first_name ), 60 );
-                $this->fill_field( 142, $y, ucfirst($c->legal_capacity), 40 );
+                $this->fill_field( 142, $y, Config::legal_capacity_label( $v->legal_capacity ?? 'bestuurder' ), 40 );
                 $this->fill_field( 175, $y, ! empty( $pub->av_date ) ? date_i18n( 'd/m/Y', strtotime( $pub->av_date ) ) : '', 25, 10, 'C' );
             }
         }
