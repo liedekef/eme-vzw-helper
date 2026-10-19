@@ -96,21 +96,28 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
     <h4><?php esc_html_e( 'Wat betekent RPR?', 'eme-vzw-helper' ); ?></h4>
     <p><?php esc_html_e( 'RPR is de afkorting voor rechtspersonenregister. De plaats die na RPR weergegeven wordt, geeft aan onder welk gerechtelijk arrondissement een rechtspersoon valt of maw welke ondernemingsrechtbank of rechtbank van koophandel bevoegd is.', 'eme-vzw-helper' ); ?></p>
     <p><?php esc_html_e( 'Artikel 2:20 van het Wetboek van vennootschappen en verenigingen (WVV) verplicht rechtspersonen om op al hun uitgaande correspondentie (zoals facturen) het woord rechtspersonenregister of RPR, gevolgd door de rechtbank van de zetel van de rechtspersoon, te vermelden.', 'eme-vzw-helper' ); ?></p>
-    <h4><?php esc_html_e( 'Welk RPR moet ik op mijn factuur vermelden?', 'eme-vzw-helper' ); ?></h4>
+    <h4><?php esc_html_e( 'Welk RPR moet ik op gebruiken?', 'eme-vzw-helper' ); ?></h4>
 <p>
 De indeling van deze rechtbanken van koophandel is de volgende:<br>
-<b>Antwerpen</b>, met afdelingen Antwerpen, Hasselt, Mechelen, Tongeren en Turnhout<br>
-<b>Brussel</b><br>
-<b>Gent</b>, met afdelingen Brugge, Dendermonde, Gent, Ieper, Kortrijk, Oostende, Oudenaarde en Veurne<br>
-<b>Leuven</b><br>
-<b>Nijvel</b><br>
-<b>Bergen-Charleroi</b>, met afdelingen Bergen, Charleroi en Doornik<br>
-<b>Luik</b>, met afdelingen Arlon, Dinant, Hoei, Luik, Marche-en-Famenne, Namen, Neufchâteau en Verviers<br>
-<b>Eupen</b>
+</p>
+<ul style='list-style: unset; padding-left: 10px'>
+<li><b>Antwerpen</b>, met afdelingen Antwerpen, Hasselt, Mechelen, Tongeren en Turnhout</li>
+<li><b>Brussel</b></li>
+<li><b>Gent</b>, met afdelingen Brugge, Dendermonde, Gent, Ieper, Kortrijk, Oostende, Oudenaarde en Veurne</li>
+<li><b>Leuven</b></li>
+<li><b>Nijvel</b></li>
+<li><b>Bergen-Charleroi</b>, met afdelingen Bergen, Charleroi en Doornik</li>
+<li><b>Luik</b>, met afdelingen Arlon, Dinant, Hoei, Luik, Marche-en-Famenne, Namen, Neufchâteau en Verviers</li>
+<li><b>Eupen</b></li>
+</ul>
 </p>
     <h4><?php esc_html_e( 'Officiële vermelding', 'eme-vzw-helper' ); ?></h4>
 <p>
-Voorbeeld: Waar vroeger voor bijvoorbeeld Dendermonde "RPR Dendermonde" vermeld moest worden, moet nu "RPR Gent, Afdeling Dendermonde" staan
+Gbruik "RPR" gevolgt door de locatie, met eventueel de afdeling. Een paar voorbeelden:<br>
+<ul style='list-style: unset; padding-left: 10px'>
+<li>RPR Gent, Afdeling Dendermonde</li>
+<li>RPR Leuven</li>
+</ul>
 </p>
     <div class="dialog-footer"><button type="button" commandfor="vzw-help-rpr" command="close"><?php esc_html_e( 'Sluiten', 'eme-vzw-helper' ); ?></button></div>
 </dialog>

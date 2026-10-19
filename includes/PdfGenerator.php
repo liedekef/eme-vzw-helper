@@ -32,34 +32,39 @@ class PdfGenerator {
         $this->bg_dir = trailingslashit( EME_VZW_DIR ) . 'assets/templates/';
         $this->debug  = $debug;
 
-        $this->load_dompdf();
-        $this->init_pdf_engine();
+        if ( ! self::load_dompdf() ) {
+            throw new \RuntimeException( 'dompdf niet gevonden (verwacht via Events Made Easy: includes/dompdf).' );
+        }
+        $this->dompdf = self::create_dompdf();
     }
 
     /* ======================================================================
      *  INIT & LOADERS
      * ====================================================================== */
 
-    private function load_dompdf(): void {
-        if ( class_exists( '\Dompdf\Dompdf' ) ) return;
+    /** Laad dompdf via Events Made Easy. False als het ontbreekt. */
+    private static function load_dompdf(): bool {
+        if ( class_exists( '\Dompdf\Dompdf' ) ) return true;
 
         $autoload = WP_PLUGIN_DIR . '/events-made-easy/includes/dompdf/vendor/autoload.php';
-        if ( ! file_exists( $autoload ) ) {
-            throw new \RuntimeException( 'dompdf niet gevonden (verwacht via Events Made Easy): ' . $autoload );
-        }
+        if ( ! file_exists( $autoload ) ) return false;
+
         require_once $autoload;
+        return true;
     }
 
-    private function init_pdf_engine(): void {
+    /** Gedeelde dompdf-instelling voor alle documenten: A4 staand, geen remote toegang. */
+    private static function create_dompdf(): \Dompdf\Dompdf {
         $options = new \Dompdf\Options();
         $options->set( 'isHtml5ParserEnabled', true );
         $options->set( 'isRemoteEnabled', false );
-        $options->set( 'defaultFont', 'Helvetica' );
+        $options->set( 'defaultFont', self::FONT );
         // De achtergrond-PNG's staan in deze plugin, buiten dompdf's standaard chroot.
         $options->set( 'chroot', untrailingslashit( EME_VZW_DIR ) );
 
-        $this->dompdf = new \Dompdf\Dompdf( $options );
-        $this->dompdf->setPaper( 'A4', 'portrait' );
+        $pdf = new \Dompdf\Dompdf( $options );
+        $pdf->setPaper( 'A4', 'portrait' );
+        return $pdf;
     }
 
     /* ======================================================================
@@ -99,7 +104,7 @@ class PdfGenerator {
     // Formulier II
     public function add_luik_a_f2(): self             { return $this->add_template_page( 'formulier2', 1 ); }
     public function add_luik_c_f2(): self             { return $this->add_template_page( 'formulier2', 2 ); }
-    public function add_luik_c_f2_cont(): self        { return $this->add_template_page( 'formulier2', 3 ); }
+    //public function add_luik_c_f2_cont(): self        { return $this->add_template_page( 'formulier2', 3 ); }
 
     /* ======================================================================
      *  LAAG-NIVEAU HELPERS
@@ -558,26 +563,15 @@ class PdfGenerator {
 
         $full_html = '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>';
 
-        // Laad dompdf via Events Made Easy (zelfde aanpak als Patrimony)
-        $dompdf_autoload = WP_PLUGIN_DIR . '/events-made-easy/includes/dompdf/vendor/autoload.php';
-
-        if ( ! file_exists( $dompdf_autoload ) ) {
+        if ( ! self::load_dompdf() ) {
             // Fallback: stuur HTML direct naar browser (print-naar-PDF via browser)
             header( 'Content-Type: text/html; charset=UTF-8' );
             echo $full_html; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             exit;
         }
 
-        require_once $dompdf_autoload;
-
-        $options = new \Dompdf\Options();
-        $options->set( 'isHtml5ParserEnabled', true );
-        $options->set( 'isRemoteEnabled', false );
-        $options->set( 'defaultFont', 'Helvetica' );
-
-        $pdf = new \Dompdf\Dompdf( $options );
+        $pdf = self::create_dompdf();
         $pdf->loadHtml( $full_html );
-        $pdf->setPaper( 'A4', 'portrait' );
         $pdf->render();
 
         $filename = 'Verklaring_Bestuursverbod_' . date( 'Ymd' ) . '.pdf'; //phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
