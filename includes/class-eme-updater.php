@@ -1,8 +1,6 @@
 <?php
 namespace EmeVzwHelper;
 
-use stdClass;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
