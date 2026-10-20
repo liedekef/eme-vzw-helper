@@ -1,4 +1,6 @@
 <?php
+namespace EmeVzwHelper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
