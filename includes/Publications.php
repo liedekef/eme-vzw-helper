@@ -59,15 +59,6 @@ class Publications {
         ) );
     }
 
-    public static function get_statute_changes( int $pub_id ): array {
-        global $wpdb;
-        return $wpdb->get_results( $wpdb->prepare(
-            "SELECT * FROM `{$wpdb->prefix}emevzw_statute_changes`
-             WHERE publication_id = %d ORDER BY sort_order",
-            $pub_id
-        ) );
-    }
-
     public static function save( array $data ): int|\WP_Error {
         global $wpdb;
         $allowed_statuses = [ 'draft', 'submitted', 'published' ];
@@ -129,7 +120,6 @@ class Publications {
         global $wpdb;
         $id = (int) eme_sanitize_request( $_POST['id'] ?? 0 ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
         $wpdb->delete( $wpdb->prefix . 'emevzw_pub_board',        [ 'publication_id' => $id ], [ '%d' ] );
-        $wpdb->delete( $wpdb->prefix . 'emevzw_statute_changes',  [ 'publication_id' => $id ], [ '%d' ] );
         $wpdb->delete( $wpdb->prefix . 'emevzw_publications',     [ 'id' => $id ], [ '%d' ] );
         wp_send_json_success();
     }
