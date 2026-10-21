@@ -8,6 +8,7 @@
     /* ════════════════════════════════════════════════════════════════
      * HELP DIALOGS
      * ════════════════════════════════════════════════════════════════ */
+    /*
     document.querySelectorAll('dialog.vzw-help-dialog').forEach(function(dlg) {
         dlg.addEventListener('click', function(e) {
             if (e.target === dlg) dlg.close();
@@ -22,6 +23,7 @@
             helpDialog.scrollTop = 0;
         });
     });
+    */
     /**
      * Bevestigingsdialog (vervangt window.confirm). Geeft een Promise<boolean>.
      * Esc, klik naast de dialog of "Annuleren" => false.

@@ -139,10 +139,12 @@ class Config {
             update_option( 'emevzw_helper_delete_on_uninstall', sanitize_key( $_POST['delete_on_uninstall'] ) );
         }
 
+        /*
+         * currency needs to be EUR
         $currency = strtoupper( substr( eme_sanitize_request( $data['currency'] ?? 'EUR' ), 0, 3 ) );
         if ( ! self::isValidCurrencyCode( $currency ) ) {
-            $currency = 'EUR';
-        }
+        }*/
+        $currency = 'EUR';
 
         $row = [
             'vzw_name'             => eme_sanitize_request( $data['vzw_name'] ?? '' ),

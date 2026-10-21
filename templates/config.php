@@ -25,14 +25,27 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
         <input type="text" name="vzw_number" value="<?php echo esc_attr( $config->vzw_number ?? '' ); ?>" placeholder="0000.000.000">
     </div>
     <div class="vzw-field" style="max-width:275px">
-        <label><?php esc_html_e( 'Rechtsvorm', 'eme-vzw-helper' ); ?></label>
+        <label>
+            <?php esc_html_e( 'Rechtsvorm', 'eme-vzw-helper' ); ?>
+            <button type="button" class="vzw-help-btn" command="show-modal" commandfor="vzw-help-legal-form">?</button>
+        </label>
         <input type="text" name="vzw_legal_form" value="<?php echo esc_attr( $config->vzw_legal_form ?? '' ); ?>">
     </div>
     <div class="vzw-field" style="max-width:180px">
-        <label><?php esc_html_e( 'Rechtsvorm (afkorting)', 'eme-vzw-helper' ); ?></label>
+        <label>
+            <?php esc_html_e( 'Rechtsvorm (afkorting)', 'eme-vzw-helper' ); ?>
+            <button type="button" class="vzw-help-btn" command="show-modal" commandfor="vzw-help-legal-form">?</button>
+        </label>
         <input type="text" name="vzw_legal_short_form" value="<?php echo esc_attr( $config->vzw_legal_short_form ?? '' ); ?>">
     </div>
 </div>
+<dialog id="vzw-help-legal-form" class="vzw-help-dialog">
+    <h4><?php esc_html_e( 'Rechtsvorm', 'eme-vzw-helper' ); ?></h4>
+    <p><?php esc_html_e( 'De wettelijke vermelding voor de rechtsvorm van een VZW is "Vereniging zonder winstoogmerk (VZW)".', 'eme-vzw-helper' ); ?></p>
+    <p><?php esc_html_e( 'De wettelijke afkorting hiervan is "VZW".', 'eme-vzw-helper' ); ?></p>
+    <p><?php esc_html_e( 'Verander dit enkel indien noodzakelijk.', 'eme-vzw-helper' ); ?></p>
+    <div class="dialog-footer"><button type="button" commandfor="vzw-help-legal-form" command="close"><?php esc_html_e( 'Sluiten', 'eme-vzw-helper' ); ?></button></div>
+</dialog>
 
 <div class="vzw-row">
     <div class="vzw-field" style="flex:2">
@@ -82,7 +95,7 @@ $emevzw_helper_delete_on_uninstall = get_option('emevzw_helper_delete_on_uninsta
     <div class="vzw-field" style="flex:2">
         <label>
             <?php esc_html_e( 'Bevoegde Ondernemingsrechtbank', 'eme-vzw-helper' ); ?>
-            <button type="button" class="vzw-help-btn" data-id="vzw-help-rpr">?</button>
+            <button type="button" class="vzw-help-btn" command="show-modal" commandfor="vzw-help-rpr">?</button>
         </label>
         <input type="text" name="court" value="<?php echo esc_attr( $config->court ?? '' ); ?>" placeholder="Ondernemingsrechtbank">
         <p class="description"><?php esc_html_e( 'Voorbeeld: "RPR Antwerpen, afdeling Mechelen". Klik op het help-icoontje voor de correcte vereiste vermelding.', 'eme-vzw-helper' ); ?></p>
@@ -142,10 +155,10 @@ Gbruik "RPR" gevolgt door de locatie, met eventueel de afdeling. Een paar voorbe
     </div>
 </div>
 <div class="vzw-row">
-    <div class="vzw-field" style="max-width:80px">
+    <div class="vzw-field" style="width:160px">
         <label><?php esc_html_e( 'Valuta', 'eme-vzw-helper' ); ?></label>
-        <input type="text" name="currency" value="<?php echo esc_attr( $config->currency ); ?>" maxlength="3" style="width:60px">
-        <p class="description"><?php esc_html_e( 'ISO-valutacode, bv. EUR', 'eme-vzw-helper' ); ?></p>
+        <input type="text" readonly="readonly" name="currency" value="<?php echo esc_attr( $config->currency ?? 'EUR' ); ?>" maxlength="3" style="width:60px">
+        <p class="description"><?php esc_html_e( 'Valutacode. Enkel EUR is toegelaten.', 'eme-vzw-helper' ); ?></p>
     </div>
 </div>
 
