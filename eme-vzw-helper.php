@@ -47,6 +47,16 @@ function eme_vzw_helper_init(): void {
 }
 add_action( 'plugins_loaded', 'eme_vzw_helper_init' );
 
+/* ------------------------------------------------------------------
+ * DB schema upgrades.
+ *
+ * The activation hook does not fire on silent plugin updates, so the DB
+ * version is checked on every request and the schema is upgraded when it
+ * lags behind. Priority 5 => before the rest of the plugin is loaded.
+ * ------------------------------------------------------------------ */
+add_action( 'plugins_loaded', [ 'EMEVzw\\Installer', 'maybe_upgrade' ], 5 );
+add_action( 'wp_initialize_site', [ 'EMEVzw\\Installer', 'new_site' ], 900, 2 );
+
 register_activation_hook( __FILE__, [ 'EMEVzw\\Installer', 'activate' ] );
 register_deactivation_hook( __FILE__, [ 'EMEVzw\\Installer', 'deactivate' ] );
 register_uninstall_hook( __FILE__, [ 'EMEVzw\\Installer', 'uninstall' ] );

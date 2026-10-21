@@ -9,10 +9,27 @@ class Installer {
     const DB_VERSION_OPTION = 'emevzw_db_version';
     const DB_VERSION        = '6';
 
-    public static function activate(): void {
-        self::create_tables();
-        self::migrate();
-        update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
+    /**
+     * Activation hook. WordPress calls it once, also for a network activation
+     * (then with $network_wide = true), so loop over all sites ourselves.
+     */
+    public static function activate( bool $network_wide = false ): void {
+        if ( is_multisite() && $network_wide ) {
+            foreach ( get_sites( [ 'fields' => 'ids' ] ) as $site_id ) {
+                switch_to_blog( $site_id );
+                try {
+                    self::activate_site();
+                } finally {
+                    restore_current_blog();
+                }
+            }
+            return;
+        }
+        self::activate_site();
+    }
+
+    private static function activate_site(): void {
+        self::install_site();
         //flush_rewrite_rules();
         if ( ! wp_next_scheduled( 'eme_vzw_daily_check' ) ) {
             wp_schedule_event( time(), 'daily', 'eme_vzw_daily_check' );
@@ -20,19 +37,96 @@ class Installer {
     }
 
     /**
-     * Run migrations for version upgrades.
+     * Keep the schema in sync on every request.
+     *
+     * The activation hook does not fire on silent plugin updates, so this version
+     * check is the only place where an update is picked up. Same approach as EME:
+     * a named MySQL lock keeps parallel requests (cron, other tabs) from
+     * upgrading concurrently.
      */
-    private static function migrate(): void {
-        global $wpdb;
-        $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
+    public static function maybe_upgrade(): void {
+        if ( (int) get_option( self::DB_VERSION_OPTION, '0' ) === (int) self::DB_VERSION ) {
+            return;
+        }
+        self::install_site();
+    }
 
-        //if ( $current_version < 6 ) {
+    /**
+     * Create the tables and apply pending migrations for the current site.
+     * Guarded by a named lock, so parallel requests don't upgrade concurrently.
+     */
+    private static function install_site(): void {
+        global $wpdb;
+
+        $lock_name = 'emevzw_db_upgrade_' . $wpdb->prefix;
+        $got_lock  = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 30)', $lock_name ) );
+        if ( $got_lock != 1 ) {
+            // another request is already performing the upgrade, let it finish
+            return;
+        }
+
+        try {
+            $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
+            self::create_tables();
+            self::migrate( $current_version );
+            update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
+        } finally {
+            $wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock_name ) );
+        }
+    }
+
+    /**
+     * A new site was created in the network: install the schema for it.
+     */
+    public static function new_site( \WP_Site $new_site, array $args = [] ): void {
+        if ( ! is_multisite() ) return;
+        if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        if ( ! is_plugin_active_for_network( plugin_basename( EME_VZW_FILE ) ) ) return;
+        switch_to_blog( $new_site->blog_id );
+        try {
+            self::install_site();
+        } finally {
+            restore_current_blog();
+        }
+    }
+
+    /**
+     * Run migrations for version upgrades.
+     *
+     * @param int $current_version The version currently stored in the options.
+     *                             0 means "not installed yet": create_tables()
+     *                             already made the current schema, so there is
+     *                             nothing to migrate.
+     */
+    private static function migrate( int $current_version ): void {
+        global $wpdb;
+
+        if ( ! $current_version ) return;
+
+        //if ( $current_version < 7 ) {
             // for future needs concerning table migrations
         //}
     }
 
-    public static function deactivate(): void {
+    public static function deactivate( bool $network_deactivating = false ): void {
         //flush_rewrite_rules();
+        if ( is_multisite() && $network_deactivating ) {
+            foreach ( get_sites( [ 'fields' => 'ids' ] ) as $site_id ) {
+                switch_to_blog( $site_id );
+                try {
+                    self::deactivate_site();
+                } finally {
+                    restore_current_blog();
+                }
+            }
+            return;
+        }
+        self::deactivate_site();
+    }
+
+    private static function deactivate_site(): void {
         $timestamp = wp_next_scheduled( 'eme_vzw_daily_check' );
         if ( $timestamp ) {
             wp_unschedule_event( $timestamp, 'eme_vzw_daily_check' );
@@ -40,6 +134,23 @@ class Installer {
     }
 
     public static function uninstall(): void {
+        // The uninstall hook is fired once, also for a network-wide delete,
+        // so clean up every site ourselves.
+        if ( is_multisite() ) {
+            foreach ( get_sites( [ 'fields' => 'ids' ] ) as $site_id ) {
+                switch_to_blog( $site_id );
+                try {
+                    self::uninstall_site();
+                } finally {
+                    restore_current_blog();
+                }
+            }
+            return;
+        }
+        self::uninstall_site();
+    }
+
+    private static function uninstall_site(): void {
         if ( get_option( 'emevzw_helper_delete_on_uninstall' ) !== 'yes' ) return;
         self::drop_tables();
         delete_option( self::DB_VERSION_OPTION );
