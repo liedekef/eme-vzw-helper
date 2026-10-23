@@ -236,9 +236,9 @@ $g_yr   = $score['by_group']['current_year'];
     $icon  = $dl['urgent'] ? '⚠️' : '📅';
     $cls   = $dl['urgent'] ? 'vzw-deadline-urgent' : ( $dl['warn'] ? 'vzw-deadline-warn' : 'vzw-deadline-ok' );
     $label = $dl['days'] < 0
-        ? '<strong>' . esc_html__( 'Verlopen!', 'eme-vzw-helper' ) . '</strong>'
+        ? '<strong>' . __( 'Verlopen!', 'eme-vzw-helper' ) . '</strong>'
         : sprintf( // translators: %d is the number of days left until the deadline.
-            esc_html__( 'nog %d dagen', 'eme-vzw-helper' ), $dl['days'] );
+            __( 'nog %d dagen', 'eme-vzw-helper' ), $dl['days'] );
 ?>
 <li class="<?php echo esc_attr( $cls ); ?>" style="flex-wrap:wrap;row-gap:4px">
     <span class="vzw-deadline-icon"><?php echo esc_html( $icon ); ?></span>
@@ -249,7 +249,7 @@ $g_yr   = $score['by_group']['current_year'];
         <?php endif; ?>
     </span>
     <span><?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $dl['date'] ) ) ); ?></span>
-    <span><?php echo esc_html( $label ); ?></span>
+    <span><?php echo wp_kses_post( $label ); ?></span>
     <?php if ( ! empty( $dl['info'] ) ): ?>
     <span style="flex-basis:100%;padding-left:28px;font-size:12px;color:#646970;font-style:italic"><?php echo esc_html( $dl['info'] ); ?></span>
     <?php endif; ?>
