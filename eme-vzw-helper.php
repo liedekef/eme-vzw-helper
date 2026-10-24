@@ -78,8 +78,6 @@ function eme_vzw_helper_plugin_row_meta( $links, $file ) {
 add_filter( 'plugin_row_meta', 'eme_vzw_helper_plugin_row_meta', 10, 2 );
 
 // BEGIN NOT FOR WP
-if ( ! class_exists( '\EmeVzwHelper\EME_GitHub_Updater' ) ) {
-    require_once __DIR__ . '/includes/class-eme-updater.php';
-}
+require_once __DIR__ . '/includes/class-eme-updater.php';
 new \EmeVzwHelper\EME_GitHub_Updater( __FILE__, 'liedekef', 'eme-vzw-helper' );
 // END NOT FOR WP
