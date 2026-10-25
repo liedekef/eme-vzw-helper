@@ -22,6 +22,7 @@ $function_titles  = EMEVzw\Config::function_titles();
     $mandate_end = EMEVzw\Config::mandate_end_of( $m );
     $mandate  = $mandate_end ? date_i18n( 'd/m/Y', strtotime( $mandate_end ) ) : '—';
     $expired  = $mandate_end && $mandate_end < current_time( 'Y-m-d' );
+    $automatic  = empty($m->end_date) && !empty($mandate_end);
 ?>
 <div class="vzw-board-card" style="<?php echo $expired ? 'border-color:#d63638' : ''; ?>">
     <div class="avatar"><?php echo esc_html( $initials ); ?></div>
@@ -41,6 +42,7 @@ $function_titles  = EMEVzw\Config::function_titles();
         <div <?php echo $expired ? 'style="color:#d63638;font-weight:600"' : ''; ?>>
             <?php esc_html_e( 'Mandaat t/m:', 'eme-vzw-helper' ); ?> <?php echo esc_html( $mandate ); ?>
             <?php echo $expired ? ' ⚠️' : ''; ?>
+            <?php echo $automatic ? esc_html_e( '(automatisch gezet, zie Instellingen)', 'eme-vzw-helper' ) : ''; ?>
         </div>
         <?php if ( $m->no_management_ban ): ?>
         <div style="color:#00a32a">✓ <?php esc_html_e( 'Geen bestuursverbod bevestigd', 'eme-vzw-helper' ); ?></div>
