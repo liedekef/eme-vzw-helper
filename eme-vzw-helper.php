@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/liedekef/eme-vzw-helper
  * Update URI:        https://github.com/liedekef/eme-vzw-helper
  * Description:       VZW compliance checklist, wettelijke publicaties (Formulier 1 & 2), statutenwijziging en UBO-beheer als uitbreiding op Events Made Easy.
- * Version:           1.0.9
+ * Version:           1.1.0
  * Author:            Your Name
  * Author URI:        https://www.e-dynamics.be
  * License:           GPL-2.0-or-later
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'EME_VZW_VERSION', '1.0.9' );
+define( 'EME_VZW_VERSION', '1.1.0' );
 define( 'EME_VZW_FILE',    __FILE__ );
 define( 'EME_VZW_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'EME_VZW_URL',     plugin_dir_url( __FILE__ ) );
