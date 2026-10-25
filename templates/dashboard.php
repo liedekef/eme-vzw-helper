@@ -245,7 +245,7 @@ $g_yr   = $score['by_group']['current_year'];
     <span style="flex:1">
         <strong><?php echo esc_html( $dl['label'] ); ?></strong>
         <?php if ( ! empty( $dl['link'] ) ): ?>
-            &nbsp;<a href="<?php echo esc_url( $dl['link'] ); ?>" target="_blank" class="button button-small" style="font-size:11px;padding:0 6px;height:20px;line-height:20px"><?php echo esc_html( $dl['link_label'] ?? $dl['link'] ); ?></a>
+            &nbsp;<a href="<?php echo esc_url( $dl['link'] ); ?>" target="_blank" class="button button-small" style="font-size:11px;padding:0 6px;min-height:20px;line-height:1.5"><?php echo esc_html( $dl['link_label'] ?? $dl['link'] ); ?></a>
         <?php endif; ?>
     </span>
     <span><?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $dl['date'] ) ) ); ?></span>
