@@ -19,8 +19,9 @@ $function_titles  = EMEVzw\Config::function_titles();
 <div class="vzw-board-grid">
 <?php foreach ( $members as $m ):
     $initials = strtoupper( mb_substr( $m->first_name, 0, 1 ) . mb_substr( $m->last_name, 0, 1 ) );
-    $mandate  = $m->end_date ? date_i18n( 'd/m/Y', strtotime( $m->end_date ) ) : '—';
-    $expired  = $m->end_date && strtotime( $m->end_date ) < time();
+    $mandate_end = EMEVzw\Config::mandate_end_of( $m );
+    $mandate  = $mandate_end ? date_i18n( 'd/m/Y', strtotime( $mandate_end ) ) : '—';
+    $expired  = $mandate_end && $mandate_end < current_time( 'Y-m-d' );
 ?>
 <div class="vzw-board-card" style="<?php echo $expired ? 'border-color:#d63638' : ''; ?>">
     <div class="avatar"><?php echo esc_html( $initials ); ?></div>
@@ -166,8 +167,7 @@ $function_titles  = EMEVzw\Config::function_titles();
 <div class="vzw-row">
     <div class="vzw-field"><label><?php esc_html_e( 'Benoemd op', 'eme-vzw-helper' ); ?></label><input type="date" name="appointed_date" value="<?php echo esc_attr( $edit_m->appointed_date ?? '' ); ?>"></div>
     <div class="vzw-field"><label><?php esc_html_e( 'Datum AV benoeming', 'eme-vzw-helper' ); ?></label><input type="date" name="appointment_av_date" value="<?php echo esc_attr( $edit_m->appointment_av_date ?? '' ); ?>"></div>
-    <div class="vzw-field"><label><?php esc_html_e( 'Einde mandaat', 'eme-vzw-helper' ); ?></label><input type="date" name="end_date" value="<?php echo esc_attr( $edit_m->end_date ?? '' ); ?>"></div>
-    <div class="vzw-field" style="max-width:100px"><label><?php esc_html_e( 'Mandaatduur (j)', 'eme-vzw-helper' ); ?></label><input type="number" name="mandate_duration" min="0" value="<?php echo (int) ( $edit_m->mandate_duration ?? 0 ); ?>"></div>
+    <div class="vzw-field"><label><?php esc_html_e( 'Einde mandaat', 'eme-vzw-helper' ); ?></label><input type="date" name="end_date" value="<?php echo esc_attr( $edit_m->end_date ?? '' ); ?>"><span class="description"><?php esc_html_e( 'Leeg laten = einddatum uit de instellingen.', 'eme-vzw-helper' ); ?></span></div>
 </div>
 
 <div class="vzw-row">

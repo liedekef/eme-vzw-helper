@@ -12,13 +12,14 @@ $pubs   = EMEVzw\Publications::get_all();
 $today    = new DateTime( current_time( 'Y-m-d' ) );
 $deadlines = [];
 
+$earliest_end = EMEVzw\Config::earliest_mandate_end();
 if ( $config ) {
-    if ( $config->board_mandate_end ) {
-        $end  = new DateTime( $config->board_mandate_end );
+    if ( $earliest_end ) {
+        $end  = new DateTime( $earliest_end );
         $diff = $today->diff( $end );
         $deadlines[] = [
             'label'  => __( 'Einde bestuursmandaat', 'eme-vzw-helper' ),
-            'date'   => $config->board_mandate_end,
+            'date'   => $earliest_end,
             'days'   => $end >= $today ? $diff->days : -1,
             'warn'   => $end >= $today && $diff->days <= 90,
             'urgent' => $end < $today || $diff->days <= 30,

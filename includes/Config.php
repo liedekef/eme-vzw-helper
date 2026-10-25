@@ -102,6 +102,26 @@ class Config {
     }
 
     /**
+     * Effectief einde van het mandaat van een bestuurder: zijn eigen einddatum,
+     * anders de algemene einddatum uit de instellingen (Y-m-d) of null.
+     */
+    public static function mandate_end_of( object $member ): ?string {
+        return $member->end_date ?: ( self::get()->board_mandate_end ?: null );
+    }
+
+    /**
+     * Vroegste einde van alle actieve mandaten (Y-m-d), of null.
+     * Valt terug op de algemene einddatum als er geen actieve bestuurders zijn.
+     */
+    public static function earliest_mandate_end(): ?string {
+        $ends = array_filter( array_map( [ __CLASS__, 'mandate_end_of' ], self::get_active_board_members() ) );
+        if ( ! $ends ) {
+            return self::get()->board_mandate_end ?: null;
+        }
+        return min( $ends );
+    }
+
+    /**
      * Alle bestuurders, ongeacht is_active, gesorteerd:
      * actieve leden eerst, daarna inactieve, beide alfabetisch op achternaam.
      */
@@ -200,7 +220,6 @@ class Config {
             'appointed_date'       => ! empty( $data['appointed_date'] ) ? eme_sanitize_request( $data['appointed_date'] ) : null,
             'appointment_av_date'  => ! empty( $data['appointment_av_date'] ) ? eme_sanitize_request( $data['appointment_av_date'] ) : null,
             'end_date'             => ! empty( $data['end_date'] ) ? eme_sanitize_request( $data['end_date'] ) : null,
-            'mandate_duration'     => (int) ( $data['mandate_duration'] ?? 0 ),
             'no_management_ban'    => (int) (bool) ( $data['no_management_ban'] ?? 0 ),
             'is_active'            => (int) (bool) ( $data['is_active'] ?? 1 ),
             'is_legal_entity'      => (int) (bool) ( $data['is_legal_entity'] ?? 0 ),

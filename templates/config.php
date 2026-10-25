@@ -167,7 +167,7 @@ Gbruik "RPR" gevolgt door de locatie, met eventueel de afdeling. Een paar voorbe
     <div class="vzw-field">
         <label><?php esc_html_e( 'Einde bestuursmandaat', 'eme-vzw-helper' ); ?></label>
         <input type="date" name="board_mandate_end" value="<?php echo esc_attr( $config->board_mandate_end ?? '' ); ?>">
-        <span class="description"><?php esc_html_e( 'Datum waarop het huidig bestuur zijn mandaat verliest. Herinnering 30 dagen op voorhand.', 'eme-vzw-helper' ); ?></span>
+        <span class="description"><?php esc_html_e( 'Standaard einde van het mandaat voor bestuurders zonder eigen einddatum. Herinnering 90 dagen op voorhand, en wekelijks na het verlopen.', 'eme-vzw-helper' ); ?></span>
     </div>
     <div class="vzw-field">
         <label><?php esc_html_e( 'UBO-register laatste bevestiging', 'eme-vzw-helper' ); ?></label>

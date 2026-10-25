@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 
     const DB_VERSION_OPTION = 'emevzw_db_version';
-    const DB_VERSION        = '6';
+    const DB_VERSION        = '7';
 
     /**
      * Activation hook. WordPress calls it once, also for a network activation
@@ -68,7 +68,9 @@ class Installer {
         try {
             $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
             self::create_tables();
-            self::migrate( $current_version );
+            if ( $current_version < (int) self::DB_VERSION ) {
+                self::migrate( $current_version );
+            }
             update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
         } finally {
             $wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock_name ) );
@@ -105,9 +107,9 @@ class Installer {
 
         if ( ! $current_version ) return;
 
-        //if ( $current_version < 7 ) {
-            // for future needs concerning table migrations
-        //}
+        if ( $current_version < 7 ) {
+            eme_maybe_drop_column("{$wpdb->prefix}emevzw_board",'mandate_duration');
+        }
     }
 
     public static function deactivate( bool $network_deactivating = false ): void {
@@ -141,6 +143,7 @@ class Installer {
                 switch_to_blog( $site_id );
                 try {
                     self::uninstall_site();
+                    delete_option( 'emevzw_notification_sent' );
                 } finally {
                     restore_current_blog();
                 }
@@ -148,6 +151,7 @@ class Installer {
             return;
         }
         self::uninstall_site();
+        delete_option( 'emevzw_notification_sent' );
     }
 
     private static function uninstall_site(): void {
@@ -160,7 +164,6 @@ class Installer {
 
     public static function create_tables(): void {
         global $wpdb;
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         $charset = $wpdb->get_charset_collate();
 
         // ── Board members (bestuurders) ──────────────────────────────────
@@ -184,7 +187,6 @@ class Installer {
             appointed_date      DATE                     DEFAULT NULL,
             appointment_av_date DATE                     DEFAULT NULL,
             end_date            DATE                     DEFAULT NULL,
-            mandate_duration    SMALLINT        NOT NULL DEFAULT 0,
             no_management_ban   TINYINT(1)      NOT NULL DEFAULT 0,
             is_active           TINYINT(1)      NOT NULL DEFAULT 1,
             is_legal_entity     TINYINT(1)      NOT NULL DEFAULT 0,

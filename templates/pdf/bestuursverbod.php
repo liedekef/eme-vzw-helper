@@ -7,15 +7,15 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-$vzw_name    = esc_html( $config->vzw_name ?? '' );
-$vzw_form    = esc_html( $config->vzw_legal_form );
-$vzw_number  = esc_html( $config->vzw_number ?? '' );
-$street      = esc_html( trim( ( $config->street ?? '' ) . ' ' . ( $config->house_number ?? '' ) ) );
+$vzw_name    = $config->vzw_name ?? '';
+$vzw_form    = $config->vzw_legal_form;
+$vzw_number  = $config->vzw_number ?? '';
+$street      = trim( ( $config->street ?? '' ) . ' ' . ( $config->house_number ?? '' ) );
 if ( ! empty( $config->house_bus ) ) {
-    $street .= esc_html( ' bus ' . $config->house_bus );
+    $street .= ' bus ' . $config->house_bus;
 }
-$postal  = esc_html( trim( ( $config->postal_code ?? '' ) . ' ' . ( $config->city ?? '' ) ) );
-$rpr     = esc_html( $config->court ?? '' );
+$postal  = trim( ( $config->postal_code ?? '' ) . ' ' . ( $config->city ?? '' ) );
+$rpr     = $config->court ?? '';
 
 $vertegenwoordigers = EMEVzw\Config::get_legal_representatives();
 
