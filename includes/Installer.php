@@ -68,7 +68,7 @@ class Installer {
         try {
             $current_version = (int) get_option( self::DB_VERSION_OPTION, '0' );
             self::create_tables();
-            if ( $current_version < (int) self::DB_VERSION ) {
+            if ( $current_version && $current_version < (int) self::DB_VERSION ) {
                 self::migrate( $current_version );
             }
             update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
@@ -143,7 +143,6 @@ class Installer {
                 switch_to_blog( $site_id );
                 try {
                     self::uninstall_site();
-                    delete_option( 'emevzw_notification_sent' );
                 } finally {
                     restore_current_blog();
                 }
@@ -151,7 +150,6 @@ class Installer {
             return;
         }
         self::uninstall_site();
-        delete_option( 'emevzw_notification_sent' );
     }
 
     private static function uninstall_site(): void {
@@ -160,6 +158,7 @@ class Installer {
         delete_option( self::DB_VERSION_OPTION );
         delete_option( 'emevzw_helper_delete_on_uninstall' );
         delete_option( 'emevzw_helper_settings' );
+        delete_option( 'emevzw_notification_sent' );
     }
 
     public static function create_tables(): void {
