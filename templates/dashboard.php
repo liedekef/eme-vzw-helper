@@ -185,6 +185,28 @@ $g_yr   = $score['by_group']['current_year'];
     </div>
     <div class="vzw-summary-info">
         <h2><?php echo esc_html( $config->vzw_name ); ?> <small style="font-size:13px;font-weight:400;color:#646970"><?php echo esc_html( $config->vzw_number ); ?></small></h2>
+        <?php if ( ! empty( $config->vzw_number ) ) :
+            $vzw_number_digits = preg_replace( '/\D/', '', $config->vzw_number );
+        ?>
+        <div class="vzw-ext-links">
+            <a target="_blank" rel="noopener noreferrer" class="vzw-ext-link vzw-ext-link--nbb" title="NBB Financiële rapporten" href="<?php echo esc_url( 'https://consult.cbso.nbb.be/consult-enterprise/' . $vzw_number_digits ); ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-dollar-sign" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></svg>
+                <span>NBB</span>
+            </a>
+            <a target="_blank" rel="noopener noreferrer" class="vzw-ext-link vzw-ext-link--kbo" title="Kruispuntbank Ondernemingen informatie" href="<?php echo esc_url( 'https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer=' . $vzw_number_digits ); ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 lucide-building-2" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg>
+                <span>KBO</span>
+            </a>
+            <a target="_blank" rel="noopener noreferrer" class="vzw-ext-link vzw-ext-link--pub" title="Staatsblad Publicaties" href="<?php echo esc_url( 'https://www.ejustice.just.fgov.be/cgi_tsv/list.pl?language=nl&btw=' . $vzw_number_digits . '&page=1&view_numac=' . $vzw_number_digits . '#SUM' ); ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
+                <span>Pub</span>
+            </a>
+            <a target="_blank" rel="noopener noreferrer" class="vzw-ext-link vzw-ext-link--peppol" title="Peppol informatie" href="<?php echo esc_url( 'https://e-invoice.be/company/' . $vzw_number_digits ); ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                <span>Peppol</span>
+            </a>
+        </div>
+        <?php endif; ?>
         <p><?php echo esc_html( trim( $config->street . ' ' . $config->house_number . ', ' . $config->postal_code . ' ' . $config->city ) ); ?></p>
         <div class="vzw-group-scores">
             <div class="vzw-group-score">

@@ -96,6 +96,38 @@ dialog.vzw-help-dialog::backdrop { background: rgba(0,0,0,.5); }
 }
 .vzw-group-score strong { display: block; font-size: 18px; }
 
+/* ── External registry links (VZW number) ─────────────────────────── */
+.vzw-ext-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 0 8px;
+}
+.vzw-ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color .2s;
+}
+.vzw-ext-link svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+}
+.vzw-ext-link span { font-weight: 500; }
+.vzw-ext-link--nbb    { background: #f0fdf4; color: #15803d; }
+.vzw-ext-link--nbb:hover    { background: #dcfce7; }
+.vzw-ext-link--kbo    { background: #fff7ed; color: #c2410c; }
+.vzw-ext-link--kbo:hover    { background: #ffedd5; }
+.vzw-ext-link--pub    { background: #faf5ff; color: #7e22ce; }
+.vzw-ext-link--pub:hover    { background: #f3e8ff; }
+.vzw-ext-link--peppol { background: #eef2ff; color: #4338ca; }
+.vzw-ext-link--peppol:hover { background: #e0e7ff; }
+
 /* ── Checklist items ──────────────────────────────────────────────── */
 .vzw-checklist { margin-bottom: 28px; }
 .vzw-checklist-group {
