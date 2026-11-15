@@ -65,7 +65,7 @@ if ( $config ) {
     }
     $diff = $today->diff( $patrimony_date );
     $deadlines[] = [
-        'label'  => __( 'Aangifte patrimoniumtaks VZW (31 maart)', 'eme-vzw-helper' ),
+        'label'  => __( 'Aangifte patrimoniumtaks VZW', 'eme-vzw-helper' ),
         'date'   => $patrimony_date->format( 'Y-m-d' ),
         'days'   => $patrimony_date >= $today ? $diff->days : -1,
         'warn'   => $patrimony_date >= $today && $diff->days <= 90,
@@ -201,7 +201,7 @@ $g_yr   = $score['by_group']['current_year'];
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
                 <span>Pub</span>
             </a>
-            <a target="_blank" rel="noopener noreferrer" class="vzw-ext-link vzw-ext-link--peppol" title="Peppol informatie" href="<?php echo esc_url( 'https://e-invoice.be/company/' . $vzw_number_digits ); ?>">
+            <a target="_blank" rel="noopener noreferrer" class="vzw-ext-link vzw-ext-link--peppol" title="Peppol informatie" href="https://www.peppolcheck.be/">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
                 <span>Peppol</span>
             </a>
